@@ -1,0 +1,24 @@
+{
+  "agentId": "main",
+  "sessionKey": "agent:main:telegram:direct:<TARGET_CHAT_ID>",
+  "name": "Morning Vendoo Dashboard Rundown",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 8 * * *",
+    "tz": "<LOCAL_TIMEZONE>"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Run the vendoo-daily-dashboard-rundown skill from the local workspace. Use the local analytics app URL, defaulting to http://127.0.0.1:3000 unless this install uses another local URL. Generate the balanced morning briefing, verify the CSV is fresh enough to trust, and send the summary back to this chat. If the endpoint is unavailable or the CSV is stale, say that clearly instead of pretending the report is current.",
+    "timeoutSeconds": 300
+  },
+  "delivery": {
+    "mode": "announce",
+    "channel": "telegram",
+    "to": "<TARGET_CHAT_ID>",
+    "bestEffort": true
+  }
+}

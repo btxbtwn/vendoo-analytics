@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v.1.2.0] - 2026-03-14
+
+### Added
+- a repo-shipped `vendoo-daily-dashboard-rundown` skill for OpenClaw morning analytics briefings
+- a local morning rundown endpoint at `/api/morning-rundown?format=text`
+- example native OpenClaw cron payload docs for the morning dashboard rundown job
+
+### Changed
+- `AGENTS.md` now documents both the nightly export job and the morning dashboard rundown job
+- the server-side Vendoo CSV loader now refreshes when `public/data/vendoo.csv` changes instead of staying cached forever
+
 ## [v.1.1.0] - 2026-03-14
 
 ### Added

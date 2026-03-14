@@ -1,25 +1,41 @@
 import "server-only";
 
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import Papa from "papaparse";
 import { VendooListing } from "./types";
 
 let cachedListings: VendooListing[] | null = null;
+let cachedCsvMtimeMs: number | null = null;
 
 function parseNumber(value: string): number {
   const parsed = Number.parseFloat(value);
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 
+function getCsvPath(): string {
+  return path.join(process.cwd(), "public", "data", "vendoo.csv");
+}
+
+export async function getServerListingsCsvMetadata() {
+  const csvPath = getCsvPath();
+  const stats = await stat(csvPath);
+
+  return {
+    csvPath,
+    modifiedAt: stats.mtime,
+    modifiedAtMs: stats.mtimeMs,
+  };
+}
+
 export async function loadServerListings(): Promise<VendooListing[]> {
-  if (cachedListings) {
+  const { csvPath, modifiedAtMs } = await getServerListingsCsvMetadata();
+
+  if (cachedListings && cachedCsvMtimeMs === modifiedAtMs) {
     return cachedListings;
   }
 
-  const csvPath = path.join(process.cwd(), "public", "data", "vendoo.csv");
   const csvText = await readFile(csvPath, "utf8");
-
   const results = Papa.parse<Record<string, string>>(csvText, {
     header: true,
     skipEmptyLines: true,
@@ -52,6 +68,7 @@ export async function loadServerListings(): Promise<VendooListing[]> {
     quantityLeft: parseNumber(row["Quantity Left"] || ""),
     quantitySold: parseNumber(row["Quantity Sold"] || ""),
   }));
+  cachedCsvMtimeMs = modifiedAtMs;
 
   return cachedListings;
 }

@@ -4,15 +4,22 @@ A Next.js dashboard for analyzing Vendoo exports, tracking marketplace performan
 
 ## Latest release
 
-The next release prepared from this branch is `v.1.1.0`.
+The next release prepared from this branch is `v.1.2.0`.
 
 Highlights in this release:
-- per-tab date filters using the most relevant date for each tab
-- platform-aware label and tag comparison with searchable multi-select versus views
-- revenue and profit projector windows for `7`, `14`, `30`, `60`, and `90` days
-- slimmer mobile header, aligned snapshot metrics, and a more compact sidebar
-- `Inventory Status` only in the Inventory tab and `Sales by Category` only in the Revenue tab
-- improved desktop category chart layout so the chart no longer clips
+- repo-shipped morning dashboard rundown skill for OpenClaw agents
+- local morning rundown endpoint at `/api/morning-rundown?format=text`
+- balanced morning briefing with yesterday metrics, 7-day pace, platform winners, label/tag movers, inventory watch, projector snapshot, and alerts
+- cache-aware server CSV loading so refreshed Vendoo exports are picked up without relying on a full app restart
+- repo docs and example payloads for wiring both nightly export and morning rundown native cron jobs
+
+## OpenClaw automation supported by this repo
+
+This repo now supports two OpenClaw-native recurring automations:
+- `Daily Vendoo CSV export` at `0 23 * * *`
+- `Morning Vendoo Dashboard Rundown` at a recommended `0 8 * * *`
+
+The morning rundown uses the repo's local dashboard data and returns a balanced briefing with yesterday metrics, 7-day pace, platform winners, label/tag movers, inventory watch, projector snapshot, and alerts.
 
 ## OpenClaw agent install or update
 
@@ -21,10 +28,20 @@ If this project is being installed or updated by an OpenClaw agent, start with t
 That guide covers:
 - fresh install into an OpenClaw workspace
 - updating an existing install safely
-- copying or re-syncing `skills/vendoo-export-dashboard`
+- copying or re-syncing both shipped skills
 - localizing machine-specific paths
 - launching or relaunching the analytics app
-- validating the native recurring OpenClaw cron job that runs every day at `11:00 PM` with `0 23 * * *`
+- wiring both native recurring OpenClaw cron jobs
+
+## Morning rundown endpoint
+
+When the app is running locally, the morning briefing can be generated from:
+
+```text
+http://127.0.0.1:3000/api/morning-rundown?format=text
+```
+
+If the app runs on another local URL or port, use that local endpoint instead.
 
 ## Changelog
 

@@ -13,6 +13,7 @@ Run the locked Vendoo export protocol with managed browser, then deploy CSV to t
 - Before first use on another machine, replace those paths in this file, `references/runbook.md`, and the scripts in `scripts/`.
 - The canonical analytics CSV target should be the local `vendoo-analytics/public/data/vendoo.csv` file.
 - Recurring automation should use the local OpenClaw native cron or scheduler with job name `Daily Vendoo CSV export` and cron expression `0 23 * * *`.
+- If the repo also installs `vendoo-daily-dashboard-rundown`, schedule that morning job after the nightly export so the CSV is already fresh.
 
 ## Workflow
 
