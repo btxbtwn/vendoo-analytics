@@ -1,48 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vendoo Analytics
 
-## OpenClaw agent install
+A Next.js dashboard for analyzing Vendoo exports, tracking marketplace performance, and comparing labels, tags, brands, inventory, and revenue trends.
 
-If this project is being installed by an OpenClaw agent from a fresh release or source bundle, follow the repo-level instructions in [`AGENTS.md`](./AGENTS.md).
+## Latest release
+
+The next release prepared from this branch is `v.1.1.0`.
+
+Highlights in this release:
+- per-tab date filters using the most relevant date for each tab
+- platform-aware label and tag comparison with searchable multi-select versus views
+- revenue and profit projector windows for `7`, `14`, `30`, `60`, and `90` days
+- slimmer mobile header, aligned snapshot metrics, and a more compact sidebar
+- `Inventory Status` only in the Inventory tab and `Sales by Category` only in the Revenue tab
+- improved desktop category chart layout so the chart no longer clips
+
+## OpenClaw agent install or update
+
+If this project is being installed or updated by an OpenClaw agent, start with the repo-level instructions in [`AGENTS.md`](./AGENTS.md).
 
 That guide covers:
-
 - fresh install into an OpenClaw workspace
-- copying `skills/vendoo-export-dashboard` into the workspace skill folder
+- updating an existing install safely
+- copying or re-syncing `skills/vendoo-export-dashboard`
 - localizing machine-specific paths
-- launching the analytics app
-- creating the native recurring OpenClaw cron job that runs every day at `11:00 PM` with `0 23 * * *`
+- launching or relaunching the analytics app
+- validating the native recurring OpenClaw cron job that runs every day at `11:00 PM` with `0 23 * * *`
+
+## Changelog
+
+See [`CHANGELOG.md`](./CHANGELOG.md) for release history and a detailed summary of what changed in each version.
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies and start the app locally:
+
+```bash
+npm install
+npm run build
+npm run start
+```
+
+For local development instead of production start:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

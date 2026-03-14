@@ -1,21 +1,50 @@
 "use client";
 
-import { calculateKPIs, listingsByMonth, recentSales, statusDistribution } from "../../lib/analytics";
-import { VendooListing } from "../../lib/types";
+import { useMemo } from "react";
+
+import {
+  calculateKPIs,
+  filterListingsByDate,
+  getTimeGrouping,
+  listingsByMonth,
+  recentListings,
+  statusDistribution,
+} from "../../lib/analytics";
+import { TabDateFilter, VendooListing } from "../../lib/types";
 import ListingsChart from "../ListingsChart";
-import RecentSalesTable from "../RecentSalesTable";
+import RecentListingsTable from "../RecentListingsTable";
 import StatusChart from "../StatusChart";
+import TabDateFilterBar from "../TabDateFilterBar";
 
 interface InventoryPanelProps {
   listings: VendooListing[];
   compact: boolean;
+  filter: TabDateFilter;
+  onFilterChange: (nextFilter: TabDateFilter) => void;
 }
 
-export default function InventoryPanel({ listings, compact }: InventoryPanelProps) {
-  const kpis = calculateKPIs(listings);
+export default function InventoryPanel({
+  listings,
+  compact,
+  filter,
+  onFilterChange,
+}: InventoryPanelProps) {
+  const filteredListings = useMemo(
+    () => filterListingsByDate(listings, "listedDate", filter),
+    [filter, listings],
+  );
+  const kpis = useMemo(() => calculateKPIs(filteredListings), [filteredListings]);
+  const grouping = getTimeGrouping(filter);
 
   return (
     <>
+      <TabDateFilterBar
+        dateFieldLabel="Listed date"
+        filter={filter}
+        onChange={onFilterChange}
+        resultSummary={`${filteredListings.length.toLocaleString("en-US")} listings`}
+        compact={compact}
+      />
       <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         {[
           { label: "Total Listings", value: kpis.totalListings, color: "text-foreground" },
@@ -36,10 +65,10 @@ export default function InventoryPanel({ listings, compact }: InventoryPanelProp
           </div>
         ))}
       </div>
-      <ListingsChart data={listingsByMonth(listings)} compact={compact} />
-      <StatusChart data={statusDistribution(listings)} compact={compact} />
-      <RecentSalesTable
-        sales={recentSales(listings, compact ? 14 : 50)}
+      <ListingsChart data={listingsByMonth(filteredListings, grouping)} compact={compact} />
+      <StatusChart data={statusDistribution(filteredListings)} compact={compact} />
+      <RecentListingsTable
+        listings={recentListings(filteredListings, compact ? 14 : 50)}
         compact={compact}
       />
     </>

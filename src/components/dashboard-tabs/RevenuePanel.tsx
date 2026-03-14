@@ -1,21 +1,57 @@
 "use client";
 
-import { calculateKPIs, profitBreakdown, revenueByMonth, salesByCategory } from "../../lib/analytics";
-import { VendooListing } from "../../lib/types";
-import RevenueChart from "../RevenueChart";
-import ProfitBreakdownChart from "../ProfitBreakdownChart";
+import { useMemo, useState } from "react";
+
+import {
+  buildRevenueProfitProjection,
+  calculateKPIs,
+  filterListingsByDate,
+  getTimeGrouping,
+  profitBreakdown,
+  revenueByMonth,
+  salesByCategory,
+} from "../../lib/analytics";
+import { TabDateFilter, VendooListing } from "../../lib/types";
 import CategoryChart from "../CategoryChart";
+import ProfitBreakdownChart from "../ProfitBreakdownChart";
+import ProjectionChart from "../ProjectionChart";
+import RevenueChart from "../RevenueChart";
+import TabDateFilterBar from "../TabDateFilterBar";
 
 interface RevenuePanelProps {
   listings: VendooListing[];
   compact: boolean;
+  filter: TabDateFilter;
+  onFilterChange: (nextFilter: TabDateFilter) => void;
 }
 
-export default function RevenuePanel({ listings, compact }: RevenuePanelProps) {
-  const kpis = calculateKPIs(listings);
+export default function RevenuePanel({
+  listings,
+  compact,
+  filter,
+  onFilterChange,
+}: RevenuePanelProps) {
+  const [projectionWindow, setProjectionWindow] = useState(30);
+  const soldListings = useMemo(
+    () => filterListingsByDate(listings.filter((listing) => listing.status === "Sold"), "soldDate", filter),
+    [filter, listings],
+  );
+  const kpis = useMemo(() => calculateKPIs(soldListings), [soldListings]);
+  const projection = useMemo(
+    () => buildRevenueProfitProjection(soldListings, projectionWindow),
+    [projectionWindow, soldListings],
+  );
+  const grouping = getTimeGrouping(filter);
 
   return (
     <>
+      <TabDateFilterBar
+        dateFieldLabel="Sold date"
+        filter={filter}
+        onChange={onFilterChange}
+        resultSummary={`${soldListings.length.toLocaleString("en-US")} sold items`}
+        compact={compact}
+      />
       <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         {[
           { label: "Total Revenue", value: kpis.totalRevenue, color: "text-accent" },
@@ -36,9 +72,18 @@ export default function RevenuePanel({ listings, compact }: RevenuePanelProps) {
           </div>
         ))}
       </div>
-      <RevenueChart data={revenueByMonth(listings)} compact={compact} />
-      <ProfitBreakdownChart data={profitBreakdown(listings)} compact={compact} />
-      <CategoryChart data={salesByCategory(listings)} compact={compact} />
+      <RevenueChart data={revenueByMonth(soldListings, grouping)} compact={compact} />
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2 xl:gap-6">
+        <ProjectionChart
+          data={projection.points}
+          summary={projection.summary}
+          windowDays={projectionWindow}
+          onWindowChange={setProjectionWindow}
+          compact={compact}
+        />
+        <ProfitBreakdownChart data={profitBreakdown(soldListings)} compact={compact} />
+      </div>
+      <CategoryChart data={salesByCategory(soldListings)} compact={compact} />
     </>
   );
 }

@@ -1,24 +1,42 @@
 "use client";
 
-import { salesByCategory, salesByPlatform, statusDistribution } from "../../lib/analytics";
-import { VendooListing } from "../../lib/types";
-import CategoryChart from "../CategoryChart";
+import { useMemo } from "react";
+
+import { filterListingsByDate, salesByPlatform } from "../../lib/analytics";
+import { TabDateFilter, VendooListing } from "../../lib/types";
+import LabelTagComparisonPanel from "../LabelTagComparisonPanel";
 import PlatformChart from "../PlatformChart";
-import StatusChart from "../StatusChart";
+import TabDateFilterBar from "../TabDateFilterBar";
 
 interface PlatformsPanelProps {
   listings: VendooListing[];
   compact: boolean;
+  filter: TabDateFilter;
+  onFilterChange: (nextFilter: TabDateFilter) => void;
 }
 
-export default function PlatformsPanel({ listings, compact }: PlatformsPanelProps) {
+export default function PlatformsPanel({
+  listings,
+  compact,
+  filter,
+  onFilterChange,
+}: PlatformsPanelProps) {
+  const soldListings = useMemo(
+    () => filterListingsByDate(listings.filter((listing) => listing.status === "Sold"), "soldDate", filter),
+    [filter, listings],
+  );
+
   return (
     <>
-      <PlatformChart data={salesByPlatform(listings)} compact={compact} />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
-        <CategoryChart data={salesByCategory(listings)} compact={compact} />
-        <StatusChart data={statusDistribution(listings)} compact={compact} />
-      </div>
+      <TabDateFilterBar
+        dateFieldLabel="Sold date"
+        filter={filter}
+        onChange={onFilterChange}
+        resultSummary={`${soldListings.length.toLocaleString("en-US")} sold items`}
+        compact={compact}
+      />
+      <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
+      <LabelTagComparisonPanel listings={soldListings} compact={compact} />
     </>
   );
 }

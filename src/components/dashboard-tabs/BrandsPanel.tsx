@@ -1,17 +1,37 @@
 "use client";
 
-import { topBrands } from "../../lib/analytics";
-import { VendooListing } from "../../lib/types";
+import { useMemo } from "react";
+
+import { filterListingsByDate, topBrands } from "../../lib/analytics";
+import { TabDateFilter, VendooListing } from "../../lib/types";
 import BrandChart from "../BrandChart";
+import TabDateFilterBar from "../TabDateFilterBar";
 
 interface BrandsPanelProps {
   listings: VendooListing[];
   compact: boolean;
+  filter: TabDateFilter;
+  onFilterChange: (nextFilter: TabDateFilter) => void;
 }
 
-export default function BrandsPanel({ listings, compact }: BrandsPanelProps) {
-  const topBrandData = topBrands(listings, compact ? 8 : 20);
-  const allBrandRows = topBrands(listings, compact ? 18 : 50);
+export default function BrandsPanel({
+  listings,
+  compact,
+  filter,
+  onFilterChange,
+}: BrandsPanelProps) {
+  const soldListings = useMemo(
+    () => filterListingsByDate(listings.filter((listing) => listing.status === "Sold"), "soldDate", filter),
+    [filter, listings],
+  );
+  const topBrandData = useMemo(
+    () => topBrands(soldListings, compact ? 8 : 20),
+    [compact, soldListings],
+  );
+  const allBrandRows = useMemo(
+    () => topBrands(soldListings, compact ? 18 : 50),
+    [compact, soldListings],
+  );
 
   function renderBrandRows() {
     if (compact) {
@@ -98,10 +118,17 @@ export default function BrandsPanel({ listings, compact }: BrandsPanelProps) {
 
   return (
     <>
+      <TabDateFilterBar
+        dateFieldLabel="Sold date"
+        filter={filter}
+        onChange={onFilterChange}
+        resultSummary={`${soldListings.length.toLocaleString("en-US")} sold items`}
+        compact={compact}
+      />
       <BrandChart data={topBrandData} compact={compact} />
       <div className="w-full max-w-full rounded-2xl border border-border bg-card p-4 md:p-6">
         <h3 className="mb-4 text-lg font-semibold text-foreground">
-          All Brands Performance
+          Brand Performance in Range
         </h3>
         {renderBrandRows()}
       </div>

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Follow these instructions when an OpenClaw agent downloads a fresh release or source bundle of this repository.
+Use this guide when an OpenClaw agent installs or updates `vendoo-analytics` from a release asset, source bundle, or Git checkout.
 
 ## Fresh install workflow
 
@@ -38,9 +38,48 @@ Follow these instructions when an OpenClaw agent downloads a fresh release or so
 - The job must run the Vendoo CSV export workflow, refresh the canonical analytics CSV target, and report the result back to the triggering Telegram chat or session.
 - Avoid duplicate jobs.
 
+## Update workflow
+
+1. Update the local repo copy
+- Download the latest release asset or pull the latest repository state into the existing local `vendoo-analytics` checkout.
+- If the app is currently running, stop the existing process before replacing files or restarting it.
+
+2. Preserve local machine state
+- Keep the machine-local analytics CSV at `public/data/vendoo.csv` unless the update explicitly replaces it with a newer exported file.
+- Preserve any machine-local path edits that were already made for the Vendoo export skill.
+- Preserve any install-specific launch port or process manager choices unless the update requires a change.
+
+3. Re-sync the skill if needed
+- Compare the repo copy of `skills/vendoo-export-dashboard` with the installed workspace skill.
+- If the repo copy changed, update the installed skill folder.
+- Re-check the machine-local path substitutions after updating skill files.
+
+4. Reinstall, rebuild, and relaunch
+- Run `npm install` if dependencies changed.
+- Run `npm run build`.
+- Relaunch the app and confirm the chosen URL returns a successful response.
+
+5. Validate the recurring export job
+- Ensure there is still exactly one recurring native OpenClaw job named `Daily Vendoo CSV export`.
+- Keep the schedule at `0 23 * * *` unless the operator explicitly changed it.
+- If the install path or skill path changed, update the scheduled payload so it points at the correct local paths.
+- Do not leave duplicate scheduled jobs behind.
+
+## Release-specific expectations for v.1.1.0
+
+After updating to `v.1.1.0`, verify these features are present:
+- slimmer mobile top header
+- desktop sidebar collapsed by default and slimmer when opened
+- aligned snapshot metrics at the top of the dashboard
+- per-tab date filters
+- platform-aware label/tag comparison with multi-select versus views
+- `Inventory Status` only in Inventory
+- `Sales by Category` only in Revenue
+- revenue and profit projector controls
+
 ## Required completion report
 
-When the setup is complete, reply with:
+When the setup or update is complete, reply with:
 
 1. install path
 2. skill path
@@ -50,12 +89,12 @@ When the setup is complete, reply with:
 6. cron expression
 7. exact OpenClaw scheduled payload
 8. whether the analytics CSV target exists
-9. any blockers
+9. whether this was a fresh install or an update
+10. any blockers
 
 ## Stop conditions
 
 Stop and report the exact blocker if any of these are true:
-
 - the release or source bundle cannot be accessed
 - GitHub access is missing
 - required local paths cannot be determined

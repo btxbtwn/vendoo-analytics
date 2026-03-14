@@ -2,8 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { startTransition, useDeferredValue, useEffect, useState } from "react";
-import { VendooListing } from "../lib/types";
 import { calculateKPIs } from "../lib/analytics";
+import { DashboardTabKey, TabDateFilter, VendooListing } from "../lib/types";
 
 import Sidebar from "./Sidebar";
 const OverviewPanel = dynamic(() => import("./dashboard-tabs/OverviewPanel"), { ssr: false });
@@ -16,37 +16,48 @@ interface DashboardProps {
   initialListings: VendooListing[];
 }
 
-const TAB_COPY = {
+const TAB_COPY: Record<DashboardTabKey, { title: string; description: string }> = {
   overview: {
     title: "Dashboard Overview",
-    description: "Revenue, profit, sell-through, and recent sales.",
+    description: "Revenue, profit, platform wins, and recent sold activity.",
   },
   revenue: {
     title: "Revenue Analytics",
-    description: "Revenue, profit, costs, and category mix.",
+    description: "Revenue, profit, projections, and category mix.",
   },
   platforms: {
     title: "Platform Performance",
-    description: "Marketplace sales, revenue, and status distribution.",
+    description: "Marketplace sales plus label and tag versus comparisons.",
   },
   inventory: {
     title: "Inventory Management",
-    description: "Listings, sell-through, and recent sold inventory.",
+    description: "Listings, status, sell-through, and recent inventory added.",
   },
   brands: {
     title: "Brand Analytics",
-    description: "Top brands by revenue, sales, and profit.",
+    description: "Top brands by revenue, sales, and profit in the selected window.",
   },
-} as const;
+};
 
-function PanelFallback() {
-  return <div className="h-64 rounded-2xl border border-border bg-card/70" />;
+function createDefaultFilter(): TabDateFilter {
+  return { preset: "all", from: "", to: "" };
+}
+
+function isDashboardTabKey(value: string): value is DashboardTabKey {
+  return value in TAB_COPY;
 }
 
 export default function Dashboard({ initialListings }: DashboardProps) {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState<DashboardTabKey>("overview");
   const [isMobile, setIsMobile] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const [tabFilters, setTabFilters] = useState<Record<DashboardTabKey, TabDateFilter>>({
+    overview: createDefaultFilter(),
+    revenue: createDefaultFilter(),
+    platforms: createDefaultFilter(),
+    inventory: createDefaultFilter(),
+    brands: createDefaultFilter(),
+  });
   const visibleTab = useDeferredValue(activeTab);
 
   useEffect(() => {
@@ -61,7 +72,7 @@ export default function Dashboard({ initialListings }: DashboardProps) {
 
   const listings = initialListings;
   const kpis = calculateKPIs(listings);
-  const tabCopy = TAB_COPY[visibleTab as keyof typeof TAB_COPY];
+  const tabCopy = TAB_COPY[visibleTab];
   const headerMetrics = [
     { label: "Revenue", value: kpis.totalRevenue, tone: "text-accent" },
     { label: "Profit", value: kpis.totalProfit, tone: "text-success" },
@@ -69,7 +80,18 @@ export default function Dashboard({ initialListings }: DashboardProps) {
   ];
 
   function handleTabChange(tab: string) {
+    if (!isDashboardTabKey(tab)) {
+      return;
+    }
+
     startTransition(() => setActiveTab(tab));
+  }
+
+  function handleFilterChange(tab: DashboardTabKey, nextFilter: TabDateFilter) {
+    setTabFilters((current) => ({
+      ...current,
+      [tab]: nextFilter,
+    }));
   }
 
   return (
@@ -89,29 +111,20 @@ export default function Dashboard({ initialListings }: DashboardProps) {
 
       <main className="min-w-0 pb-[calc(env(safe-area-inset-bottom)+5.5rem)] md:pb-8">
         <header className="sticky top-0 z-40 border-b border-border bg-background/80 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
-          <div className="mx-auto flex max-w-[1600px] items-start justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8 lg:py-5">
-            <div className="min-w-0">
-              <div className="mb-2 flex items-center gap-3 md:hidden">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent shadow-[0_0_32px_rgba(99,102,241,0.25)]">
-                  <span className="text-sm font-bold text-white">V</span>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">Vendoo Analytics</p>
-                  <p className="text-xs text-muted-foreground">Analytics</p>
-                </div>
-              </div>
-
-              <h1 className="text-xl md:text-3xl font-bold text-foreground tracking-tight">
+          <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-3 px-4 py-2 sm:px-6 md:items-start lg:px-8 lg:py-4">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg font-semibold leading-tight tracking-tight text-foreground md:text-3xl md:font-bold">
                 {tabCopy.title}
               </h1>
-              <p className="mt-1 max-w-xl text-sm text-muted-foreground">
+              <p className="mt-1 hidden max-w-xl text-sm text-muted-foreground md:block">
                 {tabCopy.description}
               </p>
             </div>
-            <div className="shrink-0 rounded-full border border-border bg-muted/40 px-3 py-1.5 text-xs text-muted-foreground">
+            <div className="shrink-0 rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[11px] text-muted-foreground md:px-3 md:py-1.5 md:text-xs">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                Live Data
+                <span className="font-medium text-foreground">Live</span>
+                <span className="hidden md:inline">Data</span>
               </div>
             </div>
           </div>
@@ -147,23 +160,48 @@ export default function Dashboard({ initialListings }: DashboardProps) {
           </section>
 
           {visibleTab === "overview" && (
-            <OverviewPanel listings={listings} compact={isMobile} />
+            <OverviewPanel
+              listings={listings}
+              compact={isMobile}
+              filter={tabFilters.overview}
+              onFilterChange={(nextFilter) => handleFilterChange("overview", nextFilter)}
+            />
           )}
 
           {visibleTab === "revenue" && (
-            <RevenuePanel listings={listings} compact={isMobile} />
+            <RevenuePanel
+              listings={listings}
+              compact={isMobile}
+              filter={tabFilters.revenue}
+              onFilterChange={(nextFilter) => handleFilterChange("revenue", nextFilter)}
+            />
           )}
 
           {visibleTab === "platforms" && (
-            <PlatformsPanel listings={listings} compact={isMobile} />
+            <PlatformsPanel
+              listings={listings}
+              compact={isMobile}
+              filter={tabFilters.platforms}
+              onFilterChange={(nextFilter) => handleFilterChange("platforms", nextFilter)}
+            />
           )}
 
           {visibleTab === "inventory" && (
-            <InventoryPanel listings={listings} compact={isMobile} />
+            <InventoryPanel
+              listings={listings}
+              compact={isMobile}
+              filter={tabFilters.inventory}
+              onFilterChange={(nextFilter) => handleFilterChange("inventory", nextFilter)}
+            />
           )}
 
           {visibleTab === "brands" && (
-            <BrandsPanel listings={listings} compact={isMobile} />
+            <BrandsPanel
+              listings={listings}
+              compact={isMobile}
+              filter={tabFilters.brands}
+              onFilterChange={(nextFilter) => handleFilterChange("brands", nextFilter)}
+            />
           )}
         </div>
       </main>

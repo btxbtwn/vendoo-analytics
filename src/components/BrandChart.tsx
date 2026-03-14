@@ -33,56 +33,56 @@ export default function BrandChart({
           Top Brands by Revenue
         </h3>
         <p className="text-sm text-muted-foreground mt-1">
-          Highest-performing brands in your closet
+          Highest-performing brands in the selected date range
         </p>
       </div>
       <div className={compact ? "h-[18rem]" : "h-80 md:h-96"}>
         {ready ? (
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={chartData}
-            layout="vertical"
-            margin={compact ? { top: 5, right: 8, left: -10, bottom: 5 } : { top: 5, right: 20, left: 0, bottom: 5 }}
-          >
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="#27272a"
-              horizontal={false}
-            />
-            <XAxis
-              type="number"
-              tick={{ fill: "#a1a1aa", fontSize: compact ? 10 : 12 }}
-              axisLine={{ stroke: "#27272a" }}
-              tickLine={false}
-              tickFormatter={(val) => `$${val}`}
-            />
-            <YAxis
-              type="category"
-              dataKey="name"
-              tick={{ fill: "#a1a1aa", fontSize: compact ? 10 : 11 }}
-              axisLine={{ stroke: "#27272a" }}
-              tickLine={false}
-              width={compact ? 72 : 90}
-            />
-            <Tooltip
-              cursor={{ fill: "transparent" }}
-              content={(props) => (
-                <ChartTooltip
-                  {...props}
-                  getTitle={({ payload }) => String(payload[0]?.payload?.name ?? "")}
-                  getValueLabel={() => "Revenue"}
-                  valueFormatter={formatCurrency}
-                />
-              )}
-            />
-            <Bar
-              dataKey="revenue"
-              fill="#6366f1"
-              radius={[0, 6, 6, 0]}
-              name="Revenue"
-            />
-          </BarChart>
-        </ResponsiveContainer>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              layout="vertical"
+              margin={compact ? { top: 5, right: 8, left: -10, bottom: 5 } : { top: 5, right: 20, left: 0, bottom: 5 }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#27272a"
+                horizontal={false}
+              />
+              <XAxis
+                type="number"
+                tick={{ fill: "#a1a1aa", fontSize: compact ? 10 : 12 }}
+                axisLine={{ stroke: "#27272a" }}
+                tickLine={false}
+                tickFormatter={(value) => `$${value}`}
+              />
+              <YAxis
+                type="category"
+                dataKey="name"
+                tick={{ fill: "#a1a1aa", fontSize: compact ? 10 : 11 }}
+                axisLine={{ stroke: "#27272a" }}
+                tickLine={false}
+                width={compact ? 72 : 90}
+              />
+              <Tooltip
+                cursor={{ fill: "transparent" }}
+                content={(props) => (
+                  <ChartTooltip
+                    {...props}
+                    getTitle={({ payload }) => String(payload[0]?.payload?.name ?? "")}
+                    getValueLabel={() => "Revenue"}
+                    valueFormatter={formatCurrency}
+                  />
+                )}
+              />
+              <Bar
+                dataKey="revenue"
+                fill="#6366f1"
+                radius={[0, 6, 6, 0]}
+                name="Revenue"
+              />
+            </BarChart>
+          </ResponsiveContainer>
         ) : (
           <div className="h-full rounded-2xl bg-muted/20" />
         )}
