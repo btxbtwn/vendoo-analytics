@@ -7,6 +7,13 @@ description: Export Vendoo CSV and refresh the sales dashboard. Use when the use
 
 Run the locked Vendoo export protocol with managed browser, then deploy CSV to the sales dashboard.
 
+## Fresh install note
+
+- This skill ships with example `/Users/cris/...` paths from the original machine.
+- Before first use on another machine, replace those paths in this file, `references/runbook.md`, and the scripts in `scripts/`.
+- The canonical analytics CSV target should be the local `vendoo-analytics/public/data/vendoo.csv` file.
+- Recurring automation should use the local OpenClaw native cron or scheduler with job name `Daily Vendoo CSV export` and cron expression `0 23 * * *`.
+
 ## Workflow
 
 1. Export CSV from Vendoo (browser step)
@@ -21,17 +28,16 @@ Run the locked Vendoo export protocol with managed browser, then deploy CSV to t
 - Use `curl` to download directly: `curl -L -o /path/to/save.csv "https://storage.googleapis.com/..."`
 
 2. Deploy latest CSV
-- Move newest Vendoo CSV to: `/Users/cris/openclaw/sales_dashboard/`
-- Keep filename stable if dashboard expects one; otherwise preserve source name.
+- Copy the newest Vendoo CSV to the local analytics repo target at `public/data/vendoo.csv`.
+- Update `scripts/deploy_latest_vendoo_csv.sh` before first use so it matches the local machine paths.
 
 3. Restart dashboard service
-- Use `scripts/restart_sales_dashboard.sh`.
-- Target app: `/Users/cris/openclaw/sales_dashboard/app.py`
-- Target port: `8501`
+- Launch or restart the locally installed analytics app after refreshing the CSV.
+- Update `scripts/restart_sales_dashboard.sh` before first use so it points at the correct local app path and port.
 
 4. Verify freshness
 - Confirm newest CSV modified timestamp.
-- Confirm Streamlit process is up on port `8501`.
+- Confirm the analytics app is up on the configured local port.
 - Report success/failure + what changed.
 
 ## Fast commands

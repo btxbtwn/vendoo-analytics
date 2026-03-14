@@ -1,5 +1,17 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## OpenClaw agent install
+
+If this project is being installed by an OpenClaw agent from a fresh release or source bundle, follow the repo-level instructions in [`AGENTS.md`](./AGENTS.md).
+
+That guide covers:
+
+- fresh install into an OpenClaw workspace
+- copying `skills/vendoo-export-dashboard` into the workspace skill folder
+- localizing machine-specific paths
+- launching the analytics app
+- creating the native recurring OpenClaw cron job that runs every day at `11:00 PM` with `0 23 * * *`
+
 ## Getting Started
 
 First, run the development server:
