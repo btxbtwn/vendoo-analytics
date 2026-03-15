@@ -19,7 +19,15 @@ done < <(lsof -ti "tcp:$PORT" 2>/dev/null || true)
 
 if (( ${#EXISTING_PIDS[@]} > 0 )); then
   for pid in "${EXISTING_PIDS[@]}"; do
+    if ! kill -0 "$pid" 2>/dev/null; then
+      continue
+    fi
+
     command_line="$(ps -p "$pid" -o command= 2>/dev/null || true)"
+    if [[ -z "$command_line" ]]; then
+      continue
+    fi
+
     if [[ "$command_line" != *"$APP_DIR"* && "$command_line" != *"next start"* && "$command_line" != *"next-server"* ]]; then
       echo "Port $PORT is already in use by an unrelated process: $command_line" >&2
       exit 1

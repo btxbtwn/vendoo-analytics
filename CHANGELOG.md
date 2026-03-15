@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v.1.2.2] - 2026-03-15
+
+### Fixed
+- restart flow in `vendoo-export-dashboard` now ignores stale PIDs instead of falsely failing when a process disappears during validation
+- CSV deploy reporting in `vendoo-export-dashboard` now uses portable timestamp output on both macOS and Linux
+
+### Validated
+- verified install, CSV deploy, app restart, and `/api/morning-rundown?format=text` in a clean temporary OpenClaw workspace
+
 ## [v.1.2.1] - 2026-03-15
 
 ### Added

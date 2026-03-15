@@ -120,6 +120,13 @@ After updating to `v.1.2.1`, verify these features are present:
 - the export cron payload template exists at `~/.openclaw/workspace/skills/vendoo-export-dashboard/references/openclaw-cron.example.json`
 - the canonical analytics CSV target is `~/.openclaw/workspace/vendoo-analytics/public/data/vendoo.csv`
 
+## Release-specific expectations for v.1.2.2
+
+After updating to `v.1.2.2`, verify these features are present:
+- `vendoo-export-dashboard/scripts/restart_vendoo_analytics.sh` no longer fails on stale PIDs during restart
+- `vendoo-export-dashboard/scripts/deploy_latest_vendoo_csv.sh` prints a modified timestamp on both macOS and Linux
+- fresh install validation succeeds for repo sync, CSV deploy, app start, and morning rundown endpoint checks
+
 ## Required completion report
 
 When the setup or update is complete, reply with:

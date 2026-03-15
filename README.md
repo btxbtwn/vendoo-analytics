@@ -4,13 +4,14 @@ A Next.js dashboard for analyzing Vendoo exports, tracking marketplace performan
 
 ## Latest release
 
-The latest release from this branch is `v.1.2.1`.
+The latest release from this branch is `v.1.2.2`.
 
 Highlights in this release:
 - workspace-first OpenClaw install flow via `bash scripts/install_openclaw_workspace.sh`
 - repo-shipped `vendoo-export-dashboard` skill now defaults to `~/.openclaw/workspace/vendoo-analytics`
 - Chrome DevTools MCP-first Vendoo export guidance and readiness checks
 - daily export and morning rundown cron payload templates shipped with the installed skills
+- audit-driven reliability fixes for app restart edge cases and CSV deploy timestamp reporting
 
 ## OpenClaw automation supported by this repo
 
