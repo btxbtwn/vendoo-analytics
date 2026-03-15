@@ -4,7 +4,7 @@ A Next.js dashboard for analyzing Vendoo exports, tracking marketplace performan
 
 ## Latest release
 
-The next release prepared from this branch is `v.1.2.1`.
+The latest release from this branch is `v.1.2.1`.
 
 Highlights in this release:
 - workspace-first OpenClaw install flow via `bash scripts/install_openclaw_workspace.sh`
@@ -45,19 +45,28 @@ Run the installer from the repo or release bundle:
 bash scripts/install_openclaw_workspace.sh
 ```
 
+For an interactive install that also opens the Vendoo sign-in window right away:
+
+```bash
+npm run openclaw:install:interactive
+```
+
 That installer:
 - syncs the repo into the OpenClaw workspace
 - syncs both shipped skills into `~/.openclaw/workspace/skills/`
 - runs `npm install`
 - runs `npm run build`
 - starts the local app unless `--skip-start` is provided
+- can launch a dedicated debug-enabled Chrome window for immediate Vendoo sign-in
 
 After install, the OpenClaw agent should:
+- run `~/.openclaw/workspace/skills/vendoo-export-dashboard/scripts/start_vendoo_debug_chrome.sh`
+- tell the user to sign into Vendoo in the opened Chrome window right away
 - run `~/.openclaw/workspace/skills/vendoo-export-dashboard/scripts/check_chrome_devtools_mcp.sh`
 - create the `Daily Vendoo CSV export` job from `~/.openclaw/workspace/skills/vendoo-export-dashboard/references/openclaw-cron.example.json`
 - create the `Morning Vendoo Dashboard Rundown` job from `~/.openclaw/workspace/skills/vendoo-daily-dashboard-rundown/references/openclaw-cron.example.json`
 
-If Chrome was not launched with remote debugging yet, the agent can finish the non-interactive setup but may still need the user to relaunch Chrome and sign into Vendoo in the debug-enabled profile.
+The remaining user step should now be just signing into Vendoo in the opened debug-enabled Chrome window when needed.
 
 ## Morning rundown endpoint
 

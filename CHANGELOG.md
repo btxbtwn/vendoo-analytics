@@ -9,11 +9,13 @@ All notable changes to this project will be documented in this file.
 - npm shortcuts for the OpenClaw installer flow
 - a repo-shipped nightly export cron payload template via the installed `vendoo-export-dashboard` skill
 - Chrome DevTools MCP readiness checks and setup guidance in the shipped export skill
+- a debug Chrome launcher so the user can sign into Vendoo immediately after install during interactive setup
 
 ### Changed
 - OpenClaw install/update docs now default to `~/.openclaw/workspace/vendoo-analytics`
 - shipped Vendoo skills now assume workspace-first install paths instead of machine-specific edits
 - the export skill now targets the Next.js `vendoo-analytics` app instead of the older sales-dashboard assumptions
+- the interactive install flow can now take the user straight to the Vendoo sign-in step
 
 ## [v.1.2.0] - 2026-03-14
 

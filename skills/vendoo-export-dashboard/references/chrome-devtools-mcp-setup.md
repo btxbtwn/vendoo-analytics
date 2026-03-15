@@ -2,6 +2,14 @@
 
 Use this checklist when `vendoo-export-dashboard` needs browser automation.
 
+## Fastest post-install flow
+
+1. Run `./scripts/start_vendoo_debug_chrome.sh`.
+2. The script opens a dedicated debug-enabled Chrome window straight to Vendoo.
+3. Sign into Vendoo in that window right away.
+4. Re-run `./scripts/check_chrome_devtools_mcp.sh`.
+5. Once the check passes, continue with export.
+
 ## Minimum prerequisites
 
 - Node.js 20.19 or newer, with `npm` and `npx`
@@ -18,16 +26,18 @@ If Chrome is missing, the user may need to install it manually before the agent 
 
 ## What the agent should do first
 
-1. Run `./scripts/check_chrome_devtools_mcp.sh`.
-2. Prefer a configured MCP server named `chrome-devtools`.
-3. Use `npx -y chrome-devtools-mcp@latest --browser-url=http://127.0.0.1:9222` when the MCP client needs a direct command.
-4. Reuse the existing local Chrome debug session if `http://127.0.0.1:9222/json/version` responds.
+1. For interactive installs, run `./scripts/start_vendoo_debug_chrome.sh` immediately after install so the user can sign into Vendoo right away.
+2. Run `./scripts/check_chrome_devtools_mcp.sh`.
+3. Prefer a configured MCP server named `chrome-devtools`.
+4. Use `npx -y chrome-devtools-mcp@latest --browser-url=http://127.0.0.1:9222` when the MCP client needs a direct command.
+5. Reuse the existing local Chrome debug session if `http://127.0.0.1:9222/json/version` responds.
 
 ## What the agent can usually do without user help
 
 - Verify `node`, `npm`, `npx`, `curl`, and Chrome availability.
 - Warm or download the MCP package via `npx -y chrome-devtools-mcp@latest --help`.
 - Detect the local `vendoo-analytics` repo and canonical CSV target inside the OpenClaw workspace.
+- Launch the dedicated debug-enabled Chrome window for the user.
 - Configure or suggest the MCP command for the current client.
 - Attach to an already running Chrome debug session.
 
@@ -40,6 +50,12 @@ If Chrome is missing, the user may need to install it manually before the agent 
 ## Remote-debug Chrome launch
 
 Default debug URL: `http://127.0.0.1:9222`
+
+Preferred helper:
+
+```bash
+./scripts/start_vendoo_debug_chrome.sh
+```
 
 macOS:
 

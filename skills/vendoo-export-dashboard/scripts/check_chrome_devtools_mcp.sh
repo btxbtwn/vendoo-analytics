@@ -8,6 +8,7 @@ DEBUG_URL="$(chrome_debug_url)"
 REPO_DIR="$(resolve_vendoo_analytics_repo_dir || true)"
 DEFAULT_REPO_DIR="$(default_vendoo_analytics_repo_dir)"
 REPO_MISSING="false"
+LAUNCHER_SCRIPT="$SCRIPT_DIR/start_vendoo_debug_chrome.sh"
 
 require_command() {
   local cmd="$1"
@@ -32,6 +33,7 @@ echo "NPX_VERSION=$(npx --version)"
 echo "CHROME_BINARY=$CHROME_BIN"
 echo "CHROME_DEBUG_URL=$DEBUG_URL"
 echo "DEFAULT_VENDOO_ANALYTICS_REPO_DIR=$DEFAULT_REPO_DIR"
+echo "DEBUG_CHROME_LAUNCHER=$LAUNCHER_SCRIPT"
 
 if [[ -n "$REPO_DIR" ]]; then
   echo "VENDOO_ANALYTICS_REPO_DIR=$REPO_DIR"
@@ -60,13 +62,15 @@ if [[ -z "$VERSION_JSON" ]]; then
 No active Chrome remote-debugging session was found at $DEBUG_URL.
 
 To finish setup:
-1. Close the Chrome window you want the agent to control, or launch a separate Chrome window just for Vendoo automation.
-2. Start Chrome with remote debugging enabled:
-   "$CHROME_BIN" --remote-debugging-port=${VENDOO_CHROME_DEBUG_PORT:-9222} --remote-debugging-address=127.0.0.1 --user-data-dir="$HOME/.openclaw/browser/vendoo-mcp-profile"
-3. Open Vendoo in that Chrome window and sign in if needed.
-4. Re-run ./scripts/check_chrome_devtools_mcp.sh.
-5. Connect the MCP server with:
+1. Launch the prepared debug-enabled Chrome window:
+   "$LAUNCHER_SCRIPT"
+2. Sign into Vendoo in that Chrome window if needed.
+3. Re-run ./scripts/check_chrome_devtools_mcp.sh.
+4. Connect the MCP server with:
    npx -y chrome-devtools-mcp@latest --browser-url=$DEBUG_URL
+
+Manual fallback:
+   "$CHROME_BIN" --remote-debugging-port=${VENDOO_CHROME_DEBUG_PORT:-9222} --remote-debugging-address=127.0.0.1 --user-data-dir="$HOME/.openclaw/browser/vendoo-mcp-profile"
 
 Note: Recent Chrome versions may refuse attaching DevTools automation to your default profile unless remote debugging was enabled at launch time. Use the dedicated profile above when needed.
 EOF
@@ -76,6 +80,7 @@ fi
 echo "CHROME_DEBUG_SESSION=true"
 echo "CHROME_BROWSER_VERSION=$(node -e 'const data = JSON.parse(process.argv[1]); process.stdout.write(data.Browser || "unknown");' "$VERSION_JSON")"
 echo "CHROME_WEBSOCKET_DEBUGGER_URL=$(node -e 'const data = JSON.parse(process.argv[1]); process.stdout.write(data.webSocketDebuggerUrl || "");' "$VERSION_JSON")"
+echo "NEXT_USER_STEP=If Vendoo is not already signed in inside the debug-enabled Chrome window, sign in there before export."
 
 if [[ "$REPO_MISSING" == "true" ]]; then
   echo "READY_FOR_VENDOO_EXPORT=false" >&2

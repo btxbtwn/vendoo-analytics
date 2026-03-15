@@ -19,6 +19,7 @@ Use Chrome DevTools MCP first. The target app repo is `vendoo-analytics`.
 - Default local app URL is `http://127.0.0.1:3000` unless `VENDOO_ANALYTICS_HOST` or `VENDOO_ANALYTICS_PORT` overrides it.
 
 2. Ensure Chrome DevTools MCP is ready
+- For interactive installs or first-time setup, run `./scripts/start_vendoo_debug_chrome.sh` right away so the user can sign into Vendoo immediately.
 - Run `./scripts/check_chrome_devtools_mcp.sh`.
 - Prefer a configured MCP server named `chrome-devtools`.
 - If Node/npm/npx are present but the MCP package is not cached yet, let the agent bootstrap it with:
@@ -52,6 +53,7 @@ Use Chrome DevTools MCP first. The target app repo is `vendoo-analytics`.
 ## Fast commands
 
 - Check MCP readiness:
+  - `./scripts/start_vendoo_debug_chrome.sh`
   - `./scripts/check_chrome_devtools_mcp.sh`
 
 - From this skill directory, deploy + ensure app only:

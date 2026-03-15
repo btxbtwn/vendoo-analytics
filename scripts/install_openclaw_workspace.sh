@@ -13,6 +13,7 @@ RUN_NPM_INSTALL="true"
 RUN_BUILD="true"
 RUN_START="true"
 SYNC_SKILLS="true"
+LAUNCH_DEBUG_CHROME="false"
 
 usage() {
   cat <<'EOF'
@@ -23,6 +24,7 @@ Options:
   --skip-build       Skip npm run build
   --skip-start       Skip starting vendoo-analytics after install
   --skip-skill-sync  Skip syncing shipped skills into the OpenClaw skills folder
+  --launch-debug-chrome  Launch the dedicated Vendoo debug Chrome window after install
 EOF
 }
 
@@ -49,6 +51,9 @@ while (( "$#" > 0 )); do
       ;;
     --skip-skill-sync)
       SYNC_SKILLS="false"
+      ;;
+    --launch-debug-chrome)
+      LAUNCH_DEBUG_CHROME="true"
       ;;
     -h|--help)
       usage
@@ -123,6 +128,12 @@ if [[ "$RUN_START" == "true" ]]; then
   "$TARGET_REPO_DIR/skills/vendoo-export-dashboard/scripts/restart_vendoo_analytics.sh"
 fi
 
+if [[ "$LAUNCH_DEBUG_CHROME" == "true" ]]; then
+  OPENCLAW_WORKSPACE_DIR="$WORKSPACE_DIR" \
+  VENDOO_ANALYTICS_REPO_DIR="$TARGET_REPO_DIR" \
+  "$TARGET_REPO_DIR/skills/vendoo-export-dashboard/scripts/start_vendoo_debug_chrome.sh"
+fi
+
 cat <<EOF
 OPENCLAW_WORKSPACE_DIR=$WORKSPACE_DIR
 VENDOO_ANALYTICS_INSTALL_PATH=$TARGET_REPO_DIR
@@ -134,4 +145,6 @@ MORNING_SKILL_PATH=$SKILLS_DIR/vendoo-daily-dashboard-rundown
 EXPORT_CRON_TEMPLATE=$SKILLS_DIR/vendoo-export-dashboard/references/openclaw-cron.example.json
 MORNING_CRON_TEMPLATE=$SKILLS_DIR/vendoo-daily-dashboard-rundown/references/openclaw-cron.example.json
 MCP_CHECK_COMMAND=$SKILLS_DIR/vendoo-export-dashboard/scripts/check_chrome_devtools_mcp.sh
+DEBUG_CHROME_LAUNCHER=$SKILLS_DIR/vendoo-export-dashboard/scripts/start_vendoo_debug_chrome.sh
+NEXT_USER_STEP=Run $SKILLS_DIR/vendoo-export-dashboard/scripts/start_vendoo_debug_chrome.sh, sign into Vendoo in the opened Chrome window, then rerun $SKILLS_DIR/vendoo-export-dashboard/scripts/check_chrome_devtools_mcp.sh.
 EOF

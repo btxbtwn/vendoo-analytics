@@ -21,6 +21,7 @@ Default install target:
 - This syncs the repo into `~/.openclaw/workspace/vendoo-analytics` by default.
 - This also syncs both shipped skills into `~/.openclaw/workspace/skills/`.
 - This runs `npm install`, `npm run build`, and starts the app unless `--skip-start` is explicitly passed.
+- For an interactive install, prefer `npm run openclaw:install:interactive` so the dedicated Vendoo sign-in window opens immediately.
 - If this machine uses a non-standard location, set `OPENCLAW_WORKSPACE_DIR` or `VENDOO_ANALYTICS_REPO_DIR` before running the installer.
 
 3. Verify app health
@@ -28,10 +29,12 @@ Default install target:
 - If port `3000` is unavailable, choose another open port, restart the app, and report the actual local URL.
 
 4. Verify Chrome DevTools MCP readiness for export
+- During interactive setup, run `~/.openclaw/workspace/skills/vendoo-export-dashboard/scripts/start_vendoo_debug_chrome.sh` immediately after install if the installer did not already do it.
+- Tell the user to sign into Vendoo in the opened Chrome window right away.
 - Run `~/.openclaw/workspace/skills/vendoo-export-dashboard/scripts/check_chrome_devtools_mcp.sh`.
 - If Node.js, npm, npx, or Chrome are missing, install them or report the exact blocker.
-- If Chrome was not launched with remote debugging, the agent should do all remaining setup work it can, then tell the user exactly how to relaunch Chrome.
-- If Vendoo is not signed into the debug-enabled Chrome session, pause and have the user sign in there.
+- If Chrome was not launched with remote debugging, use the shipped launcher script before falling back to manual relaunch instructions.
+- If Vendoo is not signed into the debug-enabled Chrome session, pause and have the user sign in there before continuing.
 
 5. Create the nightly export cron job
 - Use OpenClaw's native cron or scheduler only.
@@ -70,6 +73,7 @@ Default install target:
 - Do not leave duplicate scheduled jobs behind.
 
 3. Re-check export readiness
+- If the operator wants to finish setup immediately, run `~/.openclaw/workspace/skills/vendoo-export-dashboard/scripts/start_vendoo_debug_chrome.sh` and have them sign in right away.
 - Re-run `~/.openclaw/workspace/skills/vendoo-export-dashboard/scripts/check_chrome_devtools_mcp.sh`.
 - If Chrome debug setup changed or expired, guide the user through the exact relaunch/sign-in step still needed.
 
@@ -112,6 +116,7 @@ After updating to `v.1.2.1`, verify these features are present:
 - running that installer places the repo at `~/.openclaw/workspace/vendoo-analytics` by default
 - both shipped skills are synced into `~/.openclaw/workspace/skills/`
 - `vendoo-export-dashboard` is Chrome DevTools MCP-first and includes a readiness check script
+- the repo also ships a debug Chrome launcher for immediate Vendoo sign-in
 - the export cron payload template exists at `~/.openclaw/workspace/skills/vendoo-export-dashboard/references/openclaw-cron.example.json`
 - the canonical analytics CSV target is `~/.openclaw/workspace/vendoo-analytics/public/data/vendoo.csv`
 
