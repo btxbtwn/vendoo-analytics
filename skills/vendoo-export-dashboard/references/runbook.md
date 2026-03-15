@@ -1,22 +1,27 @@
-# Vendoo Export + Sales Dashboard Runbook
+# Vendoo Export + Vendoo Analytics Runbook
 
-1. Export from Vendoo settings page using managed browser profile `openclaw`.
-2. Verify new CSV appears in:
+1. Install or extract `vendoo-analytics` into the OpenClaw workspace:
+   - default repo path: `~/.openclaw/workspace/vendoo-analytics`
+   - default skills path: `~/.openclaw/workspace/skills/`
+   - use `VENDOO_ANALYTICS_REPO_DIR` only for non-standard installs
+2. Verify Chrome DevTools MCP prerequisites and the active Chrome debug session:
+   - From this skill directory: `./scripts/check_chrome_devtools_mcp.sh`
+   - See `references/chrome-devtools-mcp-setup.md` for the full install and relaunch flow.
+3. Use Chrome DevTools MCP for the Vendoo browser workflow.
+   - Prefer the active local debug session at `http://127.0.0.1:9222` unless `VENDOO_CHROME_DEBUG_URL` overrides it.
+   - If the user is not signed into Vendoo in that debug-enabled session, pause and have them sign in there.
+4. Verify the new CSV appears in:
    - `~/.openclaw/browser/openclaw/Default/Downloads/`
-3. Copy `skills/vendoo-export-dashboard` into the local OpenClaw workspace skills folder if it is not already installed.
-4. If the repo also ships `skills/vendoo-daily-dashboard-rundown`, copy that skill into the local OpenClaw workspace skills folder too.
-5. Update machine-specific `/Users/cris/...` paths in:
-   - `skills/vendoo-export-dashboard/SKILL.md`
-   - `skills/vendoo-export-dashboard/references/runbook.md`
-   - `skills/vendoo-export-dashboard/scripts/deploy_latest_vendoo_csv.sh`
-   - `skills/vendoo-export-dashboard/scripts/restart_sales_dashboard.sh`
-6. Deploy latest CSV to the local analytics repo target:
-   - `vendoo-analytics/public/data/vendoo.csv`
-7. Launch or restart the local analytics app.
-8. Create or verify the native recurring OpenClaw cron job:
+   - Override with `VENDOO_EXPORT_DOWNLOAD_DIR` when needed.
+5. Deploy the latest CSV to the workspace repo target:
+   - `~/.openclaw/workspace/vendoo-analytics/public/data/vendoo.csv`
+   - From this skill directory: `./scripts/deploy_latest_vendoo_csv.sh`
+6. Start or restart the local analytics app only when needed:
+   - From this skill directory: `./scripts/restart_vendoo_analytics.sh`
+   - Default URL: `http://127.0.0.1:3000`
+   - Override with `VENDOO_ANALYTICS_HOST`, `VENDOO_ANALYTICS_PORT`, or `VENDOO_ANALYTICS_LOG_FILE`.
+7. Create or verify the native OpenClaw recurring job:
    - name: `Daily Vendoo CSV export`
    - cron: `0 23 * * *`
-9. If morning reporting is installed, create or verify the second native OpenClaw cron job:
-   - name: `Morning Vendoo Dashboard Rundown`
-   - recommended cron: `0 8 * * *`
-10. Validate process, endpoint, and file freshness.
+   - payload template: `references/openclaw-cron.example.json`
+8. Validate the app URL, CSV timestamp, and export result.

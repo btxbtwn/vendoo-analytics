@@ -4,14 +4,13 @@ A Next.js dashboard for analyzing Vendoo exports, tracking marketplace performan
 
 ## Latest release
 
-The next release prepared from this branch is `v.1.2.0`.
+The next release prepared from this branch is `v.1.2.1`.
 
 Highlights in this release:
-- repo-shipped morning dashboard rundown skill for OpenClaw agents
-- local morning rundown endpoint at `/api/morning-rundown?format=text`
-- balanced morning briefing with yesterday metrics, 7-day pace, platform winners, label/tag movers, inventory watch, projector snapshot, and alerts
-- cache-aware server CSV loading so refreshed Vendoo exports are picked up without relying on a full app restart
-- repo docs and example payloads for wiring both nightly export and morning rundown native cron jobs
+- workspace-first OpenClaw install flow via `bash scripts/install_openclaw_workspace.sh`
+- repo-shipped `vendoo-export-dashboard` skill now defaults to `~/.openclaw/workspace/vendoo-analytics`
+- Chrome DevTools MCP-first Vendoo export guidance and readiness checks
+- daily export and morning rundown cron payload templates shipped with the installed skills
 
 ## OpenClaw automation supported by this repo
 
@@ -27,11 +26,38 @@ If this project is being installed or updated by an OpenClaw agent, start with t
 
 That guide covers:
 - fresh install into an OpenClaw workspace
-- updating an existing install safely
-- copying or re-syncing both shipped skills
-- localizing machine-specific paths
+- workspace-first repo and skill sync
 - launching or relaunching the analytics app
+- Chrome DevTools MCP readiness checks for Vendoo export
 - wiring both native recurring OpenClaw cron jobs
+
+## OpenClaw workspace install
+
+Default install target:
+
+```text
+~/.openclaw/workspace/vendoo-analytics
+```
+
+Run the installer from the repo or release bundle:
+
+```bash
+bash scripts/install_openclaw_workspace.sh
+```
+
+That installer:
+- syncs the repo into the OpenClaw workspace
+- syncs both shipped skills into `~/.openclaw/workspace/skills/`
+- runs `npm install`
+- runs `npm run build`
+- starts the local app unless `--skip-start` is provided
+
+After install, the OpenClaw agent should:
+- run `~/.openclaw/workspace/skills/vendoo-export-dashboard/scripts/check_chrome_devtools_mcp.sh`
+- create the `Daily Vendoo CSV export` job from `~/.openclaw/workspace/skills/vendoo-export-dashboard/references/openclaw-cron.example.json`
+- create the `Morning Vendoo Dashboard Rundown` job from `~/.openclaw/workspace/skills/vendoo-daily-dashboard-rundown/references/openclaw-cron.example.json`
+
+If Chrome was not launched with remote debugging yet, the agent can finish the non-interactive setup but may still need the user to relaunch Chrome and sign into Vendoo in the debug-enabled profile.
 
 ## Morning rundown endpoint
 

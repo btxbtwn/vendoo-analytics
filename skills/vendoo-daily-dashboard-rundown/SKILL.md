@@ -17,7 +17,7 @@ Use the local dashboard data as the source of truth for a morning summary. Do no
 - If the endpoint says the CSV is stale or unavailable, report that clearly instead of presenting the rundown as current.
 
 2. Generate the briefing
-- Run `skills/vendoo-daily-dashboard-rundown/scripts/get_morning_dashboard_rundown.sh` from the local workspace, or call the local endpoint directly with `curl`.
+- From this skill directory, run `./scripts/get_morning_dashboard_rundown.sh`, or call the local endpoint directly with `curl`.
 - Return the summary to the triggering Telegram chat or session with minimal extra commentary.
 
 3. Expected default content
@@ -34,18 +34,20 @@ Use the local dashboard data as the source of truth for a morning summary. Do no
 - Recommended recurring job name: `Morning Vendoo Dashboard Rundown`
 - Recommended cron: `0 8 * * *`
 - Run this after the nightly `Daily Vendoo CSV export` job has already refreshed the CSV.
+- Point the cron job at the installed `vendoo-daily-dashboard-rundown` skill, not a checkout-specific filesystem path.
 - Avoid duplicate jobs.
 
 ## Fast commands
 
 - Default local URL:
-  - `skills/vendoo-daily-dashboard-rundown/scripts/get_morning_dashboard_rundown.sh`
+  - `./scripts/get_morning_dashboard_rundown.sh`
 
 - Non-default local app URL:
-  - `VENDOO_ANALYTICS_URL=http://127.0.0.1:3001 skills/vendoo-daily-dashboard-rundown/scripts/get_morning_dashboard_rundown.sh`
+  - `VENDOO_ANALYTICS_URL=http://127.0.0.1:3001 ./scripts/get_morning_dashboard_rundown.sh`
 
 ## Notes
 
-- The morning rundown depends on the locally running analytics app and the local `public/data/vendoo.csv` file.
+- The morning rundown depends on the locally running analytics app and the canonical CSV inside the workspace repo at `~/.openclaw/workspace/vendoo-analytics/public/data/vendoo.csv`.
 - This skill is designed for concise recurring briefings, not full dashboard replacement.
 - For a cron payload template, see `references/openclaw-cron.example.json`.
+- Released installs should rely on the installed skill name in cron payloads and use `VENDOO_ANALYTICS_URL` only when the app is not on the default local URL.

@@ -1,0 +1,24 @@
+{
+  "agentId": "main",
+  "sessionKey": "agent:main:telegram:direct:<TARGET_CHAT_ID>",
+  "name": "Daily Vendoo CSV export",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 23 * * *",
+    "tz": "<LOCAL_TIMEZONE>"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Run the installed vendoo-export-dashboard skill for this environment. Assume vendoo-analytics is installed in the OpenClaw workspace at ~/.openclaw/workspace/vendoo-analytics unless this install explicitly overrides it. Use Chrome DevTools MCP first. If Chrome DevTools MCP is not configured yet, finish the local setup that the skill documents or tell the user exactly which Chrome relaunch step is still required. Connect to the active local Chrome debug session, export the latest Vendoo CSV, publish it to the workspace vendoo-analytics/public/data/vendoo.csv target, make sure the local analytics app is reachable, and report blockers clearly instead of guessing.",
+    "timeoutSeconds": 600
+  },
+  "delivery": {
+    "mode": "announce",
+    "channel": "telegram",
+    "to": "<TARGET_CHAT_ID>",
+    "bestEffort": true
+  }
+}
