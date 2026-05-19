@@ -6,11 +6,12 @@ import { calculateKPIs } from "../lib/analytics";
 import { DashboardTabKey, TabDateFilter, VendooListing } from "../lib/types";
 
 import Sidebar from "./Sidebar";
-const OverviewPanel = dynamic(() => import("./dashboard-tabs/OverviewPanel"), { ssr: false });
-const RevenuePanel = dynamic(() => import("./dashboard-tabs/RevenuePanel"), { ssr: false });
-const PlatformsPanel = dynamic(() => import("./dashboard-tabs/PlatformsPanel"), { ssr: false });
-const InventoryPanel = dynamic(() => import("./dashboard-tabs/InventoryPanel"), { ssr: false });
-const BrandsPanel = dynamic(() => import("./dashboard-tabs/BrandsPanel"), { ssr: false });
+
+const OverviewPanel = dynamic(() => import("./dashboard-tabs/OverviewPanel"));
+const RevenuePanel = dynamic(() => import("./dashboard-tabs/RevenuePanel"));
+const PlatformsPanel = dynamic(() => import("./dashboard-tabs/PlatformsPanel"));
+const InventoryPanel = dynamic(() => import("./dashboard-tabs/InventoryPanel"));
+const BrandsPanel = dynamic(() => import("./dashboard-tabs/BrandsPanel"));
 
 interface DashboardProps {
   initialListings: VendooListing[];

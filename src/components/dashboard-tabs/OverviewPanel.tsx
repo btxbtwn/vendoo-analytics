@@ -34,6 +34,7 @@ import OverviewHealthCard from "../OverviewHealthCard";
 import PlatformChart from "../PlatformChart";
 import RecentSalesTable from "../RecentSalesTable";
 import RevenueChart from "../RevenueChart";
+import ProfitabilityAlertCard from "../ProfitabilityAlertCard";
 import TabDateFilterBar from "../TabDateFilterBar";
 
 interface OverviewPanelProps {
@@ -170,6 +171,7 @@ export default function OverviewPanel({
         onRefresh={() => window.location.reload()}
       />
       <InventoryAgingCard listings={listings.filter((l) => l.status === "Active")} compact={compact} />
+      <ProfitabilityAlertCard listings={listings} />
       <KPICards cards={cards} compact={compact} />
       <RevenueChart data={revenueByMonth(soldListings, grouping)} compact={compact} />
       <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
