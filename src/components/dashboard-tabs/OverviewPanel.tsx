@@ -37,6 +37,7 @@ import RevenueChart from "../RevenueChart";
 import ProfitabilityAlertCard from "../ProfitabilityAlertCard";
 import GoalsCard from "../GoalsCard";
 import PeriodComparisonChart from "../PeriodComparisonChart";
+import TaxExportCard from "../TaxExportCard";
 import TabDateFilterBar from "../TabDateFilterBar";
 
 interface OverviewPanelProps {
@@ -199,6 +200,7 @@ export default function OverviewPanel({
         sales={recentSales(soldListings, compact ? 10 : 20)}
         compact={compact}
       />
+      <TaxExportCard listings={listings} />
     </>
   );
 }
