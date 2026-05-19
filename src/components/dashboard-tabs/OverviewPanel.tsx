@@ -36,6 +36,7 @@ import RecentSalesTable from "../RecentSalesTable";
 import RevenueChart from "../RevenueChart";
 import ProfitabilityAlertCard from "../ProfitabilityAlertCard";
 import GoalsCard from "../GoalsCard";
+import PeriodComparisonChart from "../PeriodComparisonChart";
 import TabDateFilterBar from "../TabDateFilterBar";
 
 interface OverviewPanelProps {
@@ -179,6 +180,19 @@ export default function OverviewPanel({
         currentItems={parseInt(kpis.soldItems, 10) || 0}
       />
       <KPICards cards={cards} compact={compact} />
+      <PeriodComparisonChart
+        currentData={revenueByMonth(soldListings, grouping).map((d) => ({
+          name: d.name,
+          revenue: Number(d.revenue || 0),
+          profit: Number(d.profit || 0),
+        }))}
+        previousData={revenueByMonth(prevSold, grouping).map((d) => ({
+          name: d.name,
+          revenue: Number(d.revenue || 0),
+          profit: Number(d.profit || 0),
+        }))}
+        compact={compact}
+      />
       <RevenueChart data={revenueByMonth(soldListings, grouping)} compact={compact} />
       <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
       <RecentSalesTable
