@@ -145,11 +145,11 @@ export default function Dashboard({ initialListings }: DashboardProps) {
                     key={metric.label}
                     className="flex min-h-[4.75rem] flex-col items-end justify-between rounded-2xl border border-border/70 bg-black/10 px-3 py-3 text-right"
                   >
-                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground whitespace-nowrap">
                       {metric.label}
                     </p>
                     <p
-                      className={`tabular-nums text-sm font-semibold leading-none md:text-base ${metric.tone}`}
+                      className={`tabular-nums text-sm font-semibold leading-none md:text-base whitespace-nowrap ${metric.tone}`}
                     >
                       {metric.value}
                     </p>

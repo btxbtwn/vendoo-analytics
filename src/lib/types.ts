@@ -97,3 +97,108 @@ export interface ProjectionSummary {
   projectedRevenue: number;
   projectedProfit: number;
 }
+
+export interface SellThroughPoint {
+  category: string;
+  listed: number;
+  sold: number;
+  rate: number;
+}
+
+export interface ProfitDistributionPoint {
+  bucket: string;
+  count: number;
+  profit: number;
+}
+
+export interface DaysToSellPoint {
+  bucket: string;
+  count: number;
+  minDays: number;
+  maxDays: number;
+}
+
+export interface PlatformFeePoint {
+  platform: string;
+  avgFeeRate: number;
+  avgProfitRate: number;
+  totalRevenue: number;
+  count: number;
+}
+
+export interface BrandROIPoint {
+  brand: string;
+  roi: number;
+  profit: number;
+  cogs: number;
+  revenue: number;
+  count: number;
+}
+
+export interface MonthlyPnLPoint {
+  month: string;
+  revenue: number;
+  cogs: number;
+  fees: number;
+  shipping: number;
+  profit: number;
+}
+
+export interface InventoryCostSummary {
+  totalInvestment: number;
+  realizedRevenue: number;
+  realizedProfit: number;
+  activeInventoryCost: number;
+  inventoryROI: number;
+  soldCount: number;
+  activeCount: number;
+  totalCount: number;
+}
+
+export interface CategoryBreakdownRow {
+  category: string;
+  listed: number;
+  sold: number;
+  sellThroughRate: number;
+  avgCOGS: number;
+  avgSalePrice: number;
+  avgProfit: number;
+  profitMargin: number;
+  totalRevenue: number;
+  totalProfit: number;
+  totalCOGS: number;
+}
+
+export type SortDirection = "asc" | "desc";
+
+export interface InventoryTableRow {
+  id: string;
+  title: string;
+  brand: string;
+  category: string;
+  status: "Active" | "Sold" | "Draft";
+  costOfGoods: number;
+  price: number;
+  priceSold: number;
+  profit: number;
+  marketplaceFees: number;
+  shippingExpenses: number;
+  daysToSell: number | null;
+  platform: string;
+  listedDate: string;
+  soldDate: string;
+}
+
+export type InventorySortField =
+  | "title"
+  | "brand"
+  | "category"
+  | "status"
+  | "costOfGoods"
+  | "priceSold"
+  | "profit"
+  | "daysToSell"
+  | "listedDate"
+  | "soldDate";
+
+export type StatusFilter = "all" | "Active" | "Sold" | "Draft";

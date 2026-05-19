@@ -12,14 +12,25 @@ import { useMemo } from "react";
 
 import {
   calculateKPIs,
+  computeHealthScore,
+  dailyCountSparkline,
+  dailyProfitSparkline,
+  dailyTotalsSparkline,
   filterListingsByDate,
+  formatDayKey,
+  getDayTotals,
   getTimeGrouping,
+  previousPeriodFilter,
   recentSales,
   revenueByMonth,
   salesByPlatform,
+  startOfDay,
+  addDays,
 } from "../../lib/analytics";
-import { TabDateFilter, VendooListing } from "../../lib/types";
-import KPICards from "../KPICards";
+import type { TabDateFilter, VendooListing } from "../../lib/types";
+import InventoryAgingCard from "../InventoryAgingCard";
+import KPICards, { KPIItem } from "../KPICards";
+import OverviewHealthCard from "../OverviewHealthCard";
 import PlatformChart from "../PlatformChart";
 import RecentSalesTable from "../RecentSalesTable";
 import RevenueChart from "../RevenueChart";
@@ -32,18 +43,47 @@ interface OverviewPanelProps {
   onFilterChange: (nextFilter: TabDateFilter) => void;
 }
 
+/* ─── trend calculator ─── */
+function calcTrend(currentValueStr: string, prevValueStr: string): number | undefined {
+  const cur = parseFloat(currentValueStr.replace(/[^0-9.-]/g, ""));
+  const prev = parseFloat(prevValueStr.replace(/[^0-9.-]/g, ""));
+  if (!Number.isFinite(cur) || !Number.isFinite(prev) || prev === 0) return undefined;
+  return Math.round(((cur - prev) / Math.abs(prev)) * 1000) / 10;
+}
+
 export default function OverviewPanel({
   listings,
   compact,
   filter,
   onFilterChange,
 }: OverviewPanelProps) {
+  const allSold = useMemo(
+    () => listings.filter((l) => l.status === "Sold"),
+    [listings],
+  );
+
+  /* current period */
   const soldListings = useMemo(
-    () => filterListingsByDate(listings.filter((listing) => listing.status === "Sold"), "soldDate", filter),
-    [filter, listings],
+    () => filterListingsByDate(allSold, "soldDate", filter),
+    [filter, allSold],
   );
   const kpis = useMemo(() => calculateKPIs(soldListings), [soldListings]);
-  const cards = useMemo(
+
+  /* previous period (for trends) */
+  const prevFilter = useMemo(() => previousPeriodFilter(filter), [filter]);
+  const prevSold = useMemo(
+    () => filterListingsByDate(allSold, "soldDate", prevFilter),
+    [prevFilter, allSold],
+  );
+  const prevKpis = useMemo(() => calculateKPIs(prevSold), [prevSold]);
+
+  /* sparklines — last 14 days of the current filter window */
+  const revenueSpark = useMemo(() => dailyTotalsSparkline(soldListings, 14), [soldListings]);
+  const profitSpark = useMemo(() => dailyProfitSparkline(soldListings, 14), [soldListings]);
+  const countSpark = useMemo(() => dailyCountSparkline(soldListings, 14), [soldListings]);
+
+  /* assemble cards */
+  const cards: KPIItem[] = useMemo(
     () => [
       {
         label: "Revenue",
@@ -51,6 +91,9 @@ export default function OverviewPanel({
         icon: DollarSign,
         color: "text-accent",
         bgColor: "bg-accent/10",
+        trend: calcTrend(kpis.totalRevenue, prevKpis.totalRevenue),
+        sparklineData: revenueSpark,
+        goal: 78, // placeholder — wires to BTX-66 later
       },
       {
         label: "Net Profit",
@@ -58,6 +101,9 @@ export default function OverviewPanel({
         icon: TrendingUp,
         color: "text-success",
         bgColor: "bg-success/10",
+        trend: calcTrend(kpis.totalProfit, prevKpis.totalProfit),
+        sparklineData: profitSpark,
+        goal: 82, // placeholder
       },
       {
         label: "Items Sold",
@@ -65,6 +111,9 @@ export default function OverviewPanel({
         icon: ShoppingCart,
         color: "text-violet-400",
         bgColor: "bg-violet-400/10",
+        trend: calcTrend(kpis.soldItems, prevKpis.soldItems),
+        sparklineData: countSpark,
+        goal: 65, // placeholder
       },
       {
         label: "Profit Margin",
@@ -72,6 +121,8 @@ export default function OverviewPanel({
         icon: Percent,
         color: "text-emerald-400",
         bgColor: "bg-emerald-400/10",
+        trend: calcTrend(kpis.profitMargin, prevKpis.profitMargin),
+        goal: 55, // placeholder
       },
       {
         label: "Avg Profit / Item",
@@ -88,8 +139,15 @@ export default function OverviewPanel({
         bgColor: "bg-amber-400/10",
       },
     ],
-    [kpis],
+    [kpis, prevKpis, revenueSpark, profitSpark, countSpark],
   );
+
+  const healthScore = useMemo(() => computeHealthScore(allSold, kpis), [allSold, kpis]);
+
+  /* today / yesterday for health card */
+  const todayTotals = useMemo(() => getDayTotals(allSold, formatDayKey(startOfDay(new Date()))), [allSold]);
+  const yesterdayTotals = useMemo(() => getDayTotals(allSold, formatDayKey(addDays(startOfDay(new Date()), -1))), [allSold]);
+
   const grouping = getTimeGrouping(filter);
 
   return (
@@ -101,6 +159,17 @@ export default function OverviewPanel({
         resultSummary={`${soldListings.length.toLocaleString("en-US")} sold items`}
         compact={compact}
       />
+      <OverviewHealthCard
+        healthScore={healthScore}
+        yesterdayRevenue={`$${yesterdayTotals.revenue.toFixed(2)}`}
+        yesterdayProfit={`$${yesterdayTotals.profit.toFixed(2)}`}
+        yesterdaySold={yesterdayTotals.count}
+        todayRevenue={`$${todayTotals.revenue.toFixed(2)}`}
+        todayProfit={`$${todayTotals.profit.toFixed(2)}`}
+        todaySold={todayTotals.count}
+        onRefresh={() => window.location.reload()}
+      />
+      <InventoryAgingCard listings={listings.filter((l) => l.status === "Active")} compact={compact} />
       <KPICards cards={cards} compact={compact} />
       <RevenueChart data={revenueByMonth(soldListings, grouping)} compact={compact} />
       <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />

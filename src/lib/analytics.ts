@@ -9,6 +9,15 @@ import {
   TabDateFilter,
   TimeGrouping,
   VendooListing,
+  SellThroughPoint,
+  ProfitDistributionPoint,
+  DaysToSellPoint,
+  PlatformFeePoint,
+  BrandROIPoint,
+  MonthlyPnLPoint,
+  InventoryCostSummary,
+  CategoryBreakdownRow,
+  InventoryTableRow,
 } from "./types";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -53,25 +62,25 @@ function fmtInt(n: number): string {
   return n.toLocaleString("en-US");
 }
 
-function startOfDay(date: Date): Date {
+export function startOfDay(date: Date): Date {
   const nextDate = new Date(date);
   nextDate.setHours(0, 0, 0, 0);
   return nextDate;
 }
 
-function endOfDay(date: Date): Date {
+export function endOfDay(date: Date): Date {
   const nextDate = new Date(date);
   nextDate.setHours(23, 59, 59, 999);
   return nextDate;
 }
 
-function addDays(date: Date, days: number): Date {
+export function addDays(date: Date, days: number): Date {
   const nextDate = new Date(date);
   nextDate.setDate(nextDate.getDate() + days);
   return nextDate;
 }
 
-function parseListingDate(rawValue: string): Date | null {
+export function parseListingDate(rawValue: string): Date | null {
   const trimmedValue = rawValue.trim();
 
   if (!trimmedValue) {
@@ -90,7 +99,7 @@ function parseListingDate(rawValue: string): Date | null {
   return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
 }
 
-function formatDayKey(date: Date): string {
+export function formatDayKey(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
@@ -131,7 +140,7 @@ function formatDayLabel(yyyymmdd: string): string {
   });
 }
 
-function formatPeriodLabel(key: string, grouping: TimeGrouping): string {
+export function formatPeriodLabel(key: string, grouping: TimeGrouping): string {
   return grouping === "day" ? formatDayLabel(key) : formatMonthLabel(key);
 }
 
@@ -616,11 +625,11 @@ export function profitBreakdown(listings: VendooListing[]) {
   const profit = round(revenue - cogs - fees - shipping);
 
   return [
-    { name: "Revenue", value: revenue, fill: "#6366f1" },
-    { name: "COGS", value: -cogs, fill: "#ef4444" },
-    { name: "Fees", value: -fees, fill: "#f97316" },
-    { name: "Shipping", value: -shipping, fill: "#eab308" },
-    { name: "Net Profit", value: profit, fill: "#22c55e" },
+    { name: "Revenue", value: revenue },
+    { name: "COGS", value: -cogs },
+    { name: "Fees", value: -fees },
+    { name: "Shipping", value: -shipping },
+    { name: "Net Profit", value: profit },
   ];
 }
 
@@ -725,4 +734,399 @@ export function buildRevenueProfitProjection(
       projectedProfit: round(averageDailyProfit * windowDays),
     },
   };
+}
+
+export function sellThroughByCategory(listings: VendooListing[]): SellThroughPoint[] {
+  const buckets = new Map<string, { listed: number; sold: number }>();
+  for (const listing of listings) {
+    const cat = listing.category || "Unknown";
+    const existing = buckets.get(cat) || { listed: 0, sold: 0 };
+    existing.listed += 1;
+    if (listing.status === "Sold") existing.sold += 1;
+    buckets.set(cat, existing);
+  }
+  return Array.from(buckets.entries())
+    .map(([category, { listed, sold }]) => ({
+      category,
+      listed,
+      sold,
+      rate: listed > 0 ? round((sold / listed) * 100, 1) : 0,
+    }))
+    .sort((a, b) => b.rate - a.rate);
+}
+
+export function profitDistribution(soldListings: VendooListing[]): ProfitDistributionPoint[] {
+  const BUCKETS = [
+    { label: "< $0", min: -Infinity, max: 0 },
+    { label: "$0–5", min: 0, max: 5 },
+    { label: "$5–10", min: 5, max: 10 },
+    { label: "$10–20", min: 10, max: 20 },
+    { label: "$20–50", min: 20, max: 50 },
+    { label: "$50+", min: 50, max: Infinity },
+  ];
+  const counts = BUCKETS.map((b) => ({ bucket: b.label, count: 0, profit: 0, min: b.min, max: b.max }));
+  for (const listing of soldListings) {
+    const profit = getListingProfit(listing);
+    const bucket = counts.find((c) => profit >= c.min && profit < c.max);
+    if (bucket) {
+      bucket.count += 1;
+      bucket.profit += profit;
+    }
+  }
+  return counts.map(({ bucket, count, profit }) => ({ bucket, count, profit }));
+}
+
+export function daysToSellDistribution(soldListings: VendooListing[]): DaysToSellPoint[] {
+  const BUCKETS = [
+    { label: "< 7d", min: 0, max: 7 },
+    { label: "7–14d", min: 7, max: 14 },
+    { label: "14–30d", min: 14, max: 30 },
+    { label: "30–60d", min: 30, max: 60 },
+    { label: "60d+", min: 60, max: Infinity },
+  ];
+  const counts = BUCKETS.map((b) => ({ bucket: b.label, count: 0, minDays: b.min, maxDays: b.max }));
+  for (const listing of soldListings) {
+    const listedDate = parseListingDate(listing.listedDate);
+    const soldDate = parseListingDate(listing.soldDate);
+    if (!listedDate || !soldDate) continue;
+    const days = Math.round((soldDate.getTime() - listedDate.getTime()) / MS_PER_DAY);
+    if (days < 0) continue;
+    const bucket = counts.find((c) => days >= c.minDays && days < c.maxDays);
+    if (bucket) bucket.count += 1;
+  }
+  return counts.map(({ bucket, count, minDays, maxDays }) => ({ bucket, count, minDays, maxDays }));
+}
+
+export function platformFeeComparison(soldListings: VendooListing[]): PlatformFeePoint[] {
+  const buckets = new Map<string, { revenue: number; fees: number; profit: number; count: number }>();
+  for (const listing of soldListings) {
+    const platform = listing.soldPlatform || "Unknown";
+    const existing = buckets.get(platform) || { revenue: 0, fees: 0, profit: 0, count: 0 };
+    existing.revenue += listing.priceSold;
+    existing.fees += listing.marketplaceFees;
+    existing.profit += getListingProfit(listing);
+    existing.count += 1;
+    buckets.set(platform, existing);
+  }
+  return Array.from(buckets.entries())
+    .map(([platform, { revenue, fees, profit, count }]) => ({
+      platform,
+      avgFeeRate: revenue > 0 ? round((fees / revenue) * 100, 1) : 0,
+      avgProfitRate: revenue > 0 ? round((profit / revenue) * 100, 1) : 0,
+      totalRevenue: round(revenue),
+      count,
+    }))
+    .sort((a, b) => b.totalRevenue - a.totalRevenue);
+}
+
+export function brandROI(soldListings: VendooListing[], limit = 15): BrandROIPoint[] {
+  const buckets = new Map<string, { profit: number; cogs: number; revenue: number; count: number }>();
+  for (const listing of soldListings) {
+    const brand = listing.brand || "Unknown";
+    const existing = buckets.get(brand) || { profit: 0, cogs: 0, revenue: 0, count: 0 };
+    existing.profit += getListingProfit(listing);
+    existing.cogs += listing.costOfGoods;
+    existing.revenue += listing.priceSold;
+    existing.count += 1;
+    buckets.set(brand, existing);
+  }
+  return Array.from(buckets.entries())
+    .map(([brand, { profit, cogs, revenue, count }]) => ({
+      brand,
+      roi: cogs > 0 ? round((profit / cogs) * 100, 1) : 0,
+      profit: round(profit),
+      cogs: round(cogs),
+      revenue: round(revenue),
+      count,
+    }))
+    .sort((a, b) => b.roi - a.roi)
+    .slice(0, limit);
+}
+
+export function monthlyPnL(
+  listings: VendooListing[],
+  grouping: TimeGrouping = "month",
+): MonthlyPnLPoint[] {
+  const soldListings = listings.filter((l) => l.status === "Sold" && l.soldDate);
+  const buckets = new Map<string, { revenue: number; cogs: number; fees: number; shipping: number; profit: number }>();
+  for (const listing of soldListings) {
+    const soldDate = parseListingDate(listing.soldDate);
+    if (!soldDate) continue;
+    const key = grouping === "day" ? formatDayKey(soldDate) : formatMonthKey(soldDate);
+    const existing = buckets.get(key) || { revenue: 0, cogs: 0, fees: 0, shipping: 0, profit: 0 };
+    existing.revenue += listing.priceSold;
+    existing.cogs += listing.costOfGoods;
+    existing.fees += listing.marketplaceFees;
+    existing.shipping += listing.shippingExpenses;
+    existing.profit += getListingProfit(listing);
+    buckets.set(key, existing);
+  }
+  return Array.from(buckets.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([key, { revenue, cogs, fees, shipping, profit }]) => ({
+      month: formatPeriodLabel(key, grouping),
+      revenue: round(revenue),
+      cogs: round(cogs),
+      fees: round(fees),
+      shipping: round(shipping),
+      profit: round(profit),
+    }));
+}
+
+export function inventoryCostSummary(listings: VendooListing[]): InventoryCostSummary {
+  const soldListings = listings.filter((l) => l.status === "Sold");
+  const activeListings = listings.filter((l) => l.status === "Active");
+
+  const totalInvestment = listings.reduce((sum, l) => sum + l.costOfGoods, 0);
+  const realizedRevenue = soldListings.reduce((sum, l) => sum + l.priceSold, 0);
+  const realizedProfit = soldListings.reduce((sum, l) => sum + getListingProfit(l), 0);
+  const activeInventoryCost = activeListings.reduce((sum, l) => sum + l.costOfGoods, 0);
+  const inventoryROI = totalInvestment > 0 ? round((realizedProfit / totalInvestment) * 100, 1) : 0;
+
+  return {
+    totalInvestment: round(totalInvestment),
+    realizedRevenue: round(realizedRevenue),
+    realizedProfit: round(realizedProfit),
+    activeInventoryCost: round(activeInventoryCost),
+    inventoryROI,
+    soldCount: soldListings.length,
+    activeCount: activeListings.length,
+    totalCount: listings.length,
+  };
+}
+
+export function categoryBreakdown(listings: VendooListing[]): CategoryBreakdownRow[] {
+  const buckets = new Map<
+    string,
+    {
+      listed: number;
+      sold: number;
+      totalRevenue: number;
+      totalProfit: number;
+      totalCOGS: number;
+    }
+  >();
+
+  for (const listing of listings) {
+    const cat = listing.category || "Unknown";
+    const existing = buckets.get(cat) || {
+      listed: 0,
+      sold: 0,
+      totalRevenue: 0,
+      totalProfit: 0,
+      totalCOGS: 0,
+    };
+    existing.listed += 1;
+    if (listing.status === "Sold") {
+      existing.sold += 1;
+      existing.totalRevenue += listing.priceSold;
+      existing.totalProfit += getListingProfit(listing);
+      existing.totalCOGS += listing.costOfGoods;
+    }
+    buckets.set(cat, existing);
+  }
+
+  return Array.from(buckets.entries())
+    .map(([category, { listed, sold, totalRevenue, totalProfit, totalCOGS }]) => ({
+      category,
+      listed,
+      sold,
+      sellThroughRate: listed > 0 ? round((sold / listed) * 100, 1) : 0,
+      avgCOGS: sold > 0 ? round(totalCOGS / sold, 2) : 0,
+      avgSalePrice: sold > 0 ? round(totalRevenue / sold, 2) : 0,
+      avgProfit: sold > 0 ? round(totalProfit / sold, 2) : 0,
+      profitMargin: totalRevenue > 0 ? round((totalProfit / totalRevenue) * 100, 1) : 0,
+      totalRevenue: round(totalRevenue),
+      totalProfit: round(totalProfit),
+      totalCOGS: round(totalCOGS),
+    }))
+    .sort((a, b) => b.totalRevenue - a.totalRevenue);
+}
+
+export function inventoryTableData(listings: VendooListing[]): InventoryTableRow[] {
+  return listings.map((listing, index) => {
+    const listedDate = parseListingDate(listing.listedDate);
+    const soldDate = parseListingDate(listing.soldDate);
+    let daysToSell: number | null = null;
+    if (listing.status === "Sold" && listedDate && soldDate) {
+      const diff = (soldDate.getTime() - listedDate.getTime()) / MS_PER_DAY;
+      if (diff >= 0) daysToSell = Math.round(diff);
+    }
+    const profit = listing.status === "Sold" ? getListingProfit(listing) : 0;
+    return {
+      id: listing.sku || `${index}`,
+      title: listing.title,
+      brand: listing.brand || "Unknown",
+      category: listing.category || "Unknown",
+      status: listing.status,
+      costOfGoods: listing.costOfGoods,
+      price: listing.price,
+      priceSold: listing.status === "Sold" ? listing.priceSold : 0,
+      profit,
+      marketplaceFees: listing.marketplaceFees,
+      shippingExpenses: listing.shippingExpenses,
+      daysToSell,
+      platform: listing.soldPlatform || listing.listingPlatforms || "—",
+      listedDate: listing.listedDate,
+      soldDate: listing.soldDate,
+    };
+  });
+}
+
+/* ─── Sparkline helpers (added for BTX-61) ─── */
+
+export interface SparkPoint {
+  value: number;
+}
+
+/** Revenue per day for the last N days from `now` (inclusive).
+ *  Returns array in chronological order. */
+export function dailyTotalsSparkline(
+  listings: VendooListing[],
+  days = 14,
+  now = new Date(),
+): SparkPoint[] {
+  const sold = listings.filter((l) => l.status === "Sold" && l.soldDate);
+  const today = startOfDay(now);
+  const start = addDays(today, -(days - 1));
+  const buckets = new Map<string, number>();
+
+  // initialise every day so sparkline baseline is flat when there was no sales
+  for (let i = 0; i < days; i++) {
+    buckets.set(formatDayKey(addDays(start, i)), 0);
+  }
+
+  for (const l of sold) {
+    const d = parseListingDate(l.soldDate);
+    if (!d || d < start || d > endOfDay(today)) continue;
+    const key = formatDayKey(d);
+    buckets.set(key, (buckets.get(key) || 0) + l.priceSold);
+  }
+
+  return Array.from(buckets.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([, v]) => ({ value: round(v) }));
+}
+
+export function dailyProfitSparkline(
+  listings: VendooListing[],
+  days = 14,
+  now = new Date(),
+): SparkPoint[] {
+  const sold = listings.filter((l) => l.status === "Sold" && l.soldDate);
+  const today = startOfDay(now);
+  const start = addDays(today, -(days - 1));
+  const buckets = new Map<string, number>();
+
+  for (let i = 0; i < days; i++) {
+    buckets.set(formatDayKey(addDays(start, i)), 0);
+  }
+
+  for (const l of sold) {
+    const d = parseListingDate(l.soldDate);
+    if (!d || d < start || d > endOfDay(today)) continue;
+    const key = formatDayKey(d);
+    buckets.set(key, (buckets.get(key) || 0) + getListingProfit(l));
+  }
+
+  return Array.from(buckets.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([, v]) => ({ value: round(v) }));
+}
+
+export function dailyCountSparkline(
+  listings: VendooListing[],
+  days = 14,
+  now = new Date(),
+): SparkPoint[] {
+  const sold = listings.filter((l) => l.status === "Sold" && l.soldDate);
+  const today = startOfDay(now);
+  const start = addDays(today, -(days - 1));
+  const buckets = new Map<string, number>();
+
+  for (let i = 0; i < days; i++) {
+    buckets.set(formatDayKey(addDays(start, i)), 0);
+  }
+
+  for (const l of sold) {
+    const d = parseListingDate(l.soldDate);
+    if (!d || d < start || d > endOfDay(today)) continue;
+    const key = formatDayKey(d);
+    buckets.set(key, (buckets.get(key) || 0) + 1);
+  }
+
+  return Array.from(buckets.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([, v]) => ({ value: v }));
+}
+
+/** Get the filter range for a date filter (extracted so we can compute previous period). */
+export function getDateFilterRange(filter: TabDateFilter, now = new Date()) {
+  return resolveDateFilterRange(filter, now);
+}
+
+/** Shift a date filter back by the same duration (used for period-over-period). 
+ *  Returns a new filter for the "previous" matching period. */
+export function previousPeriodFilter(
+  filter: TabDateFilter,
+  now = new Date(),
+): TabDateFilter {
+  const range = resolveDateFilterRange(filter, now);
+  if (!range || (!range.from && !range.to)) {
+    // cannot compute previous for "all" — fallback to last 30d
+    return { preset: "30d", from: "", to: "" };
+  }
+
+  const to = range.to ?? endOfDay(now);
+  const from = range.from ?? to;
+
+  const spanMs = endOfDay(to).getTime() - startOfDay(from).getTime();
+  const prevTo = new Date(from.getTime() - 1);           // 1ms before current from
+  const prevFrom = new Date(prevTo.getTime() - spanMs);
+
+  return {
+    preset: "custom",
+    from: formatDayKey(prevFrom),
+    to: formatDayKey(prevTo),
+  };
+}
+
+/** Simple business health score (0-100) based on profitability, sell-through, and activity trends. */
+export function computeHealthScore(
+  listings: VendooListing[],
+  kpis: { totalRevenue: string; totalProfit: string; profitMargin: string; sellThroughRate: string; avgDaysToSell: string; activeListing: string; totalListings: string },
+): number {
+  const margin = parseFloat(kpis.profitMargin) || 0;
+  const sellThrough = parseFloat(kpis.sellThroughRate) || 0;
+  const daysToSell = parseFloat(kpis.avgDaysToSell) || 0;
+  const activeRatio = kpis.activeListing && kpis.totalListings
+    ? parseFloat(kpis.activeListing.replace(/[^0-9]/g, "")) / Math.max(parseFloat(kpis.totalListings.replace(/[^0-9]/g, "")), 1) * 100
+    : 0;
+
+  let score = 0;
+  // Profit margin 0-100% → 0-40 points
+  score += Math.min(margin, 100) * 0.4;
+  // Sell-through 0-100% → 0-30 points
+  score += Math.min(sellThrough, 100) * 0.3;
+  // Active ratio 0-100% → 0-20 points
+  score += Math.min(activeRatio, 100) * 0.2;
+  // Days to sell inverse: 0d = 10pts, 365d = 0pts
+  score += Math.max(0, (365 - daysToSell) / 365) * 10;
+
+  return Math.min(Math.round(score), 100);
+}
+
+/** Get revenue/profit/count for a specific day */
+export function getDayTotals(listings: VendooListing[], dayKey: string): { revenue: number; profit: number; count: number } {
+  const sold = listings.filter((l) => l.status === "Sold" && l.soldDate === dayKey);
+  const revenue = sold.reduce((sum, l) => sum + l.priceSold, 0);
+  const profit = sold.reduce((sum, l) => sum + getListingProfit(l), 0);
+  return { revenue: round(revenue), profit: round(profit), count: sold.length };
+}
+
+/** Get today and yesterday day keys based on latest sold date in data */
+export function getTodayYesterdayKeys(listings: VendooListing[], now = new Date()): { today: string; yesterday: string } {
+  const todayKey = formatDayKey(startOfDay(now));
+  const yesterdayKey = formatDayKey(addDays(startOfDay(now), -1));
+  return { today: todayKey, yesterday: yesterdayKey };
 }
