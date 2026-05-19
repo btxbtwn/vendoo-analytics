@@ -15,15 +15,18 @@ import {
 } from "recharts";
 
 interface ProfitBreakdownChartProps {
-  data: { name: string; value: number; fill: string }[];
+  data: { name: string; value: number }[];
   compact?: boolean;
 }
+
+const FILL_COLORS = ["#d4943a", "#c45a4a", "#d4a63a", "#6db37a", "#7a7068"];
 
 export default function ProfitBreakdownChart({
   data,
   compact = false,
 }: ProfitBreakdownChartProps) {
   const ready = useChartReady();
+
   return (
     <div className="bg-card rounded-2xl border border-border p-4 md:p-6 w-full max-w-full overflow-hidden">
       <div className="mb-6">
@@ -34,68 +37,41 @@ export default function ProfitBreakdownChart({
           Revenue, costs, and net profit composition
         </p>
       </div>
-      <div className={compact ? "h-56" : "h-60 md:h-72"}>
-        {ready ? (
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={data}
-            margin={compact ? { top: 5, right: 8, left: -20, bottom: 0 } : { top: 5, right: 20, left: 0, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+      {ready && data.length > 0 ? (
+        <ResponsiveContainer width="100%" height={compact ? 200 : 280}>
+          <BarChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#a1a1aa", fontSize: compact ? 10 : 12 }}
-              axisLine={{ stroke: "#27272a" }}
+              tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
               tickLine={false}
-              minTickGap={compact ? 20 : 12}
+              axisLine={{ stroke: "var(--color-border)" }}
             />
             <YAxis
-              tick={{ fill: "#a1a1aa", fontSize: compact ? 10 : 12 }}
-              axisLine={{ stroke: "#27272a" }}
+              tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
               tickLine={false}
-              tickFormatter={(val) => `$${Math.abs(val)}`}
-              width={compact ? 38 : 52}
+              axisLine={false}
+              tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
             />
             <Tooltip
-              cursor={{ fill: "transparent" }}
-              content={(props) => (
-                <ChartTooltip
-                  {...props}
-                  getTitle={({ label }) => String(label ?? "")}
-                  getValueLabel={({ payload }) =>
-                    Number(payload[0]?.value ?? 0) >= 0 ? "Amount" : "Deduction"
-                  }
-                  valueFormatter={(value) => formatCurrency(Math.abs(Number(value)))}
-                />
-              )}
+              content={<ChartTooltip valueFormatter={(v) => formatCurrency(Number(v))} />}
+              cursor={{ fill: "var(--color-muted)", opacity: 0.1 }}
             />
-            <Bar dataKey="value" radius={[6, 6, 0, 0]}>
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.fill} />
+            <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+              {data.map((_, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={FILL_COLORS[index % FILL_COLORS.length]}
+                />
               ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-        ) : (
-          <div className="h-full rounded-2xl bg-muted/20" />
-        )}
-      </div>
-
-      {/* Summary labels */}
-      <div className="mt-4 flex flex-wrap gap-3">
-        {data.map((item) => (
-          <div key={item.name} className="flex items-center gap-2">
-            <div
-              className="w-3 h-3 rounded-full"
-              style={{ backgroundColor: item.fill }}
-            />
-            <span className="text-xs text-muted-foreground">{item.name}</span>
-            <span className="text-xs font-medium text-foreground">
-              ${Math.abs(item.value).toLocaleString("en-US", { minimumFractionDigits: 2 })}
-            </span>
-          </div>
-        ))}
-      </div>
+      ) : (
+        <div className="flex items-center justify-center h-[280px] text-muted-foreground text-sm">
+          No data available
+        </div>
+      )}
     </div>
   );
 }

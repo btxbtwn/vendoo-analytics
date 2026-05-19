@@ -6,11 +6,12 @@ import { calculateKPIs } from "../lib/analytics";
 import { DashboardTabKey, TabDateFilter, VendooListing } from "../lib/types";
 
 import Sidebar from "./Sidebar";
-const OverviewPanel = dynamic(() => import("./dashboard-tabs/OverviewPanel"), { ssr: false });
-const RevenuePanel = dynamic(() => import("./dashboard-tabs/RevenuePanel"), { ssr: false });
-const PlatformsPanel = dynamic(() => import("./dashboard-tabs/PlatformsPanel"), { ssr: false });
-const InventoryPanel = dynamic(() => import("./dashboard-tabs/InventoryPanel"), { ssr: false });
-const BrandsPanel = dynamic(() => import("./dashboard-tabs/BrandsPanel"), { ssr: false });
+
+const OverviewPanel = dynamic(() => import("./dashboard-tabs/OverviewPanel"));
+const RevenuePanel = dynamic(() => import("./dashboard-tabs/RevenuePanel"));
+const PlatformsPanel = dynamic(() => import("./dashboard-tabs/PlatformsPanel"));
+const InventoryPanel = dynamic(() => import("./dashboard-tabs/InventoryPanel"));
+const BrandsPanel = dynamic(() => import("./dashboard-tabs/BrandsPanel"));
 
 interface DashboardProps {
   initialListings: VendooListing[];
@@ -145,11 +146,11 @@ export default function Dashboard({ initialListings }: DashboardProps) {
                     key={metric.label}
                     className="flex min-h-[4.75rem] flex-col items-end justify-between rounded-2xl border border-border/70 bg-black/10 px-3 py-3 text-right"
                   >
-                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground whitespace-nowrap">
                       {metric.label}
                     </p>
                     <p
-                      className={`tabular-nums text-sm font-semibold leading-none md:text-base ${metric.tone}`}
+                      className={`tabular-nums text-sm font-semibold leading-none md:text-base whitespace-nowrap ${metric.tone}`}
                     >
                       {metric.value}
                     </p>
