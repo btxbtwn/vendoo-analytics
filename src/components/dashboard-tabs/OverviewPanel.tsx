@@ -35,6 +35,7 @@ import PlatformChart from "../PlatformChart";
 import RecentSalesTable from "../RecentSalesTable";
 import RevenueChart from "../RevenueChart";
 import ProfitabilityAlertCard from "../ProfitabilityAlertCard";
+import GoalsCard from "../GoalsCard";
 import TabDateFilterBar from "../TabDateFilterBar";
 
 interface OverviewPanelProps {
@@ -172,6 +173,11 @@ export default function OverviewPanel({
       />
       <InventoryAgingCard listings={listings.filter((l) => l.status === "Active")} compact={compact} />
       <ProfitabilityAlertCard listings={listings} />
+      <GoalsCard
+        currentRevenue={parseFloat(kpis.totalRevenue.replace(/[^0-9.-]/g, "")) || 0}
+        currentProfit={parseFloat(kpis.totalProfit.replace(/[^0-9.-]/g, "")) || 0}
+        currentItems={parseInt(kpis.soldItems, 10) || 0}
+      />
       <KPICards cards={cards} compact={compact} />
       <RevenueChart data={revenueByMonth(soldListings, grouping)} compact={compact} />
       <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
