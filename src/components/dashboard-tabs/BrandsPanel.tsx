@@ -40,7 +40,7 @@ export default function BrandsPanel({
           {allBrandRows.map((brand) => (
             <div
               key={brand.name}
-              className="rounded-2xl border border-border/70 bg-muted/20 p-4"
+              className="rounded-none border border-border/70 bg-muted/20 p-4"
             >
               <div className="mb-3 flex items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -126,7 +126,7 @@ export default function BrandsPanel({
         compact={compact}
       />
       <BrandChart data={topBrandData} compact={compact} />
-      <div className="w-full max-w-full rounded-2xl border border-border bg-card p-4 md:p-6">
+      <div className="w-full max-w-full rounded-none border border-border bg-card p-4 md:p-6">
         <h3 className="mb-4 text-lg font-semibold text-foreground">
           Brand Performance in Range
         </h3>
