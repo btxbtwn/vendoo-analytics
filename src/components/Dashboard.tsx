@@ -135,7 +135,7 @@ export default function Dashboard({ initialListings }: DashboardProps) {
         <Header title={tabCopy.title} />
 
         <div
-          className="flex flex-col gap-4 px-6 py-4 sm:px-10 lg:gap-6 lg:px-16 lg:py-6"
+          className="flex flex-col gap-4 px-2 py-4 sm:px-4 lg:gap-6 lg:px-6 lg:py-6"
           style={{
             width: "100%",
           }}
