@@ -108,13 +108,9 @@ export default function Dashboard({ initialListings }: DashboardProps) {
 
   return (
     <div
-      className="min-h-screen md:grid"
+      className="min-h-screen relative"
       style={{
         backgroundColor: "var(--color-bg-primary)",
-        gridTemplateColumns: isSidebarCollapsed
-          ? "var(--sidebar-collapsed) minmax(0,1fr)"
-          : "var(--sidebar-width) minmax(0,1fr)",
-        transition: "grid-template-columns 200ms var(--ease-out)",
       }}
     >
       <Sidebar
