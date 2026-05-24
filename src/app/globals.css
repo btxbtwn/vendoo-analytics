@@ -1,44 +1,48 @@
+@import "../lib/design-tokens.css";
 @import "tailwindcss";
 
 @theme inline {
-  /* ─── Base Palette ─── */
-  --color-background: #030712;         /* deepest layer — true black */
-  --color-surface: #0a0a0f;            /* card / panel backgrounds */
-  --color-elevated: #111118;           /* hover / focused / modal backgrounds */
-  --color-border: #1e1e2e;             /* default dividers */
-  --color-border-hover: #2a2a3c;       /* hover-on-dividers */
+  /* ─── Backgrounds ─── */
+  --color-background: var(--color-bg-base);
+  --color-surface:    var(--color-bg-surface);
+  --color-elevated:   var(--color-bg-elevated);
 
-  /* ─── Foreground ─── */
-  --color-foreground: #f8fafc;         /* primary text */
-  --color-secondary: #94a3b8;          /* captions, labels, placeholders */
-  --color-tertiary: #475569;           /* metadata, disabled */
+  /* ─── Borders ─── */
+  --color-border:      var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-border-hover: var(--color-border-strong);
+  --color-border-focus: var(--color-border-focus);
 
-  /* ─── Semantic ─── */
-  --color-accent: #6366f1;             /* primary action / revenue */
-  --color-accent-foreground: #f8fafc;
-  --color-accent-dim: #4338ca;         /* accent hover state */
+  /* ─── Text ─── */
+  --color-foreground: var(--color-text-primary);
+  --color-secondary:  var(--color-text-secondary);
+  --color-tertiary:  var(--color-text-tertiary);
 
-  --color-success: #15803d;          /* profit / positive delta — desaturated to avoid vibration on dark */
-  --color-success-dim: #166534;        /* success hover */
+  /* ─── Accent ─── */
+  --color-accent:          var(--color-accent);
+  --color-accent-foreground: var(--color-text-primary);
+  --color-accent-dim:      var(--color-accent-soft);
 
-  --color-warning: #f59e0b;            /* caution / amber */
-  --color-warning-dim: #b45309;
-
-  --color-danger: #ef4444;             /* loss / critical */
-  --color-danger-dim: #b91c1c;
-
-  --color-violet: #8b5cf6;             /* brand accent / brand moments */
-  --color-violet-dim: #6d28d9;
-
-  /* ─── Legacy aliases ─── */
-  --color-card: var(--color-surface);
-  --color-card-foreground: var(--color-foreground);
-  --color-muted: var(--color-elevated);
-  --color-muted-foreground: var(--color-secondary);
+  /* ─── Status ─── */
+  --color-success:     var(--color-success);
+  --color-success-dim: var(--color-success-muted);
+  --color-warning:     var(--color-warning);
+  --color-warning-dim: var(--color-warning-muted);
+  --color-danger:     var(--color-danger);
+  --color-danger-dim: var(--color-danger-muted);
+  --color-violet:     #A78BFA;
+  --color-violet-dim: rgba(167, 139, 250, 0.12);
 
   /* ─── Typography ─── */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* ─── Radius ─── */
+  --radius-sm:   var(--radius-sm);
+  --radius-md:   var(--radius-md);
+  --radius-lg:   var(--radius-lg);
+  --radius-xl:   var(--radius-xl);
+  --radius-full: var(--radius-full);
 }
 
 /* ─── Global reset ─── */
@@ -52,81 +56,57 @@ html {
 }
 
 body {
-  background: var(--color-background);
+  background: var(--color-bg-base);
   color: var(--color-foreground);
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
-  overflow-x: hidden;
   min-height: 100vh;
-
-  /* Celestial gradient — deep indigo to green — refined per brand doc */
-  background-image:
-    radial-gradient(circle at 10% 0%, rgba(99, 102, 241, 0.12), transparent 32%),
-    radial-gradient(circle at 90% 0%, rgba(139, 92, 246, 0.08), transparent 28%),
-    radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.04), transparent 22%),
-    linear-gradient(180deg, rgba(10, 10, 15, 0.95) 0%, rgba(3, 7, 18, 1) 40%);
 }
 
-/* Subtle grid / noise overlay for depth */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.25), transparent 70%);
-}
+/* theme toggle opacity vars */
+[data-theme="dark"]  { --moon-opacity: 1; --sun-opacity: 0; }
+[data-theme="light"] { --moon-opacity: 0; --sun-opacity: 1; }
 
 ::selection {
-  background: rgba(99, 102, 241, 0.25);
+  background: var(--color-accent-soft);
   color: var(--color-foreground);
 }
 
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--color-background); }
-::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-secondary); }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-color);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-color-hover); }
+::-webkit-scrollbar-thumb:active { background: var(--scrollbar-color-active); }
+
+/* ─── Horizontal scrollbar hide (keep scroll functionality) ─── */
+.overflow-x-auto::-webkit-scrollbar { display: none; }
 
 /* ─── Utility classes ─── */
-
-/* Card surface — default */
 .surface-card {
-  background: var(--color-surface);
-  transition: background 150ms ease;
+  background: var(--color-bg-surface);
+  transition: background var(--duration-normal) var(--ease-out);
 }
 .surface-card:hover {
-  background: var(--color-elevated);
+  background: var(--color-bg-hover);
 }
 
-/* Elevated card — hover / focus / modal */
 .surface-elevated {
-  background: var(--color-elevated);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+  background: var(--color-bg-elevated);
 }
 
-/* Glass card — remove glassmorphism, flat premium surface */
 .glass-card {
-  background: var(--color-surface);
+  background: var(--color-bg-surface);
   border: 1px solid var(--color-border);
 }
 
-/* Section kicker — uppercase micro-label */
 .section-kicker {
-  font-size: 0.7rem;
-  letter-spacing: 0.22em;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
-  color: var(--color-secondary);
-}
-
-/* Gradient text — brand moments only */
-.gradient-text {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-text-secondary);
 }
 
 /* ─── Loading Skeleton ─── */
@@ -134,11 +114,26 @@ body::before {
   0%   { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+
+@keyframes shimmer-opacity {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+.animate-pulse {
+  animation: shimmer-opacity 1.5s ease-in-out infinite;
+}
 .skeleton {
-  background: linear-gradient(90deg, var(--color-border) 25%, var(--color-border-hover) 50%, var(--color-border) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-surface) 25%,
+    var(--color-bg-elevated) 50%,
+    var(--color-bg-surface) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
 }
 
 /* ─── Recharts overrides ─── */
@@ -159,8 +154,28 @@ body::before {
   }
 }
 
+/* ─── Motion utilities ─── */
+.transition-all-fast    { transition: all 100ms ease-out; }
+.transition-colors-fast { transition: color 100ms ease-out, background-color 100ms ease-out, border-color 100ms ease-out; }
+.transition-transform-fast { transition: transform 100ms ease-out; }
+.transition-opacity-fast { transition: opacity 100ms ease-out; }
+
+.transition-all-normal    { transition: all 150ms ease-out; }
+.transition-colors-normal { transition: color 150ms ease-out, background-color 150ms ease-out, border-color 150ms ease-out; }
+.transition-transform-normal { transition: transform 150ms ease-out; }
+.transition-opacity-normal { transition: opacity 150ms ease-out; }
+
+.transition-all-slow    { transition: all 250ms ease-out; }
+.transition-colors-slow { transition: color 250ms ease-out, background-color 250ms ease-out, border-color 250ms ease-out; }
+
+/* ─── Chart entrance animation ─── */
+@keyframes chartEntrance {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ─── Focus rings (WCAG AA) ─── */
 *:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }

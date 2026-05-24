@@ -1,0 +1,187 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e7]: V
+        - button "Expand sidebar" [ref=e9624] [cursor=pointer]:
+          - img [ref=e9625]
+      - navigation [ref=e12]:
+        - button "Overview" [ref=e13] [cursor=pointer]:
+          - img [ref=e14]
+        - button "Revenue" [ref=e19] [cursor=pointer]:
+          - img [ref=e20]
+        - button "Platforms" [ref=e23] [cursor=pointer]:
+          - img [ref=e24]
+        - button "Inventory" [ref=e28] [cursor=pointer]:
+          - img [ref=e29]
+        - button "Brands" [ref=e33] [cursor=pointer]:
+          - img [ref=e34]
+      - generic [ref=e36]:
+        - button "Settings" [ref=e37] [cursor=pointer]:
+          - img [ref=e38]
+        - button "Toggle theme" [ref=e9627] [cursor=pointer]:
+          - generic [ref=e42]:
+            - img [ref=e43]
+            - img [ref=e45]
+    - main [ref=e51]:
+      - generic [ref=e52]:
+        - generic [ref=e53]:
+          - button "Overview" [ref=e54] [cursor=pointer]
+          - button "Revenue" [ref=e55] [cursor=pointer]
+          - button "Platforms" [ref=e56] [cursor=pointer]
+          - button "Inventory" [ref=e57] [cursor=pointer]
+          - button "Brands" [ref=e58] [cursor=pointer]
+        - generic [ref=e9683]:
+          - generic [ref=e9684]:
+            - generic [ref=e9685]:
+              - generic [ref=e9686]:
+                - paragraph [ref=e9687]: Date filter
+                - heading "Sold date range" [level=3] [ref=e9688]
+                - paragraph [ref=e9689]: Narrow this tab with the most relevant date field for the view.
+              - generic [ref=e9690]:
+                - generic [ref=e9691]: 528 sold items
+                - generic [ref=e9692]: Last 90 days
+            - generic [ref=e9694]:
+              - generic [ref=e9695]:
+                - button "7D" [ref=e9696]
+                - button "30D" [ref=e9697]
+                - button "90D" [active] [ref=e9698]
+                - button "YTD" [ref=e9699]
+                - button "Custom" [ref=e9700]
+              - img [ref=e9701]
+          - generic [ref=e9703]:
+            - heading "Key Metrics" [level=2] [ref=e9704]
+            - generic [ref=e9705]:
+              - generic [ref=e9706]:
+                - paragraph [ref=e9707]: Total Revenue
+                - paragraph [ref=e9708]: $6,182.41
+              - generic [ref=e9709]:
+                - paragraph [ref=e9710]: Net Profit
+                - paragraph [ref=e9711]: $3,171.19
+              - generic [ref=e9712]:
+                - paragraph [ref=e9713]: Total COGS
+                - paragraph [ref=e9714]: $823.75
+          - generic [ref=e9715]:
+            - heading "Revenue Breakdown & Projection" [level=2] [ref=e9716]
+            - generic [ref=e9717]:
+              - generic [ref=e9719]:
+                - application [ref=e9723]
+                - generic [ref=e9760]:
+                  - generic [ref=e9761]:
+                    - generic [ref=e9762]:
+                      - generic [ref=e9765]: Tops
+                      - generic [ref=e9766]: $2,625.72
+                    - paragraph [ref=e9767]: 42.5% of category revenue
+                  - generic [ref=e9768]:
+                    - generic [ref=e9769]:
+                      - generic [ref=e9772]: Casual Button-Down Shirts
+                      - generic [ref=e9773]: $834.23
+                    - paragraph [ref=e9774]: 13.5% of category revenue
+                  - generic [ref=e9775]:
+                    - generic [ref=e9776]:
+                      - generic [ref=e9779]: Coats, Jackets & Vests
+                      - generic [ref=e9780]: $763.20
+                    - paragraph [ref=e9781]: 12.3% of category revenue
+                  - generic [ref=e9782]:
+                    - generic [ref=e9783]:
+                      - generic [ref=e9786]: T-Shirts
+                      - generic [ref=e9787]: $592.50
+                    - paragraph [ref=e9788]: 9.6% of category revenue
+                  - generic [ref=e9789]:
+                    - generic [ref=e9790]:
+                      - generic [ref=e9793]: Sweaters
+                      - generic [ref=e9794]: $260.55
+                    - paragraph [ref=e9795]: 4.2% of category revenue
+                  - generic [ref=e9796]:
+                    - generic [ref=e9797]:
+                      - generic [ref=e9800]: Dresses
+                      - generic [ref=e9801]: $222.07
+                    - paragraph [ref=e9802]: 3.6% of category revenue
+                  - generic [ref=e9803]:
+                    - generic [ref=e9804]:
+                      - generic [ref=e9807]: Jeans
+                      - generic [ref=e9808]: $184.89
+                    - paragraph [ref=e9809]: 3.0% of category revenue
+                  - generic [ref=e9810]:
+                    - generic [ref=e9811]:
+                      - generic [ref=e9814]: Shorts
+                      - generic [ref=e9815]: $137.72
+                    - paragraph [ref=e9816]: 2.2% of category revenue
+                  - generic [ref=e9817]:
+                    - generic [ref=e9818]:
+                      - generic [ref=e9821]: Camisoles & Camisole Sets
+                      - generic [ref=e9822]: $104.60
+                    - paragraph [ref=e9823]: 1.7% of category revenue
+                  - generic [ref=e9824]:
+                    - generic [ref=e9825]:
+                      - generic [ref=e9828]: Dress Shirts
+                      - generic [ref=e9829]: $101.41
+                    - paragraph [ref=e9830]: 1.6% of category revenue
+                  - generic [ref=e9831]:
+                    - generic [ref=e9832]:
+                      - generic [ref=e9835]: Other
+                      - generic [ref=e9836]: $355.52
+                    - paragraph [ref=e9837]: 5.8% of category revenue
+              - generic [ref=e9838]:
+                - generic [ref=e9839]:
+                  - generic [ref=e9840]:
+                    - paragraph [ref=e9842]: Dashed lines extend the current daily pace into the next selected window.
+                    - generic [ref=e9843]:
+                      - button "7D" [ref=e9844]
+                      - button "14D" [ref=e9845]
+                      - button "30D" [ref=e9846]
+                      - button "60D" [ref=e9847]
+                      - button "90D" [ref=e9848]
+                  - generic [ref=e9849]:
+                    - generic [ref=e9850]:
+                      - paragraph [ref=e9851]: Past 30d Revenue
+                      - paragraph [ref=e9852]: $275.55
+                    - generic [ref=e9853]:
+                      - paragraph [ref=e9854]: Past 30d Profit
+                      - paragraph [ref=e9855]: $145.89
+                    - generic [ref=e9856]:
+                      - paragraph [ref=e9857]: Next 30d Revenue
+                      - paragraph [ref=e9858]: $275.70
+                    - generic [ref=e9859]:
+                      - paragraph [ref=e9860]: Next 30d Profit
+                      - paragraph [ref=e9861]: $145.80
+                  - generic [ref=e9862]:
+                    - generic [ref=e9863]: Revenue actual
+                    - generic [ref=e9865]: Revenue projected
+                    - generic [ref=e9867]: Profit actual
+                    - generic [ref=e9869]: Profit projected
+                  - application [ref=e9874]:
+                    - generic [ref=e9893]:
+                      - generic [ref=e9894]:
+                        - generic [ref=e9896]: Apr 27
+                        - generic [ref=e9898]: May 5
+                        - generic [ref=e9900]: May 13
+                        - generic [ref=e9902]: May 21
+                        - generic [ref=e9904]: May 30
+                        - generic [ref=e9906]: Jun 7
+                        - generic [ref=e9908]: Jun 14
+                        - generic [ref=e9910]: Jun 22
+                      - generic [ref=e9911]:
+                        - generic [ref=e9913]: $0
+                        - generic [ref=e9915]: $150
+                        - generic [ref=e9917]: $300
+                        - generic [ref=e9919]: $450
+                        - generic [ref=e9921]: $600
+                - application [ref=e9926]:
+                  - generic [ref=e9949]:
+                    - generic [ref=e9950]:
+                      - generic [ref=e9952]: Revenue
+                      - generic [ref=e9954]: COGS
+                      - generic [ref=e9956]: Fees
+                      - generic [ref=e9958]: Shipping
+                      - generic [ref=e9960]: Net Profit
+                    - generic [ref=e9961]:
+                      - generic [ref=e9963]: $-3k
+                      - generic [ref=e9965]: $0k
+                      - generic [ref=e9967]: $3k
+                      - generic [ref=e9969]: $5k
+                      - generic [ref=e9971]: $8k
+  - button "Open Next.js Dev Tools" [ref=e429] [cursor=pointer]:
+    - img [ref=e430]
+  - alert [ref=e433]
+  - generic [ref=e564]: Unbranded

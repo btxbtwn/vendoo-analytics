@@ -8,16 +8,12 @@ import {
  SortDirection,
  VendooListing,
 } from "../lib/types";
+import { Badge } from "./ui/Badge";
+import { Input } from "./ui/Input";
 
 function fmtCurrency(n: number): string {
  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-
-const STATUS_BADGE: Record<string, string> = {
- Active: "border-accent/20 text-accent",
- Sold: "border-success/20 text-success",
- Draft: "border-border text-muted-foreground",
-};
 
 const PAGE_SIZE = 50;
 
@@ -144,27 +140,27 @@ export default function InteractiveInventoryTable({
  }, [filtered]);
 
  function SortIcon({ field }: { field: SortField }) {
- if (field !== sortField) return <span className="ml-1 text-muted-foreground/30">↕</span>;
- return <span className="ml-1 text-accent">{sortDir === "asc" ? "↑" : "↓"}</span>;
+ if (field !== sortField) return <span className="ml-1 text-[var(--color-text-tertiary)]/30">↕</span>;
+ return <span className="ml-1 text-[var(--color-accent)]">{sortDir === "asc" ? "↑" : "↓"}</span>;
  }
 
- const thClass = "px-2 py-2.5 text-left text-xs font-medium text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors whitespace-nowrap";
- const tdClass = "px-2 py-3 text-sm text-foreground whitespace-nowrap";
+ const thClass = "px-3 py-2 text-left text-[11px] font-medium uppercase tracking-[0.05em] text-[var(--color-text-tertiary)] border-b-[0.5px] border-[color:rgba(255,255,255,0.12)] cursor-pointer select-none hover:text-[var(--color-text-primary)] transition-colors whitespace-nowrap";
+ const tdClass = "px-3 py-2 text-sm text-[var(--color-text-secondary)] whitespace-nowrap";
 
  if (allRows.length === 0) {
  return (
- <div className="card w-full border border-border bg-card p-4 md:p-6">
- <h3 className="text-base font-semibold text-foreground">Inventory Table</h3>
- <p className="mt-0.5 text-xs text-muted-foreground">No inventory data available.</p>
+ <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4 md:p-6">
+ <h3 className="text-base font-semibold text-[var(--color-text-primary)]">Inventory Table</h3>
+ <p className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">No inventory data available.</p>
  </div>
  );
  }
 
  return (
- <div className="card w-full border border-border bg-card p-4 md:p-6">
+ <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4 md:p-6">
  <div className="mb-5">
- <h3 className="text-base font-semibold text-foreground">Inventory Table</h3>
- <p className="mt-0.5 text-xs text-muted-foreground">
+ <h3 className="text-base font-semibold text-[var(--color-text-primary)]">Inventory Table</h3>
+ <p className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">
  {filtered.length.toLocaleString()} items
  {filtered.length !== allRows.length && ` (of ${allRows.length} total)`}
  </p>
@@ -176,10 +172,10 @@ export default function InteractiveInventoryTable({
  <button
  key={s}
  onClick={() => { setStatusFilter(s); setPage(0); }}
-          className={`rounded-none border px-3 py-1 text-xs font-medium transition-colors ${
+          className={`rounded-[var(--radius-sm)] border px-3 py-1 text-xs font-medium transition-colors ${
             statusFilter === s
-            ? "border-accent bg-accent text-accent-foreground"
-            : "border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
+            ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-text-primary)]"
+            : "border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-text-primary)]"
           }`}
  >
  {s === "all" ? "All" : s}
@@ -190,7 +186,7 @@ export default function InteractiveInventoryTable({
  <select
  value={categoryFilter}
  onChange={(e) => { setCategoryFilter(e.target.value); setPage(0); }}
-        className="rounded-none border border-border bg-card px-3 py-1 text-xs text-foreground focus:border-accent focus:outline-none"
+       className="rounded-[var(--radius-md)] border border-[var(--color-border)] bg-transparent px-3 py-1 text-xs text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none"
  >
  {categories.map((c) => (
  <option key={c} value={c}>
@@ -199,27 +195,27 @@ export default function InteractiveInventoryTable({
  ))}
  </select>
 
- <input
+ <Input
  type="text"
  placeholder="Search brand..."
  value={brandSearch}
  onChange={(e) => { setBrandSearch(e.target.value); setPage(0); }}
-        className="rounded-none border border-border bg-card px-3 py-1 text-xs text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none"
+ className="w-auto min-w-[120px]"
  />
 
- <input
+ <Input
  type="text"
  placeholder="Search title, brand, category..."
  value={textSearch}
  onChange={(e) => { setTextSearch(e.target.value); setPage(0); }}
-        className="flex-1 min-w-[200px] rounded-none border border-border bg-card px-3 py-1 text-xs text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none"
+ className="flex-1 min-w-[200px]"
  />
  </div>
 
  <div className="w-full overflow-x-auto">
  <table className="w-full min-w-[1100px] text-sm">
  <thead>
- <tr className="border-b border-border">
+ <tr>
  <th className={thClass} onClick={() => handleSort("title")}>
  Item <SortIcon field="title" />
  </th>
@@ -259,61 +255,55 @@ export default function InteractiveInventoryTable({
  {pageRows.map((row, i) => (
  <tr
  key={row.id}
- className={`border-b border-border/50 last:border-b-0 transition-all hover:bg-muted/20 ${
- i % 2 === 0 ? "bg-card" : "bg-muted/5"
- }`}
+ className="border-b-[0.5px] border-[color:rgba(255,255,255,0.07)] last:border-b-0 transition-colors hover:bg-[rgba(255,255,255,0.03)]"
  >
- <td className={`${tdClass} max-w-[200px]`}>
+ <td className={`${tdClass} max-w-[200px] text-[var(--color-text-primary)]`}>
  <p className="truncate font-medium" title={row.title}>{row.title}</p>
  </td>
- <td className={`${tdClass} text-muted-foreground`}>{row.brand}</td>
- <td className={`${tdClass} text-muted-foreground`}>{row.category}</td>
+ <td className={`${tdClass}`}>{row.brand}</td>
+ <td className={`${tdClass}`}>{row.category}</td>
  <td className={`${tdClass}`}>
- <span
-          className={`inline-flex items-center rounded-none border px-2.5 py-0.5 text-xs font-medium ${
-            STATUS_BADGE[row.status] || "border-border bg-muted/20 text-muted-foreground"
-          }`}
- >
- {row.status}
- </span>
+ {row.status === "Active" && <Badge variant="accent">Active</Badge>}
+ {row.status === "Sold" && <Badge variant="success">Sold</Badge>}
+ {row.status === "Draft" && <Badge variant="neutral">Draft</Badge>}
  </td>
  <td className={`${tdClass} text-right tabular-nums`}>{fmtCurrency(row.costOfGoods)}</td>
  <td className={`${tdClass} text-right tabular-nums`}>
  {row.priceSold > 0 ? fmtCurrency(row.priceSold) : "—"}
  </td>
  <td className={`${tdClass} text-right tabular-nums font-medium ${
- row.profit > 0 ? "text-success" : row.profit < 0 ? "text-danger" : "text-muted-foreground"
+ row.profit > 0 ? "text-success" : row.profit < 0 ? "text-danger" : ""
  }`}>
  {row.status === "Sold" ? fmtCurrency(row.profit) : "—"}
  </td>
- <td className={`${tdClass} text-right tabular-nums text-muted-foreground`}>
+ <td className={`${tdClass} text-right tabular-nums`}>
  {row.marketplaceFees > 0 ? fmtCurrency(row.marketplaceFees) : "—"}
  </td>
- <td className={`${tdClass} text-right tabular-nums text-muted-foreground`}>
+ <td className={`${tdClass} text-right tabular-nums`}>
  {row.shippingExpenses > 0 ? fmtCurrency(row.shippingExpenses) : "—"}
  </td>
- <td className={`${tdClass} text-right tabular-nums text-muted-foreground`}>
+ <td className={`${tdClass} text-right tabular-nums`}>
  {row.daysToSell !== null ? `${row.daysToSell}d` : "—"}
  </td>
- <td className={`${tdClass} text-muted-foreground`}>{row.platform}</td>
- <td className={`${tdClass} text-muted-foreground`}>
+ <td className={`${tdClass}`}>{row.platform}</td>
+ <td className={`${tdClass}`}>
  {row.listedDate ? new Date(row.listedDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}
  </td>
- <td className={`${tdClass} text-muted-foreground`}>
+ <td className={`${tdClass}`}>
  {row.soldDate ? new Date(row.soldDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}
  </td>
  </tr>
  ))}
 
- <tr className="border-t-2 border-border bg-muted/30 font-medium">
+ <tr className="border-t-[0.5px] border-[color:rgba(255,255,255,0.07)] hover:bg-[rgba(255,255,255,0.03)] font-medium">
  <td className={`${tdClass}`} colSpan={4}>Totals ({filtered.length} items)</td>
  <td className={`${tdClass} text-right tabular-nums`}>{fmtCurrency(totals.costOfGoods)}</td>
  <td className={`${tdClass} text-right tabular-nums`}>{fmtCurrency(totals.priceSold)}</td>
  <td className={`${tdClass} text-right tabular-nums ${
  totals.profit > 0 ? "text-success" : totals.profit < 0 ? "text-danger" : ""
  }`}>{fmtCurrency(totals.profit)}</td>
- <td className={`${tdClass} text-right tabular-nums text-muted-foreground`}>{fmtCurrency(totals.fees)}</td>
- <td className={`${tdClass} text-right tabular-nums text-muted-foreground`}>{fmtCurrency(totals.shipping)}</td>
+ <td className={`${tdClass} text-right tabular-nums`}>{fmtCurrency(totals.fees)}</td>
+ <td className={`${tdClass} text-right tabular-nums`}>{fmtCurrency(totals.shipping)}</td>
  <td className={`${tdClass}`} colSpan={3}></td>
  </tr>
  </tbody>
@@ -322,7 +312,7 @@ export default function InteractiveInventoryTable({
 
  {totalPages > 1 && (
  <div className="mt-4 flex items-center justify-between">
- <p className="text-xs text-muted-foreground">
+ <p className="text-xs text-[var(--color-text-tertiary)]">
  Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, sorted.length)} of{" "}
  {sorted.length.toLocaleString()}
  </p>
@@ -330,7 +320,7 @@ export default function InteractiveInventoryTable({
  <button
  disabled={page === 0}
  onClick={() => setPage((p) => p - 1)}
- className="rounded-xl border border-border px-3 py-1 text-xs text-foreground disabled:opacity-30 hover:border-accent/50 transition-colors"
+ className="rounded-[var(--radius-md)] border border-[var(--color-border)] px-3 py-1 text-xs text-[var(--color-text-primary)] disabled:opacity-30 hover:border-[var(--color-accent)]/50 transition-colors"
  >
  ← Prev
  </button>
@@ -340,10 +330,10 @@ export default function InteractiveInventoryTable({
  <button
  key={p}
  onClick={() => setPage(p)}
-          className={`rounded-none border px-3 py-1 text-xs transition-colors ${
+          className={`rounded-[var(--radius-sm)] border px-3 py-1 text-xs transition-colors ${
             page === p
-            ? "border-accent bg-accent text-accent-foreground"
-            : "border-border text-foreground hover:border-accent/50"
+            ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-text-primary)]"
+            : "border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-[var(--color-accent)]/50"
           }`}
  >
  {p + 1}
@@ -353,7 +343,7 @@ export default function InteractiveInventoryTable({
  <button
         disabled={page >= totalPages - 1}
         onClick={() => setPage((p) => p + 1)}
-        className="rounded-none border border-border px-3 py-1 text-xs text-foreground disabled:opacity-30 hover:border-accent/50 transition-colors"
+        className="rounded-[var(--radius-md)] border border-[var(--color-border)] px-3 py-1 text-xs text-[var(--color-text-primary)] disabled:opacity-30 hover:border-[var(--color-accent)]/50 transition-colors"
  >
  Next →
  </button>

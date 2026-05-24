@@ -12,32 +12,21 @@ import { useMemo } from "react";
 
 import {
   calculateKPIs,
-  computeHealthScore,
   dailyCountSparkline,
   dailyProfitSparkline,
   dailyTotalsSparkline,
   filterListingsByDate,
-  formatDayKey,
-  getDayTotals,
   getTimeGrouping,
   previousPeriodFilter,
   recentSales,
   revenueByMonth,
   salesByPlatform,
-  startOfDay,
-  addDays,
 } from "../../lib/analytics";
 import type { TabDateFilter, VendooListing } from "../../lib/types";
-import InventoryAgingCard from "../InventoryAgingCard";
 import KPICards, { KPIItem } from "../KPICards";
-import OverviewHealthCard from "../OverviewHealthCard";
 import PlatformChart from "../PlatformChart";
 import RecentSalesTable from "../RecentSalesTable";
 import RevenueChart from "../RevenueChart";
-import ProfitabilityAlertCard from "../ProfitabilityAlertCard";
-import GoalsCard from "../GoalsCard";
-import PeriodComparisonChart from "../PeriodComparisonChart";
-import TaxExportCard from "../TaxExportCard";
 import TabDateFilterBar from "../TabDateFilterBar";
 
 interface OverviewPanelProps {
@@ -93,8 +82,8 @@ export default function OverviewPanel({
         label: "Revenue",
         value: kpis.totalRevenue,
         icon: DollarSign,
-        color: "text-accent",
-        bgColor: "bg-accent/10",
+        color: "text-primary",
+        bgColor: "bg-[var(--color-bg-hover)]",
         trend: calcTrend(kpis.totalRevenue, prevKpis.totalRevenue),
         sparklineData: revenueSpark,
         goal: 78, // placeholder — wires to BTX-66 later
@@ -103,8 +92,8 @@ export default function OverviewPanel({
         label: "Net Profit",
         value: kpis.totalProfit,
         icon: TrendingUp,
-        color: "text-success",
-        bgColor: "bg-success/10",
+        color: "text-primary",
+        bgColor: "bg-[var(--color-bg-hover)]",
         trend: calcTrend(kpis.totalProfit, prevKpis.totalProfit),
         sparklineData: profitSpark,
         goal: 82, // placeholder
@@ -113,8 +102,8 @@ export default function OverviewPanel({
         label: "Items Sold",
         value: kpis.soldItems,
         icon: ShoppingCart,
-        color: "text-violet-400",
-        bgColor: "bg-violet-400/10",
+        color: "text-primary",
+        bgColor: "bg-[var(--color-bg-hover)]",
         trend: calcTrend(kpis.soldItems, prevKpis.soldItems),
         sparklineData: countSpark,
         goal: 65, // placeholder
@@ -123,8 +112,8 @@ export default function OverviewPanel({
         label: "Profit Margin",
         value: kpis.profitMargin,
         icon: Percent,
-        color: "text-emerald-400",
-        bgColor: "bg-emerald-400/10",
+        color: "text-primary",
+        bgColor: "bg-[var(--color-bg-hover)]",
         trend: calcTrend(kpis.profitMargin, prevKpis.profitMargin),
         goal: 55, // placeholder
       },
@@ -132,75 +121,58 @@ export default function OverviewPanel({
         label: "Avg Profit / Item",
         value: kpis.avgProfitPerItem,
         icon: Tag,
-        color: "text-pink-400",
-        bgColor: "bg-pink-400/10",
+        color: "text-primary",
+        bgColor: "bg-[var(--color-bg-hover)]",
       },
       {
         label: "Avg Days to Sell",
         value: kpis.avgDaysToSell,
         icon: Clock,
-        color: "text-amber-400",
-        bgColor: "bg-amber-400/10",
+        color: "text-primary",
+        bgColor: "bg-[var(--color-bg-hover)]",
       },
     ],
     [kpis, prevKpis, revenueSpark, profitSpark, countSpark],
   );
 
-  const healthScore = useMemo(() => computeHealthScore(allSold, kpis), [allSold, kpis]);
-
-  /* today / yesterday for health card */
-  const todayTotals = useMemo(() => getDayTotals(allSold, formatDayKey(startOfDay(new Date()))), [allSold]);
-  const yesterdayTotals = useMemo(() => getDayTotals(allSold, formatDayKey(addDays(startOfDay(new Date()), -1))), [allSold]);
-
   const grouping = getTimeGrouping(filter);
 
   return (
-    <>
+    <div className="flex flex-col gap-6 p-6">
+      {/* Date filter bar */}
       <TabDateFilterBar
         dateFieldLabel="Sold date"
-        filter={filter}
-        onChange={onFilterChange}
         resultSummary={`${soldListings.length.toLocaleString("en-US")} sold items`}
         compact={compact}
       />
-      <OverviewHealthCard
-        healthScore={healthScore}
-        yesterdayRevenue={`$${yesterdayTotals.revenue.toFixed(2)}`}
-        yesterdayProfit={`$${yesterdayTotals.profit.toFixed(2)}`}
-        yesterdaySold={yesterdayTotals.count}
-        todayRevenue={`$${todayTotals.revenue.toFixed(2)}`}
-        todayProfit={`$${todayTotals.profit.toFixed(2)}`}
-        todaySold={todayTotals.count}
-        onRefresh={() => window.location.reload()}
-      />
-      <InventoryAgingCard listings={listings.filter((l) => l.status === "Active")} compact={compact} />
-      <ProfitabilityAlertCard listings={listings} />
-      <GoalsCard
-        currentRevenue={parseFloat(kpis.totalRevenue.replace(/[^0-9.-]/g, "")) || 0}
-        currentProfit={parseFloat(kpis.totalProfit.replace(/[^0-9.-]/g, "")) || 0}
-        currentItems={parseInt(kpis.soldItems, 10) || 0}
-      />
+      {/* Top row: KPI cards */}
       <KPICards cards={cards} compact={compact} />
-      <PeriodComparisonChart
-        currentData={revenueByMonth(soldListings, grouping).map((d) => ({
-          name: d.name,
-          revenue: Number(d.revenue || 0),
-          profit: Number(d.profit || 0),
-        }))}
-        previousData={revenueByMonth(prevSold, grouping).map((d) => ({
-          name: d.name,
-          revenue: Number(d.revenue || 0),
-          profit: Number(d.profit || 0),
-        }))}
-        compact={compact}
-      />
-      <RevenueChart data={revenueByMonth(soldListings, grouping)} compact={compact} />
-      <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
-      <RecentSalesTable
-        sales={recentSales(soldListings, compact ? 10 : 20)}
-        compact={compact}
-      />
-      <TaxExportCard listings={listings} />
-    </>
+
+      {/* Revenue Over Time */}
+      <div>
+        <h2 className="text-[11px] uppercase tracking-[0.06em] text-[var(--color-text-tertiary)] mb-3">
+          Revenue Over Time
+        </h2>
+        <RevenueChart data={revenueByMonth(soldListings, grouping)} compact={compact} />
+      </div>
+
+      {/* Recent Sales + Platform Breakdown */}
+      <div>
+        <h2 className="text-[11px] uppercase tracking-[0.06em] text-[var(--color-text-tertiary)] mb-3">
+          Recent Sales &amp; Platform Breakdown
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <RecentSalesTable
+              sales={recentSales(soldListings, compact ? 10 : 20)}
+              compact={compact}
+            />
+          </div>
+          <div>
+            <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

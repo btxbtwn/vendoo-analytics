@@ -27,16 +27,26 @@ export default function PlatformsPanel({
   );
 
   return (
-    <>
+    <div className="flex flex-col gap-6 p-6">
       <TabDateFilterBar
         dateFieldLabel="Sold date"
-        filter={filter}
-        onChange={onFilterChange}
         resultSummary={`${soldListings.length.toLocaleString("en-US")} sold items`}
         compact={compact}
       />
-      <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
-      <LabelTagComparisonPanel listings={soldListings} compact={compact} />
-    </>
+      {/* Sales by Platform + Labels/Tags */}
+      <div>
+        <h2 className="text-[11px] uppercase tracking-[0.06em] text-[var(--color-text-tertiary)] mb-3">
+          Sales by Platform &amp; Labels/Tags
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
+          </div>
+          <div>
+            <LabelTagComparisonPanel listings={soldListings} compact={compact} />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

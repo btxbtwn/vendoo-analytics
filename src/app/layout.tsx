@@ -16,14 +16,17 @@ const geistMono = Geist_Mono({
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#030712",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#030712" },
+  ],
+  colorScheme: "dark light",
   viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
-  title: "Vendoo Analytics — Reseller Dashboard",
-  description: "Professional analytics dashboard for Vendoo reseller data",
+  title: "My Vendoo — Reseller Dashboard",
+  description: "Personal analytics dashboard for my Vendoo resale business",
   icons: {
     icon: "/icon.svg",
     apple: "/icon.svg",
@@ -31,7 +34,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Vendoo Analytics",
+    title: "My Vendoo",
   },
   manifest: "/manifest.json",
 };
@@ -42,7 +45,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var stored = localStorage.getItem('vendoo-theme');
+                  var theme = stored === 'light' || stored === 'dark' ? stored : 'dark';
+                  document.documentElement.setAttribute('data-theme', theme);
+                } catch (e) {
+                  document.documentElement.setAttribute('data-theme', 'light');
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

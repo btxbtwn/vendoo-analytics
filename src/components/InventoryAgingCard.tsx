@@ -104,7 +104,7 @@ export default function InventoryAgingCard({ listings, compact }: InventoryAging
  )}
  </div>
 
- <div className="mt-4 flex h-3 overflow-hidden rounded-full" style={{ background: '#111118' }}>
+ <div className="mt-4 flex h-3 overflow-hidden rounded-full" style={{ background: 'var(--color-muted)' }}>
  {data.map((b) =>
  b.count > 0 ? (
  <div

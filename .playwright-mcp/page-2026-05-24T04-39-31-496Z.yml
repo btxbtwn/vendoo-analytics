@@ -1,0 +1,142 @@
+- generic [ref=e1]:
+  - generic [ref=e47]:
+    - complementary [ref=e48]:
+      - generic [ref=e49]:
+        - generic [ref=e52]: V
+        - button "Expand sidebar" [ref=e53] [cursor=pointer]:
+          - img [ref=e54]
+      - navigation [ref=e57]:
+        - button "Overview" [ref=e58] [cursor=pointer]:
+          - img [ref=e59]
+        - button "Revenue" [ref=e64] [cursor=pointer]:
+          - img [ref=e65]
+        - button "Platforms" [ref=e68] [cursor=pointer]:
+          - img [ref=e69]
+        - button "Inventory" [ref=e73] [cursor=pointer]:
+          - img [ref=e74]
+        - button "Brands" [ref=e78] [cursor=pointer]:
+          - img [ref=e79]
+      - generic [ref=e81]:
+        - button "Settings" [ref=e82] [cursor=pointer]:
+          - img [ref=e83]
+        - button "Toggle theme" [ref=e86] [cursor=pointer]:
+          - generic [ref=e87]:
+            - img [ref=e88]
+            - img [ref=e90]
+    - main [ref=e96]:
+      - generic [ref=e97]:
+        - generic [ref=e98]:
+          - button "Overview" [ref=e99] [cursor=pointer]
+          - button "Revenue" [active] [ref=e100] [cursor=pointer]
+          - button "Platforms" [ref=e101] [cursor=pointer]
+          - button "Inventory" [ref=e102] [cursor=pointer]
+          - button "Brands" [ref=e103] [cursor=pointer]
+        - generic [ref=e2070]:
+          - generic [ref=e2071]:
+            - generic [ref=e2072]:
+              - generic [ref=e2073]:
+                - paragraph [ref=e2074]: Date filter
+                - heading "Sold date range" [level=3] [ref=e2075]
+                - paragraph [ref=e2076]: Narrow this tab with the most relevant date field for the view.
+              - generic [ref=e2077]:
+                - generic [ref=e2078]: 2 sold items
+                - generic [ref=e2079]: Last 7 days
+            - generic [ref=e2081]:
+              - generic [ref=e2082]:
+                - button "7D" [ref=e2083]
+                - button "30D" [ref=e2084]
+                - button "90D" [ref=e2085]
+                - button "YTD" [ref=e2086]
+                - button "Custom" [ref=e2087]
+              - img [ref=e2088]
+          - generic [ref=e2090]:
+            - heading "Key Metrics" [level=2] [ref=e2091]
+            - generic [ref=e2092]:
+              - generic [ref=e2093]:
+                - paragraph [ref=e2094]: Total Revenue
+                - paragraph [ref=e2095]: $0.00
+              - generic [ref=e2096]:
+                - paragraph [ref=e2097]: Net Profit
+                - paragraph [ref=e2098]: $-2.93
+              - generic [ref=e2099]:
+                - paragraph [ref=e2100]: Total COGS
+                - paragraph [ref=e2101]: $2.93
+          - generic [ref=e2102]:
+            - heading "Revenue Breakdown & Projection" [level=2] [ref=e2103]
+            - generic [ref=e2104]:
+              - generic [ref=e2106]:
+                - application [ref=e2110]
+                - generic [ref=e2111]:
+                  - generic [ref=e2112]:
+                    - generic [ref=e2113]:
+                      - generic [ref=e2116]: Pants
+                      - generic [ref=e2117]: $0.00
+                    - paragraph [ref=e2118]: 0.0% of category revenue
+                  - generic [ref=e2119]:
+                    - generic [ref=e2120]:
+                      - generic [ref=e2123]: T-Shirts
+                      - generic [ref=e2124]: $0.00
+                    - paragraph [ref=e2125]: 0.0% of category revenue
+              - generic [ref=e2126]:
+                - generic [ref=e2127]:
+                  - generic [ref=e2128]:
+                    - paragraph [ref=e2130]: Dashed lines extend the current daily pace into the next selected window.
+                    - generic [ref=e2131]:
+                      - button "7D" [ref=e2132]
+                      - button "14D" [ref=e2133]
+                      - button "30D" [ref=e2134]
+                      - button "60D" [ref=e2135]
+                      - button "90D" [ref=e2136]
+                  - generic [ref=e2137]:
+                    - generic [ref=e2138]:
+                      - paragraph [ref=e2139]: Past 30d Revenue
+                      - paragraph [ref=e2140]: $0.00
+                    - generic [ref=e2141]:
+                      - paragraph [ref=e2142]: Past 30d Profit
+                      - paragraph [ref=e2143]: $-2.93
+                    - generic [ref=e2144]:
+                      - paragraph [ref=e2145]: Next 30d Revenue
+                      - paragraph [ref=e2146]: $0.00
+                    - generic [ref=e2147]:
+                      - paragraph [ref=e2148]: Next 30d Profit
+                      - paragraph [ref=e2149]: $-3.00
+                  - generic [ref=e2150]:
+                    - generic [ref=e2151]: Revenue actual
+                    - generic [ref=e2153]: Revenue projected
+                    - generic [ref=e2155]: Profit actual
+                    - generic [ref=e2157]: Profit projected
+                  - application [ref=e2162]:
+                    - generic [ref=e2175]:
+                      - generic [ref=e2176]:
+                        - generic [ref=e2178]: Apr 27
+                        - generic [ref=e2180]: May 5
+                        - generic [ref=e2182]: May 13
+                        - generic [ref=e2184]: May 21
+                        - generic [ref=e2186]: May 30
+                        - generic [ref=e2188]: Jun 7
+                        - generic [ref=e2190]: Jun 14
+                        - generic [ref=e2192]: Jun 22
+                      - generic [ref=e2193]:
+                        - generic [ref=e2195]: "-$8"
+                        - generic [ref=e2197]: "-$6"
+                        - generic [ref=e2199]: "-$4"
+                        - generic [ref=e2201]: "-$2"
+                        - generic [ref=e2203]: $0
+                - application [ref=e2208]:
+                  - generic [ref=e2222]:
+                    - generic [ref=e2223]:
+                      - generic [ref=e2225]: Revenue
+                      - generic [ref=e2227]: COGS
+                      - generic [ref=e2229]: Fees
+                      - generic [ref=e2231]: Shipping
+                      - generic [ref=e2233]: Net Profit
+                    - generic [ref=e2234]:
+                      - generic [ref=e2236]: $-0k
+                      - generic [ref=e2238]: $-0k
+                      - generic [ref=e2240]: $-0k
+                      - generic [ref=e2242]: $-0k
+                      - generic [ref=e2244]: $0k
+  - button "Open Next.js Dev Tools" [ref=e42] [cursor=pointer]:
+    - img [ref=e43]
+  - alert [ref=e46]
+  - generic [ref=e616]: $-0k

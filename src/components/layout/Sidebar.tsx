@@ -53,7 +53,7 @@ export default function Sidebar({
   return (
     <>
       <aside
-        className="hidden md:sticky md:top-0 md:flex md:h-screen md:flex-col transition-[width] duration-200 ease-out"
+        className="hidden md:fixed md:top-0 md:left-0 md:flex md:h-screen md:flex-col transition-[width] duration-200 ease-out z-50"
         style={{
           width: collapsed ? "var(--sidebar-collapsed)" : "var(--sidebar-width)",
           transition: "width 200ms var(--ease-out)",
