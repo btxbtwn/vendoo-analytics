@@ -125,7 +125,7 @@ export default function Dashboard({ initialListings }: DashboardProps) {
       />
 
       <main
-        className="min-w-0 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5.5rem)] md:pb-8"
+        className="min-w-0 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5.5rem)] md:pb-8 w-full"
         style={{
           display: "flex",
           flexDirection: "column",
