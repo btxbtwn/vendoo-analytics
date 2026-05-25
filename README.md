@@ -2,90 +2,17 @@
 
 A Next.js dashboard for analyzing Vendoo exports, tracking marketplace performance, and comparing labels, tags, brands, inventory, and revenue trends.
 
-## Latest release
+Built with the [Linear](https://linear.app) aesthetic — minimal, clean, and focused.
 
-The latest release from this branch is `v.1.2.2`.
+## Design
 
-Highlights in this release:
-- workspace-first OpenClaw install flow via `bash scripts/install_openclaw_workspace.sh`
-- repo-shipped `vendoo-export-dashboard` skill now defaults to `~/.openclaw/workspace/vendoo-analytics`
-- Chrome DevTools MCP-first Vendoo export guidance and readiness checks
-- daily export and morning rundown cron payload templates shipped with the installed skills
-- audit-driven reliability fixes for app restart edge cases and CSV deploy timestamp reporting
-
-## OpenClaw automation supported by this repo
-
-This repo now supports two OpenClaw-native recurring automations:
-- `Daily Vendoo CSV export` at `0 23 * * *`
-- `Morning Vendoo Dashboard Rundown` at a recommended `0 8 * * *`
-
-The morning rundown uses the repo's local dashboard data and returns a balanced briefing with yesterday metrics, 7-day pace, platform winners, label/tag movers, inventory watch, projector snapshot, and alerts.
-
-## OpenClaw agent install or update
-
-If this project is being installed or updated by an OpenClaw agent, start with the repo-level instructions in [`AGENTS.md`](./AGENTS.md).
-
-That guide covers:
-- fresh install into an OpenClaw workspace
-- workspace-first repo and skill sync
-- launching or relaunching the analytics app
-- Chrome DevTools MCP readiness checks for Vendoo export
-- wiring both native recurring OpenClaw cron jobs
-
-## OpenClaw workspace install
-
-Default install target:
-
-```text
-~/.openclaw/workspace/vendoo-analytics
-```
-
-Run the installer from the repo or release bundle:
-
-```bash
-bash scripts/install_openclaw_workspace.sh
-```
-
-For an interactive install that also opens the Vendoo sign-in window right away:
-
-```bash
-npm run openclaw:install:interactive
-```
-
-That installer:
-- syncs the repo into the OpenClaw workspace
-- syncs both shipped skills into `~/.openclaw/workspace/skills/`
-- runs `npm install`
-- runs `npm run build`
-- starts the local app unless `--skip-start` is provided
-- can launch a dedicated debug-enabled Chrome window for immediate Vendoo sign-in
-
-After install, the OpenClaw agent should:
-- run `~/.openclaw/workspace/skills/vendoo-export-dashboard/scripts/start_vendoo_debug_chrome.sh`
-- tell the user to sign into Vendoo in the opened Chrome window right away
-- run `~/.openclaw/workspace/skills/vendoo-export-dashboard/scripts/check_chrome_devtools_mcp.sh`
-- create the `Daily Vendoo CSV export` job from `~/.openclaw/workspace/skills/vendoo-export-dashboard/references/openclaw-cron.example.json`
-- create the `Morning Vendoo Dashboard Rundown` job from `~/.openclaw/workspace/skills/vendoo-daily-dashboard-rundown/references/openclaw-cron.example.json`
-
-The remaining user step should now be just signing into Vendoo in the opened debug-enabled Chrome window when needed.
-
-## Morning rundown endpoint
-
-When the app is running locally, the morning briefing can be generated from:
-
-```text
-http://127.0.0.1:3000/api/morning-rundown?format=text
-```
-
-If the app runs on another local URL or port, use that local endpoint instead.
-
-## Changelog
-
-See [`CHANGELOG.md`](./CHANGELOG.md) for release history and a detailed summary of what changed in each version.
+- **Minimal Linear sidebar** — icon-only (56px) or full (220px), toggles on hover or click
+- **Mobile bottom nav** — full-width bar at the bottom of the screen with Overview, Revenue, Platforms, Inventory, Brands, and Settings
+- **Squared-off UI** — zero border-radius throughout
+- **Full-width content** — no side padding, content stretches edge-to-edge
+- **Dark theme** — deep gray background with indigo accent
 
 ## Getting Started
-
-Install dependencies and start the app locally:
 
 ```bash
 npm install
@@ -93,10 +20,63 @@ npm run build
 npm run start
 ```
 
-For local development instead of production start:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+For local development with hot reload:
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Mobile Access
+
+The app listens on all network interfaces. On the same network, access from mobile at:
+
+```
+http://<your-machine-ip>:3000
+```
+
+Find your machine's IP with `ipconfig getifaddr en0` (macOS) or `hostname -I` (Linux).
+
+## Data
+
+Drop your Vendoo CSV export into `public/data/vendoo.csv`. The dashboard reads this file on load. For automated daily exports, see the OpenClaw automation section below.
+
+## Morning Rundown Endpoint
+
+When the app is running, the morning briefing can be fetched as plain text:
+
+```
+http://127.0.0.1:3000/api/morning-rundown?format=text
+```
+
+Returns a balanced briefing covering yesterday's metrics, 7-day pace, platform winners, label/tag movers, inventory watch, and alerts.
+
+## OpenClaw Automation
+
+This repo supports two OpenClaw-native recurring automations:
+
+- `Daily Vendoo CSV export` at `0 23 * * *` — exports fresh data from Vendoo
+- `Morning Vendoo Dashboard Rundown` at `0 8 * * *` — sends the morning briefing
+
+### Install / Update for OpenClaw agents
+
+If installing or updating this repo in an OpenClaw workspace, start with [`AGENTS.md`](./AGENTS.md) for the full workflow including skill sync, Chrome DevTools MCP setup, and cron job wiring.
+
+Default install target: `~/.openclaw/workspace/vendoo-analytics`
+
+Run the installer:
+
+```bash
+bash scripts/install_openclaw_workspace.sh
+```
+
+For an interactive install that also opens the Vendoo sign-in window:
+
+```bash
+npm run openclaw:install:interactive
+```
+
+## Changelog
+
+See [`CHANGELOG.md`](./CHANGELOG.md) for release history.
