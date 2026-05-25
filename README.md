@@ -135,6 +135,66 @@ Returns plain text with: yesterday snapshot, 7-day pace, platform winners, label
 
 ---
 
+## For Hermes Agents
+
+The repo is cloned at `~/Developer/vendoo-analytics`. Skills live at `~/.hermes/skills/`.
+
+### Install / Update
+
+```bash
+cd ~/Developer/vendoo-analytics && git pull origin main
+```
+
+### Start the App
+
+```bash
+# Local access only (127.0.0.1)
+~/.hermes/skills/vendoo-export-dashboard/scripts/restart_vendoo_analytics.sh
+
+# LAN access (mobile/other devices on the network)
+HOST=0.0.0.0 PORT=3000 nohup npx next start --hostname 0.0.0.0 --port 3000 > ~/Developer/vendoo-analytics/next-start.log 2>&1 &
+```
+
+### Verify
+
+```bash
+curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000    # → 200
+curl -s "http://127.0.0.1:3000/api/morning-rundown?format=text"  # → plain text
+```
+
+### Key Paths
+
+```
+~/Developer/vendoo-analytics/                        ← repo
+~/.hermes/skills/vendoo-export-dashboard/           ← export skill
+~/.hermes/skills/vendoo-daily-dashboard-rundown/    ← morning skill
+~/Developer/vendoo-analytics/public/data/vendoo.csv ← CSV data
+```
+
+### Cron Jobs
+
+| Job | Schedule | Payload |
+|---|---|---|
+| `Daily Vendoo CSV export` | `0 23 * * *` | `~/.hermes/skills/vendoo-export-dashboard/references/hermes-cron.example.json` |
+| `Morning Vendoo Dashboard Rundown` | `0 8 * * *` | `~/.hermes/skills/vendoo-daily-dashboard-rundown/references/hermes-cron.example.json` |
+
+Deliver morning cron to `telegram:8588506573`.
+
+### Key Scripts
+
+```bash
+~/.hermes/skills/vendoo-export-dashboard/scripts/restart_vendoo_analytics.sh     # restart/start app
+~/.hermes/skills/vendoo-export-dashboard/scripts/start_vendoo_debug_chrome.sh    # open Vendoo sign-in Chrome
+~/.hermes/skills/vendoo-export-dashboard/scripts/check_chrome_devtools_mcp.sh   # check MCP
+~/.hermes/skills/vendoo-daily-dashboard-rundown/scripts/get_morning_dashboard_rundown.sh  # manual rundown
+```
+
+### Mobile Access
+
+App binds to `0.0.0.0` when started with `HOST=0.0.0.0`. Access from mobile at `http://192.168.0.186:3000`.
+
+---
+
 ## For OpenClaw Agents
 
 ### Install or Update
