@@ -14,7 +14,6 @@ import CategoryChart from "../CategoryChart";
 import ProfitBreakdownChart from "../ProfitBreakdownChart";
 import ProjectionChart from "../ProjectionChart";
 import TabDateFilterBar from "../TabDateFilterBar";
-import { useAppFilter } from "../../lib/AppContext";
 
 interface RevenuePanelProps {
   listings: VendooListing[];
@@ -29,11 +28,10 @@ export default function RevenuePanel({
   filter,
   onFilterChange,
 }: RevenuePanelProps) {
-  const { filter: globalFilter } = useAppFilter();
   const [projectionWindow, setProjectionWindow] = useState(30);
   const soldListings = useMemo(
-    () => filterListingsByDate(listings.filter((listing) => listing.status === "Sold"), "soldDate", globalFilter),
-    [globalFilter, listings],
+    () => filterListingsByDate(listings.filter((listing) => listing.status === "Sold"), "soldDate", filter),
+    [filter, listings],
   );
   const kpis = useMemo(() => calculateKPIs(soldListings), [soldListings]);
   const projection = useMemo(
