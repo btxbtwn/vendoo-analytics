@@ -1,8 +1,85 @@
-# AGENTS.md — Vendoo Analytics for OpenClaw Agents
+# AGENTS.md — Vendoo Analytics
 
 Use this guide when installing or updating `vendoo-analytics` from a release asset, source bundle, or Git checkout.
 
-## Defaults
+---
+
+## Hermes Agent
+
+### Defaults
+
+| Setting | Value |
+|---|---|
+| Repo path | `~/Developer/vendoo-analytics` |
+| Skills path | `~/.hermes/skills/` |
+| App URL | `http://127.0.0.1:3000` (LAN: `http://192.168.0.186:3000`) |
+| CSV target | `~/Developer/vendoo-analytics/public/data/vendoo.csv` |
+
+### Install / Update
+
+The repo is already cloned at `~/Developer/vendoo-analytics`. Skills are already at `~/.hermes/skills/`.
+
+```bash
+# Pull latest changes
+cd ~/Developer/vendoo-analytics && git pull origin main
+
+# Install deps if needed
+npm install
+
+# Rebuild if needed
+npm run build
+```
+
+### Start the App
+
+```bash
+# Local access only (127.0.0.1)
+~/.hermes/skills/vendoo-export-dashboard/scripts/restart_vendoo_analytics.sh
+
+# LAN access (for mobile/other devices)
+HOST=0.0.0.0 PORT=3000 nohup npx next start --hostname 0.0.0.0 --port 3000 > ~/Developer/vendoo-analytics/next-start.log 2>&1 &
+sleep 3 && curl -fsS --connect-timeout 5 http://192.168.0.186:3000 > /dev/null && echo "Running at http://192.168.0.186:3000"
+```
+
+### Verify
+
+- `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000` → `200`
+- `curl -s "http://127.0.0.1:3000/api/morning-rundown?format=text"` → plain text response
+
+### Cron Jobs
+
+| Job | Schedule | Payload |
+|---|---|---|
+| `Daily Vendoo CSV export` | `0 23 * * *` | `~/.hermes/skills/vendoo-export-dashboard/references/hermes-cron.example.json` |
+| `Morning Vendoo Dashboard Rundown` | `0 8 * * *` | `~/.hermes/skills/vendoo-daily-dashboard-rundown/references/hermes-cron.example.json` |
+
+Both use the local machine timezone. Deliver to `telegram:8588506573` (Cristian's Telegram).
+
+### Key Scripts
+
+```bash
+# Restart / start the app
+~/.hermes/skills/vendoo-export-dashboard/scripts/restart_vendoo_analytics.sh
+
+# Open debug Chrome for Vendoo sign-in
+~/.hermes/skills/vendoo-export-dashboard/scripts/start_vendoo_debug_chrome.sh
+
+# Check Chrome DevTools MCP status
+~/.hermes/skills/vendoo-export-dashboard/scripts/check_chrome_devtools_mcp.sh
+
+# Morning rundown (manual)
+~/.hermes/skills/vendoo-daily-dashboard-rundown/scripts/get_morning_dashboard_rundown.sh
+```
+
+### Mobile Access
+
+The app binds to `0.0.0.0` when started with `HOST=0.0.0.0`. Access from mobile at `http://192.168.0.186:3000`.
+
+---
+
+## OpenClaw Agent
+
+### Defaults
 
 | Setting | Value |
 |---|---|
@@ -11,7 +88,7 @@ Use this guide when installing or updating `vendoo-analytics` from a release ass
 | App URL | `http://127.0.0.1:3000` |
 | CSV target | `~/.openclaw/workspace/vendoo-analytics/public/data/vendoo.csv` |
 
-## Install
+### Install / Update
 
 ```bash
 bash scripts/install_openclaw_workspace.sh
@@ -27,13 +104,13 @@ This script:
 
 **Env vars:** `OPENCLAW_WORKSPACE_DIR`, `VENDOO_ANALYTICS_REPO_DIR`, `VENDOO_ANALYTICS_HOST`, `VENDOO_ANALYTICS_PORT`
 
-## Post-Install Chrome Setup
+### Post-Install Chrome Setup
 
 1. `start_vendoo_debug_chrome.sh` — opens a Chrome window for Vendoo sign-in
 2. Tell the user to sign into Vendoo in that window
-3. `check_chrome_devtools_mcp.sh` — verifies export MCP is connected
+3. `check_chrome_devtools_mcp.sh` — verifies Chrome DevTools MCP is connected
 
-## Cron Jobs
+### Cron Jobs
 
 After install, create exactly one of each:
 
@@ -44,18 +121,7 @@ After install, create exactly one of each:
 
 Both use the local machine timezone. Do not use system `crontab`.
 
-## Update
-
-```bash
-bash scripts/install_openclaw_workspace.sh
-```
-
-Safe to re-run — the script preserves `public/data/vendoo.csv`. After update:
-- Confirm app is reachable at `http://127.0.0.1:3000`
-- Confirm `/api/morning-rundown?format=text` responds
-- Confirm both cron jobs still exist with correct paths
-
-## Mobile Access
+### Mobile Access
 
 Default app binds to `127.0.0.1`. For LAN access on mobile, restart with:
 
@@ -64,6 +130,8 @@ HOST=0.0.0.0 PORT=3000 npm run start
 ```
 
 Access at `http://<machine-ip>:3000`.
+
+---
 
 ## Completion Report
 
