@@ -1,0 +1,212 @@
+[    1488ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1589ms] [LOG] [HMR] connected @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1859ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1859ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1861ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1862ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1863ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1864ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1896ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1896ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1898ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1898ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    4876ms] [WARNING] The resource http://127.0.0.1:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3000/:0
+[    4876ms] [WARNING] The resource http://127.0.0.1:3000/_next/static/media/797e433ab948586e-s.p.479bea2b.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3000/:0
+[   19366ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   19366ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   19368ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   19368ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   22388ms] [WARNING] The resource http://127.0.0.1:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3000/:0
+[   22388ms] [WARNING] The resource http://127.0.0.1:3000/_next/static/media/797e433ab948586e-s.p.479bea2b.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3000/:0
+[   26935ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   26935ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   27002ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   27002ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   27002ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   27002ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   29664ms] [WARNING] The resource http://127.0.0.1:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3000/:0
+[   29664ms] [WARNING] The resource http://127.0.0.1:3000/_next/static/media/797e433ab948586e-s.p.479bea2b.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3000/:0
+[   33620ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   33620ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   33621ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   33621ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   36519ms] [WARNING] The resource http://127.0.0.1:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3000/:0
+[   36519ms] [WARNING] The resource http://127.0.0.1:3000/_next/static/media/797e433ab948586e-s.p.479bea2b.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3000/:0
+[   39257ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   39257ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   42388ms] [WARNING] The resource http://127.0.0.1:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3000/:0
+[   42389ms] [WARNING] The resource http://127.0.0.1:3000/_next/static/media/797e433ab948586e-s.p.479bea2b.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3000/:0
+[   49678ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   49678ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   49680ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   49680ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   49681ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   49681ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   49746ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   49746ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   49748ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   49748ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  108427ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  108429ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  108432ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  108432ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  149643ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  149643ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  149707ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  149707ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  149707ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  149707ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  179964ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  179965ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  179965ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  179965ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297

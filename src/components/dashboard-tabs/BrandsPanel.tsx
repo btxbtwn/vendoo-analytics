@@ -51,7 +51,7 @@ export default function BrandsPanel({
                     {(brand.sales as number)} sales
                   </p>
                 </div>
-                <p className="text-sm font-semibold text-success">
+                <p className="text-sm font-semibold text-primary">
                   ${(brand.profit as number).toFixed(2)}
                 </p>
               </div>
@@ -103,7 +103,7 @@ export default function BrandsPanel({
                 </td>
                 <td
                   className={`py-3 px-2 text-right font-semibold ${
-                    (brand.profit as number) >= 0 ? "text-success" : "text-danger"
+                    (brand.profit as number) >= 0 ? "text-primary" : "text-danger"
                   }`}
                 >
                   ${(brand.profit as number).toFixed(2)}
@@ -117,21 +117,26 @@ export default function BrandsPanel({
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-6 p-6">
       <TabDateFilterBar
         dateFieldLabel="Sold date"
-        filter={filter}
-        onChange={onFilterChange}
         resultSummary={`${soldListings.length.toLocaleString("en-US")} sold items`}
         compact={compact}
       />
-      <BrandChart data={topBrandData} compact={compact} />
-      <div className="w-full max-w-full rounded-none border border-border bg-card p-4 md:p-6">
-        <h3 className="mb-4 text-lg font-semibold text-foreground">
+      {/* Top Brands Chart */}
+      <div>
+        <h2 className="text-[11px] uppercase tracking-[0.06em] text-[var(--color-text-tertiary)] mb-3">
+          Top Brands
+        </h2>
+        <BrandChart data={topBrandData} compact={compact} />
+      </div>
+      {/* Brand Performance Table */}
+      <div>
+        <h2 className="text-[11px] uppercase tracking-[0.06em] text-[var(--color-text-tertiary)] mb-3">
           Brand Performance in Range
-        </h3>
+        </h2>
         {renderBrandRows()}
       </div>
-    </>
+    </div>
   );
 }

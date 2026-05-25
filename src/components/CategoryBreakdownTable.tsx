@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { CategoryBreakdownRow, SortDirection } from "../lib/types";
+import { Badge } from "./ui/Badge";
 
 type SortField = "category" | "listed" | "sold" | "sellThroughRate" | "avgCOGS" | "avgSalePrice" | "avgProfit" | "profitMargin" | "totalRevenue";
 
@@ -55,39 +56,39 @@ export default function CategoryBreakdownTable({ data, compact = false }: Catego
  }, [data, sortField, sortDir]);
 
  function SortIcon({ field }: { field: SortField }) {
- if (field !== sortField) return <span className="text-muted-foreground/30 ml-1">↕</span>;
- return <span className="ml-1 text-accent">{sortDir === "asc" ? "↑" : "↓"}</span>;
+ if (field !== sortField) return <span className="text-[var(--color-text-tertiary)]/30 ml-1">↕</span>;
+ return <span className="ml-1 text-[var(--color-accent)]">{sortDir === "asc" ? "↑" : "↓"}</span>;
  }
 
- const thClass = "px-3 py-2.5 text-left text-xs font-medium text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors";
- const tdClass = "px-3 py-3 text-sm text-foreground";
+ const thClass = "px-3 py-2 text-left text-[11px] font-medium uppercase tracking-[0.05em] text-[var(--color-text-tertiary)] border-b-[0.5px] border-[color:rgba(255,255,255,0.12)] cursor-pointer select-none hover:text-[var(--color-text-primary)] transition-colors";
+ const tdClass = "px-3 py-2 text-sm text-[var(--color-text-primary)]";
 
  if (sorted.length === 0) {
  return (
- <div className="card w-full border border-border bg-card p-4 md:p-6">
- <h3 className="text-base font-semibold text-foreground">Category Breakdown</h3>
- <p className="mt-0.5 text-xs text-muted-foreground">No listing data available.</p>
+ <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4 md:p-6">
+ <h3 className="text-base font-semibold text-[var(--color-text-primary)]">Category Breakdown</h3>
+ <p className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">No listing data available.</p>
  </div>
  );
  }
 
  if (compact) {
  return (
- <div className="card w-full border border-border bg-card p-4">
+ <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4">
  <div className="mb-4">
- <h3 className="text-base font-semibold text-foreground">Category Breakdown</h3>
- <p className="mt-0.5 text-xs text-muted-foreground">COGS, ASP, and profit by category</p>
+ <h3 className="text-base font-semibold text-[var(--color-text-primary)]">Category Breakdown</h3>
+ <p className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">COGS, ASP, and profit by category</p>
  </div>
  <div className="space-y-3">
  {sorted.map((row) => (
-      <div key={row.category} className="rounded-none border border-border bg-muted/20 p-3">
+     <div key={row.category} className="border-b-[0.5px] border-[color:rgba(255,255,255,0.07)] p-3 transition-colors hover:bg-[var(--color-bg-hover)]">
  <div className="flex items-center justify-between">
- <span className="font-medium text-foreground">{row.category}</span>
+ <span className="font-medium text-[var(--color-text-primary)]">{row.category}</span>
  <span className={`text-sm font-bold tabular-nums ${marginColor(row.profitMargin)}`}>
  {fmtPct(row.profitMargin)}
  </span>
  </div>
- <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted-foreground">
+ <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-[var(--color-text-tertiary)]">
  <span>{row.sold}/{row.listed} sold · STR {fmtPct(row.sellThroughRate)}</span>
  <span className="text-right">ASP {fmtCurrency(row.avgSalePrice)}</span>
  <span>Avg COGS {fmtCurrency(row.avgCOGS)}</span>
@@ -101,15 +102,15 @@ export default function CategoryBreakdownTable({ data, compact = false }: Catego
  }
 
  return (
- <div className="card w-full max-w-full border border-border bg-card p-4 md:p-6">
+ <div className="w-full max-w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4 md:p-6">
  <div className="mb-5">
- <h3 className="text-base font-semibold text-foreground">Category Breakdown</h3>
- <p className="mt-0.5 text-xs text-muted-foreground">COGS, ASP, and profit by category</p>
+ <h3 className="text-base font-semibold text-[var(--color-text-primary)]">Category Breakdown</h3>
+ <p className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">COGS, ASP, and profit by category</p>
  </div>
  <div className="w-full overflow-x-auto">
  <table className="w-full min-w-[900px] text-sm">
  <thead>
- <tr className="border-b border-border">
+ <tr>
  <th className={thClass} onClick={() => handleSort("category")}>
  Category <SortIcon field="category" />
  </th>
@@ -143,9 +144,7 @@ export default function CategoryBreakdownTable({ data, compact = false }: Catego
  {sorted.map((row, i) => (
  <tr
  key={row.category}
- className={`border-b border-border/50 last:border-b-0 transition-all hover:bg-muted/20 ${
- i % 2 === 0 ? "bg-card" : "bg-muted/5"
- }`}
+ className="border-b-[0.5px] border-[color:rgba(255,255,255,0.07)] last:border-b-0 transition-colors hover:bg-[rgba(255,255,255,0.03)]"
  >
  <td className={`${tdClass} font-medium`}>{row.category}</td>
  <td className={`${tdClass} text-right tabular-nums`}>{row.listed}</td>
@@ -155,13 +154,11 @@ export default function CategoryBreakdownTable({ data, compact = false }: Catego
  <td className={`${tdClass} text-right tabular-nums`}>{fmtCurrency(row.avgSalePrice)}</td>
  <td className={`${tdClass} text-right tabular-nums`}>{fmtCurrency(row.avgProfit)}</td>
  <td className={`${tdClass} text-right`}>
- <span
- className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-bold tabular-nums ${marginBg(
- row.profitMargin
- )} ${marginColor(row.profitMargin)}`}
+ <Badge
+ variant={row.profitMargin >= 30 ? "success" : row.profitMargin >= 10 ? "warning" : "danger"}
  >
  {fmtPct(row.profitMargin)}
- </span>
+ </Badge>
  </td>
  <td className={`${tdClass} text-right tabular-nums font-medium`}>
  {fmtCurrency(row.totalRevenue)}

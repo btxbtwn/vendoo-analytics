@@ -1,6 +1,6 @@
 {
-  "name": "Vendoo Analytics",
-  "short_name": "VendooDash",
+  "name": "My Vendoo",
+  "short_name": "MyVendoo",
   "description": "Professional reseller analytics dashboard for Vendoo",
   "start_url": "/",
   "display": "standalone",

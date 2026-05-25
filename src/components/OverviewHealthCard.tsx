@@ -22,7 +22,7 @@ function HealthRing({ score }: { score: number }) {
  return (
  <div className="relative flex h-24 w-24 items-center justify-center">
  <svg className="h-full w-full -rotate-90" viewBox="0 0 80 80">
- <circle cx="40" cy="40" r="36" fill="none" stroke="#1e1e2e" strokeWidth="6" />
+ <circle cx="40" cy="40" r="36" fill="none" stroke="var(--color-border)" strokeWidth="6" />
  <circle
  cx="40" cy="40" r="36"
  fill="none"

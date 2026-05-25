@@ -1,0 +1,174 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e7]: V
+        - button "Expand sidebar" [ref=e9624] [cursor=pointer]:
+          - img [ref=e9625]
+      - navigation [ref=e12]:
+        - button "Overview" [ref=e13] [cursor=pointer]:
+          - img [ref=e14]
+        - button "Revenue" [ref=e19] [cursor=pointer]:
+          - img [ref=e20]
+        - button "Platforms" [ref=e23] [cursor=pointer]:
+          - img [ref=e24]
+        - button "Inventory" [ref=e28] [cursor=pointer]:
+          - img [ref=e29]
+        - button "Brands" [ref=e33] [cursor=pointer]:
+          - img [ref=e34]
+      - generic [ref=e36]:
+        - button "Settings" [ref=e37] [cursor=pointer]:
+          - img [ref=e38]
+        - button "Toggle theme" [ref=e9627] [cursor=pointer]:
+          - generic [ref=e42]:
+            - img [ref=e43]
+            - img [ref=e45]
+    - main [ref=e51]:
+      - generic [ref=e52]:
+        - generic [ref=e53]:
+          - button "Overview" [ref=e54] [cursor=pointer]
+          - button "Revenue" [ref=e55] [cursor=pointer]
+          - button "Platforms" [ref=e56] [cursor=pointer]
+          - button "Inventory" [ref=e57] [cursor=pointer]
+          - button "Brands" [ref=e58] [cursor=pointer]
+        - generic [ref=e10009]:
+          - generic [ref=e10010]:
+            - generic [ref=e10011]:
+              - generic [ref=e10012]:
+                - paragraph [ref=e10013]: Date filter
+                - heading "Sold date range" [level=3] [ref=e10014]
+                - paragraph [ref=e10015]: Narrow this tab with the most relevant date field for the view.
+              - generic [ref=e10016]:
+                - generic [ref=e10017]: 528 sold items
+                - generic [ref=e10018]: Last 30 days
+            - generic [ref=e10020]:
+              - generic [ref=e10021]:
+                - button "7D" [ref=e10022]
+                - button "30D" [ref=e10023]
+                - button "90D" [ref=e10024]
+                - button "YTD" [ref=e10025]
+                - button "Custom" [ref=e10026]
+              - img [ref=e10027]
+          - generic [ref=e10029]:
+            - heading "Sales by Platform & Labels/Tags" [level=2] [ref=e10030]
+            - generic [ref=e10031]:
+              - generic [ref=e10033]:
+                - application [ref=e10037]:
+                  - generic [ref=e10065]:
+                    - generic [ref=e10066]:
+                      - generic [ref=e10068]: eBay
+                      - generic [ref=e10070]: Depop
+                      - generic [ref=e10072]: Etsy
+                      - generic [ref=e10074]: Poshmark
+                      - generic [ref=e10076]: In-Person
+                      - generic [ref=e10078]: Mercari
+                    - generic [ref=e10079]:
+                      - generic [ref=e10081]: $0
+                      - generic [ref=e10083]: $650
+                      - generic [ref=e10085]: $1300
+                      - generic [ref=e10087]: $1950
+                      - generic [ref=e10089]: $2600
+                - generic [ref=e10090]:
+                  - generic [ref=e10091]:
+                    - generic [ref=e10094]: eBay
+                    - generic [ref=e10095]:
+                      - generic [ref=e10096]: 151 sales
+                      - generic [ref=e10097]: $2,527.83
+                  - generic [ref=e10098]:
+                    - generic [ref=e10101]: Depop
+                    - generic [ref=e10102]:
+                      - generic [ref=e10103]: 191 sales
+                      - generic [ref=e10104]: $1,553.01
+                  - generic [ref=e10105]:
+                    - generic [ref=e10108]: Etsy
+                    - generic [ref=e10109]:
+                      - generic [ref=e10110]: 71 sales
+                      - generic [ref=e10111]: $1,008.16
+                  - generic [ref=e10112]:
+                    - generic [ref=e10115]: Poshmark
+                    - generic [ref=e10116]:
+                      - generic [ref=e10117]: 87 sales
+                      - generic [ref=e10118]: $902.99
+                  - generic [ref=e10119]:
+                    - generic [ref=e10122]: In-Person
+                    - generic [ref=e10123]:
+                      - generic [ref=e10124]: 17 sales
+                      - generic [ref=e10125]: $100.00
+                  - generic [ref=e10126]:
+                    - generic [ref=e10129]: Mercari
+                    - generic [ref=e10130]:
+                      - generic [ref=e10131]: 11 sales
+                      - generic [ref=e10132]: $90.42
+              - generic [ref=e10134]:
+                - generic [ref=e10135]:
+                  - heading "Label & Tag Comparison" [level=3] [ref=e10136]
+                  - paragraph [ref=e10137]: Compare Vendoo labels and tags across platforms so you can see what is moving and what is making the most money.
+                - generic [ref=e10138]:
+                  - generic [ref=e10139]:
+                    - button "Vendoo Tags" [ref=e10140]
+                    - button "Vendoo Labels" [active] [ref=e10141]
+                  - generic [ref=e10142]:
+                    - button "Profit" [ref=e10143]
+                    - button "Revenue" [ref=e10144]
+                    - button "Sold items" [ref=e10145]
+                - generic [ref=e10146]:
+                  - generic [ref=e10147]:
+                    - generic [ref=e10148]:
+                      - generic [ref=e10149]:
+                        - heading "Platforms" [level=4] [ref=e10150]
+                        - paragraph [ref=e10151]: Pick one or more platforms to compare, or leave everything on all platforms.
+                      - button "Clear" [ref=e16739]
+                    - generic [ref=e10152]:
+                      - button "All platforms" [ref=e10153]
+                      - button "eBay" [ref=e10154]: eBay
+                      - button "Poshmark" [ref=e10156]: Poshmark
+                      - button "Mercari" [ref=e10158]: Mercari
+                      - button "Depop" [ref=e10160]: Depop
+                      - button "Etsy" [ref=e10162]: Etsy
+                      - button "In-Person" [ref=e10164]: In-Person
+                  - generic [ref=e10166]:
+                    - generic [ref=e10168]:
+                      - heading "Select vendoo labels" [level=4] [ref=e16828]
+                      - paragraph [ref=e10170]: Every matching value is searchable here, and selected values stay in a versus view.
+                    - generic [ref=e10171]:
+                      - generic [ref=e10172]: Vendoo Labels search
+                      - searchbox "Vendoo Labels search" [ref=e16829]: y2k
+                    - generic [ref=e10175]:
+                      - paragraph [ref=e16830]: No labels matched that search.
+                      - paragraph [ref=e16831]: Try another keyword or broaden the date range.
+                - generic [ref=e15941]:
+                  - generic [ref=e15942]: 56 available labels
+                  - generic [ref=e15943]: 1 platform in view
+                  - generic [ref=e15944]: Showing top 0
+                - generic [ref=e15946]:
+                  - paragraph [ref=e15947]: Labels and tags overlap, so one sold item can contribute to multiple values.
+                  - paragraph [ref=e15948]: Select specific values to lock in a true versus view across your chosen platforms.
+                - generic [ref=e15949]:
+                  - generic [ref=e15950]:
+                    - generic [ref=e15951]:
+                      - heading "Top Vendoo Labels by Profit" [level=4] [ref=e16832]
+                      - paragraph [ref=e15953]: Grouped bars show how each selected label or tag performs on the platforms in view.
+                    - application [ref=e15957]
+                    - generic [ref=e16106]: eBay
+                  - generic [ref=e16118]:
+                    - generic [ref=e16119]:
+                      - heading "Share view" [level=4] [ref=e16120]
+                      - paragraph [ref=e16121]: Positive profit share across the values on screen.
+                    - paragraph [ref=e16834]: No positive values are available for the share chart yet.
+                - generic [ref=e16190]:
+                  - generic [ref=e16191]:
+                    - heading "Comparison table" [level=4] [ref=e16192]
+                    - paragraph [ref=e16193]: Compare overall sales, revenue, and profit alongside each platform's profit.
+                  - table [ref=e16195]:
+                    - rowgroup [ref=e16196]:
+                      - row "Label Sold Revenue Profit eBay profit" [ref=e16835]:
+                        - columnheader "Label" [ref=e16836]
+                        - columnheader "Sold" [ref=e16199]
+                        - columnheader "Revenue" [ref=e16200]
+                        - columnheader "Profit" [ref=e16201]
+                        - columnheader "eBay profit" [ref=e16202]
+                    - rowgroup
+  - button "Open Next.js Dev Tools" [ref=e429] [cursor=pointer]:
+    - img [ref=e430]
+  - alert [ref=e433]
+  - generic [ref=e564]: $35

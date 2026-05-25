@@ -46,7 +46,7 @@ export type ComparisonDimension = "labels" | "tags";
 
 export type ComparisonMetric = "sales" | "revenue" | "profit";
 
-export type DateFilterPreset = "all" | "7d" | "14d" | "30d" | "60d" | "90d" | "custom";
+export type DateFilterPreset = "all" | "7d" | "14d" | "30d" | "60d" | "90d" | "ytd" | "custom";
 
 export type DateField = "soldDate" | "listedDate";
 

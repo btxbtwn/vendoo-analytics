@@ -50,7 +50,7 @@ function CircularProgress({
  <div className="flex flex-col items-center gap-2">
  <div className="relative h-20 w-20">
  <svg className="h-full w-full -rotate-90" viewBox="0 0 72 72">
- <circle cx="36" cy="36" r={r} fill="none" stroke="#1e1e2e" strokeWidth={6} />
+ <circle cx="36" cy="36" r={r} fill="none" stroke="var(--color-border)" strokeWidth={6} />
  <circle
  cx="36"
  cy="36"
