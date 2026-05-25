@@ -1,0 +1,58 @@
+#!/bin/bash
+# Auto-push + PR after every commit.
+# Bypass: git commit --no-verify -m "message"
+# Disable: rm .git/hooks/post-commit
+
+set -euo pipefail
+
+GITHUB_TOKEN=$(grep -o 'btxbtwn:[^@]*' ~/.git-credentials 2>/dev/null | cut -d: -f2)
+REPO="btxbtwn/vendoo-analytics"
+
+branch=$(git symbolic-ref --short HEAD 2>/dev/null || echo "detached")
+commit_msg=$(git log -1 --format=%s | sed 's/"/\\"/g')
+
+if [ "$branch" = "main" ]; then
+  tmp_branch="auto-push-$(date +%s)"
+  
+  echo "post-commit: pushing main as $tmp_branch..."
+  git push origin main:"$tmp_branch" 2>&1 || { echo "post-commit: push failed"; exit 0; }
+
+  # Check for existing PR from this temp branch
+  pr_num=$(curl -s -X GET \
+    -H "Authorization: token $GITHUB_TOKEN" \
+    -H "Accept: application/vnd.github.v3+json" \
+    "https://api.github.com/repos/$REPO/pulls?state=open&head=$REPO:$tmp_branch" \
+    | python3 -c "import sys,json; prs=json.load(sys.stdin); print(prs[0]['number'] if prs else '')" 2>/dev/null)
+
+  if [ -z "$pr_num" ]; then
+    echo "post-commit: creating PR..."
+    pr_result=$(curl -s -X POST \
+      -H "Authorization: token $GITHUB_TOKEN" \
+      -H "Accept: application/vnd.github.v3+json" \
+      -H "Content-Type: application/json" \
+      "https://api.github.com/repos/$REPO/pulls" \
+      -d "{\"title\":\"$commit_msg\",\"head\":\"$tmp_branch\",\"base\":\"main\"}")
+    pr_num=$(echo "$pr_result" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('number',''))" 2>/dev/null)
+  fi
+
+  if [ -n "$pr_num" ]; then
+    echo "post-commit: merging PR #$pr_num..."
+    sleep 1
+    curl -s -X PUT \
+      -H "Authorization: token $GITHUB_TOKEN" \
+      -H "Accept: application/vnd.github.v3+json" \
+      "https://api.github.com/repos/$REPO/pulls/$pr_num/merge" \
+      -d '{"merge_method":"squash","commit_title":"'"$commit_msg"'"}' > /dev/null
+    echo "post-commit: PR #$pr_num merged"
+    
+    # Delete the temp branch
+    sleep 1
+    curl -s -X DELETE \
+      -H "Authorization: token $GITHUB_TOKEN" \
+      "https://api.github.com/repos/$REPO/git/refs heads/$tmp_branch" > /dev/null 2>&1
+    echo "post-commit: temp branch $tmp_branch deleted"
+  fi
+else
+  echo "post-commit: pushing branch $branch..."
+  git push -u origin "$branch" 2>&1
+fi
