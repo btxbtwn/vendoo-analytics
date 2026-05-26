@@ -156,7 +156,7 @@ export default function OverviewPanel({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2">
             <RecentSalesTable
-              sales={recentSales(soldListings, compact ? 10 : 20)}
+              sales={recentSales(soldListings, 9999)}
               compact={compact}
             />
           </div>

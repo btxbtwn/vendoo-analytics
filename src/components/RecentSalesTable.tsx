@@ -1,10 +1,59 @@
 "use client";
 
+import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { VendooListing } from "../lib/types";
 
+const ITEMS_PER_PAGE = 5;
+
 interface RecentSalesTableProps {
- sales: VendooListing[];
- compact?: boolean;
+  sales: VendooListing[];
+  compact?: boolean;
+}
+
+function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}) {
+  if (totalPages <= 1) return null;
+  return (
+    <div className="flex items-center justify-center gap-2 mt-4">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="inline-flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        aria-label="Previous page"
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        <button
+          key={page}
+          onClick={() => onPageChange(page)}
+          className={`inline-flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-sm font-medium transition-colors ${
+            page === currentPage
+              ? "bg-[var(--color-accent)] text-white"
+              : "border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)]"
+          }`}
+        >
+          {page}
+        </button>
+      ))}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="inline-flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        aria-label="Next page"
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
+    </div>
+  );
 }
 
 const PLATFORM_BADGE: Record<string, string> = {
@@ -17,20 +66,25 @@ const PLATFORM_BADGE: Record<string, string> = {
 };
 
 export default function RecentSalesTable({
- sales,
- compact = false,
+  sales,
+  compact = false,
 }: RecentSalesTableProps) {
- if (compact) {
- return (
- <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4">
- <div className="mb-4">
- <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Recent Sales</h3>
- <p className="mt-1 text-sm text-[var(--color-text-tertiary)]">
- Your latest completed transactions
- </p>
- </div>
- <div className="space-y-3">
- {sales.map((sale, index) => {
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(sales.length / ITEMS_PER_PAGE));
+  const start = (page - 1) * ITEMS_PER_PAGE;
+  const paginatedSales = sales.slice(start, start + ITEMS_PER_PAGE);
+
+  if (compact) {
+    return (
+      <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4">
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Recent Sales</h3>
+          <p className="mt-1 text-sm text-[var(--color-text-tertiary)]">
+            Your latest completed transactions
+          </p>
+        </div>
+        <div className="space-y-3">
+          {paginatedSales.map((sale, index) => {
  const profit =
  sale.priceSold -
  sale.costOfGoods -
@@ -97,14 +151,19 @@ export default function RecentSalesTable({
  </div>
  </article>
  );
- })}
- </div>
- </div>
- );
- }
+            })}
+          </div>
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        </div>
+      );
+    }
 
- return (
- <div className="bg-[var(--color-bg-surface)] border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 md:p-6 w-full max-w-full overflow-hidden">
+    return (
+      <div className="bg-[var(--color-bg-surface)] border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 md:p-6 w-full max-w-full overflow-hidden">
  <div className="mb-6">
  <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Recent Sales</h3>
  <p className="text-sm text-[var(--color-text-tertiary)] mt-1">
@@ -135,8 +194,8 @@ export default function RecentSalesTable({
  </th>
  </tr>
  </thead>
- <tbody>
- {sales.map((sale, i) => {
+              <tbody>
+                {paginatedSales.map((sale, i) => {
  const profit =
  sale.priceSold -
  sale.costOfGoods -
@@ -189,9 +248,14 @@ export default function RecentSalesTable({
  </tr>
  );
  })}
- </tbody>
- </table>
- </div>
- </div>
- );
-}
+              </tbody>
+            </table>
+          </div>
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        </div>
+      );
+    }
