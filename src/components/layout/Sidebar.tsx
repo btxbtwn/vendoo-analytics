@@ -57,6 +57,8 @@ export default function Sidebar({
         style={{
           width: collapsed ? "var(--sidebar-collapsed)" : "var(--sidebar-width)",
           transition: "width 200ms var(--ease-out)",
+          backgroundColor: "var(--color-bg-sidebar)",
+          borderRight: "1px solid var(--color-border)",
         }}
       >
         {/* Header */}

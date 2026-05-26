@@ -126,14 +126,18 @@ export default function Dashboard({ initialListings }: DashboardProps) {
           display: "flex",
           flexDirection: "column",
           paddingTop: "env(safe-area-inset-top)",
+          paddingLeft: "var(--sidebar-collapsed)",
+          transition: "padding-left 200ms var(--ease-out)",
         }}
       >
         <Header title={tabCopy.title} />
 
         <div
-          className="flex flex-col gap-4 px-0 py-4 sm:px-0 lg:gap-6 lg:px-0 lg:py-6"
+          className="flex flex-col gap-4 py-4 sm:py-4 lg:gap-6 lg:py-6"
           style={{
             width: "100%",
+            paddingLeft: "var(--content-padding)",
+            paddingRight: "var(--content-padding)",
           }}
         >
           {/* Tab navigation */}
