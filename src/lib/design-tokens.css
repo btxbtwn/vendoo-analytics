@@ -8,7 +8,7 @@
   --color-bg-base:     #09090B;
   --color-bg-surface:  #111112;
   --color-bg-elevated: #18181B;
-  --color-bg-sidebar:  rgba(0, 0, 0, 0);
+  --color-bg-sidebar:  var(--color-bg-elevated);
   --color-bg-hover:    rgba(255, 255, 255, 0.04);
   --color-bg-active:   rgba(255, 255, 255, 0.06);
 
@@ -132,7 +132,7 @@
   --color-bg-base:     #ffffff;
   --color-bg-surface:  #f1f5f9;
   --color-bg-elevated: #e2e8f0;
-  --color-bg-sidebar:  rgba(255, 255, 255, 0);
+  --color-bg-sidebar:  var(--color-bg-elevated);
   --color-bg-hover:    rgba(0, 0, 0, 0.04);
   --color-bg-active:   rgba(0, 0, 0, 0.06);
 

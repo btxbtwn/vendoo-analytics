@@ -38,8 +38,8 @@ export default function PlatformsPanel({
         <h2 className="text-[11px] uppercase tracking-[0.06em] text-[var(--color-text-tertiary)] mb-3">
           Sales by Platform &amp; Labels/Tags
         </h2>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          <div className="lg:col-span-3">
             <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
           </div>
           <div>
