@@ -212,7 +212,7 @@ function CompactCard({ card }: { card: KPIItem }) {
           <Icon size={14} style={{ color: "var(--color-text-tertiary)" }} />
         </div>
       </div>
-      <div className="mt-3 flex items-end justify-between gap-3">
+      <div className="mt-3 flex flex-col items-start gap-1">
         <p
           className={`text-xl font-semibold tracking-tight tabular-nums ${valueColorClass}`}
           style={valueColorStyle}
@@ -221,7 +221,7 @@ function CompactCard({ card }: { card: KPIItem }) {
         </p>
         {hasTrend ? (
           <span
-            className="text-xs font-medium tabular-nums shrink-0"
+            className="text-xs font-medium tabular-nums"
             style={{
               color: card.trend! > 0 ? "var(--color-success)" : "var(--color-danger)",
             }}
