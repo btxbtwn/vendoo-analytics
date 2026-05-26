@@ -148,22 +148,12 @@ export default function OverviewPanel({
       {/* Top row: KPI cards */}
       <KPICards cards={cards} compact={compact} />
 
-      {/* Recent Sales + Platform Breakdown */}
+      {/* Platform Breakdown */}
       <div>
         <h2 className="text-[11px] uppercase tracking-[0.06em] text-[var(--color-text-tertiary)] mb-3">
-          Recent Sales &amp; Platform Breakdown
+          Platform Breakdown
         </h2>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
-            <RecentSalesTable
-              sales={recentSales(soldListings, 9999)}
-              compact={compact}
-            />
-          </div>
-          <div>
-            <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
-          </div>
-        </div>
+        <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
       </div>
 
       {/* Revenue Over Time */}
@@ -172,6 +162,17 @@ export default function OverviewPanel({
           Revenue Over Time
         </h2>
         <RevenueChart data={revenueByMonth(soldListings, grouping)} compact={compact} />
+      </div>
+
+      {/* Recent Sales */}
+      <div>
+        <h2 className="text-[11px] uppercase tracking-[0.06em] text-[var(--color-text-tertiary)] mb-3">
+          Recent Sales
+        </h2>
+        <RecentSalesTable
+          sales={recentSales(soldListings, 9999)}
+          compact={compact}
+        />
       </div>
     </div>
   );
