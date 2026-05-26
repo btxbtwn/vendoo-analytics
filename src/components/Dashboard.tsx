@@ -121,12 +121,12 @@ export default function Dashboard({ initialListings }: DashboardProps) {
       />
 
       <main
-        className="min-w-0 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5.5rem)] md:pb-8 w-full"
+        className="min-w-0 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5.5rem)] md:pb-8 w-full md:pl-[--sidebar-collapsed]"
         style={{
           display: "flex",
           flexDirection: "column",
           paddingTop: "env(safe-area-inset-top)",
-          paddingLeft: "var(--sidebar-collapsed)",
+          paddingLeft: "0",
           transition: "padding-left 200ms var(--ease-out)",
         }}
       >
