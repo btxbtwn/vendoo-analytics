@@ -11,6 +11,23 @@ interface RecentSalesTableProps {
   compact?: boolean;
 }
 
+function getPageNumbers(current: number, total: number): (number | "ellipsis")[] {
+  if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+
+  const pages: (number | "ellipsis")[] = [1];
+
+  if (current > 3) pages.push("ellipsis");
+
+  const start = Math.max(2, current - 1);
+  const end = Math.min(total - 1, current + 1);
+  for (let i = start; i <= end; i++) pages.push(i);
+
+  if (current < total - 2) pages.push("ellipsis");
+
+  pages.push(total);
+  return pages;
+}
+
 function Pagination({
   currentPage,
   totalPages,
@@ -21,37 +38,56 @@ function Pagination({
   onPageChange: (page: number) => void;
 }) {
   if (totalPages <= 1) return null;
+
+  const pages = getPageNumbers(currentPage, totalPages);
+
   return (
-    <div className="flex items-center justify-center gap-2 mt-4">
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="inline-flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-        aria-label="Previous page"
-      >
-        <ChevronLeft className="w-4 h-4" />
-      </button>
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+    <div className="flex flex-col items-center gap-2 mt-4">
+      <p className="text-xs text-[var(--color-text-tertiary)]">
+        Page {currentPage} of {totalPages}
+      </p>
+      <div className="flex items-center gap-1">
         <button
-          key={page}
-          onClick={() => onPageChange(page)}
-          className={`inline-flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-sm font-medium transition-colors ${
-            page === currentPage
-              ? "bg-[var(--color-accent)] text-white"
-              : "border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)]"
-          }`}
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="inline-flex items-center justify-center w-7 h-7 rounded-[var(--radius-sm)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
+          aria-label="Previous page"
         >
-          {page}
+          <ChevronLeft className="w-3.5 h-3.5" />
         </button>
-      ))}
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="inline-flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-        aria-label="Next page"
-      >
-        <ChevronRight className="w-4 h-4" />
-      </button>
+
+        {pages.map((item, i) =>
+          item === "ellipsis" ? (
+            <span
+              key={`ellipsis-${i}`}
+              className="inline-flex items-center justify-center w-7 h-7 text-xs text-[var(--color-text-tertiary)] select-none"
+            >
+              …
+            </span>
+          ) : (
+            <button
+              key={item}
+              onClick={() => onPageChange(item)}
+              className={`inline-flex items-center justify-center min-w-[1.75rem] h-7 px-1 rounded-[var(--radius-sm)] text-xs font-medium transition-colors ${
+                item === currentPage
+                  ? "bg-[var(--color-accent)] text-white"
+                  : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)]"
+              }`}
+            >
+              {item}
+            </button>
+          ),
+        )}
+
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="inline-flex items-center justify-center w-7 h-7 rounded-[var(--radius-sm)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
+          aria-label="Next page"
+        >
+          <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
     </div>
   );
 }
