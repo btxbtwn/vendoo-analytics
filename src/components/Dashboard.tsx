@@ -133,11 +133,9 @@ export default function Dashboard({ initialListings }: DashboardProps) {
         <Header title={tabCopy.title} />
 
         <div
-          className="flex flex-col gap-4 py-4 sm:py-4 lg:gap-6 lg:py-6"
+          className="flex flex-col gap-4 py-4 sm:py-4 lg:gap-6 lg:py-6 px-3 md:px-[--content-padding]"
           style={{
             width: "100%",
-            paddingLeft: "var(--content-padding)",
-            paddingRight: "var(--content-padding)",
           }}
         >
           {/* Tab navigation */}
