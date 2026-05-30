@@ -47,7 +47,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={`
-          inline-flex items-center justify-center rounded-[var(--radius-md)]
+          inline-flex items-center justify-center rounded-none
           font-medium transition-all duration-[var(--duration-normal)]
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-border-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-primary)]
           disabled:opacity-50 disabled:cursor-not-allowed

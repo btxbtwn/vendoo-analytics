@@ -358,14 +358,15 @@ export function revenueByMonth(
 
 export function salesByPlatform(listings: VendooListing[]): ChartDataPoint[] {
   const soldListings = listings.filter((listing) => listing.status === "Sold" && listing.soldPlatform);
-  const buckets = new Map<string, { revenue: number; count: number; profit: number }>();
+  const buckets = new Map<string, { revenue: number; count: number; profit: number; fees: number }>();
 
   for (const listing of soldListings) {
-    const existing = buckets.get(listing.soldPlatform) || { revenue: 0, count: 0, profit: 0 };
+    const existing = buckets.get(listing.soldPlatform) || { revenue: 0, count: 0, profit: 0, fees: 0 };
 
     existing.revenue += listing.priceSold;
     existing.count += 1;
     existing.profit += getListingProfit(listing);
+    existing.fees += listing.marketplaceFees;
     buckets.set(listing.soldPlatform, existing);
   }
 
@@ -376,6 +377,7 @@ export function salesByPlatform(listings: VendooListing[]): ChartDataPoint[] {
       value: round(value.revenue),
       revenue: round(value.revenue),
       profit: round(value.profit),
+      fees: round(value.fees),
       sales: value.count,
     }));
 }
@@ -441,6 +443,95 @@ export function statusDistribution(listings: VendooListing[]): ChartDataPoint[] 
       name,
       value: counts.get(name) || 0,
     }));
+}
+
+/** Distribution of listings by condition */
+export function conditionDistribution(listings: VendooListing[]): ChartDataPoint[] {
+  const counts = new Map<string, number>();
+
+  for (const listing of listings) {
+    const cond = listing.condition?.trim();
+    if (cond) {
+      counts.set(cond, (counts.get(cond) || 0) + 1);
+    }
+  }
+
+  return Array.from(counts.entries())
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value);
+}
+
+/** Distribution of listings by primary color */
+export function colorDistribution(listings: VendooListing[]): ChartDataPoint[] {
+  const counts = new Map<string, number>();
+
+  for (const listing of listings) {
+    const color = listing.primaryColor?.trim();
+    if (color) {
+      counts.set(color, (counts.get(color) || 0) + 1);
+    }
+  }
+
+  return Array.from(counts.entries())
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value);
+}
+
+/** Average metrics by platform */
+export function platformFeeBreakdown(listings: VendooListing[]): { name: string; avgFee: number; totalFees: number; sales: number; avgFeePct: number }[] {
+  const sold = listings.filter((l) => l.status === "Sold" && l.soldPlatform);
+  const buckets = new Map<string, { totalFees: number; totalPrice: number; count: number }>();
+
+  for (const listing of sold) {
+    const platform = listing.soldPlatform;
+    const fees = listing.marketplaceFees || 0;
+    const price = listing.priceSold || 0;
+    const existing = buckets.get(platform) || { totalFees: 0, totalPrice: 0, count: 0 };
+    existing.totalFees += fees;
+    existing.totalPrice += price;
+    existing.count += 1;
+    buckets.set(platform, existing);
+  }
+
+  return Array.from(buckets.entries())
+    .map(([name, data]) => ({
+      name,
+      avgFee: data.count > 0 ? data.totalFees / data.count : 0,
+      totalFees: data.totalFees,
+      sales: data.count,
+      avgFeePct: data.totalPrice > 0 ? (data.totalFees / data.totalPrice) * 100 : 0,
+    }))
+    .sort((a, b) => b.totalFees - a.totalFees);
+}
+
+/** Cross-posting analysis: how many items are listed on multiple platforms */
+export function crossPostingStats(listings: VendooListing[]): { singlePlatform: number; multiPlatform: number; avgPlatforms: number; platformCombos: { name: string; value: number }[] } {
+  const combos = new Map<string, number>();
+  let single = 0;
+  let multi = 0;
+  let totalPlatforms = 0;
+
+  for (const listing of listings) {
+    const platforms = listing.listingPlatforms?.split(",").map((p: string) => p.trim()).filter(Boolean) || [];
+    if (platforms.length <= 1) {
+      single++;
+    } else {
+      multi++;
+      const combo = platforms.sort().join(" + ");
+      combos.set(combo, (combos.get(combo) || 0) + 1);
+    }
+    totalPlatforms += platforms.length;
+  }
+
+  return {
+    singlePlatform: single,
+    multiPlatform: multi,
+    avgPlatforms: listings.length > 0 ? totalPlatforms / listings.length : 0,
+    platformCombos: Array.from(combos.entries())
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 10),
+  };
 }
 
 export function compareListingsBySegment(

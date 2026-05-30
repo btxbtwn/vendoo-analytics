@@ -40,7 +40,7 @@ export default function CategoryChart({
   const totalRevenue = displayData.reduce((sum, item) => sum + Number(item.revenue ?? item.value), 0);
 
   return (
-    <div className="w-full max-w-full overflow-hidden border border-[var(--color-border)] rounded-[var(--radius-lg)] bg-transparent p-4 md:p-6">
+    <div className="w-full max-w-full overflow-hidden border border-[var(--color-border)] rounded-none bg-transparent p-4 md:p-6">
       {displayData.length === 0 ? (
         <div className="border border-dashed border-border bg-muted/10 px-4 py-12 text-center">
           <p className="text-sm font-medium text-foreground">No category sales matched the selected range.</p>

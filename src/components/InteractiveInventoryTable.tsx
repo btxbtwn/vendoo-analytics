@@ -11,11 +11,13 @@ import {
 import { Badge } from "./ui/Badge";
 import { Input } from "./ui/Input";
 
+import PageSizeSelector from "./ui/PageSizeSelector";
+
 function fmtCurrency(n: number): string {
  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-const PAGE_SIZE = 50;
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 
 interface InteractiveInventoryTableProps {
  listings: VendooListing[];
@@ -65,7 +67,8 @@ export default function InteractiveInventoryTable({
  const [textSearch, setTextSearch] = useState("");
  const [sortField, setSortField] = useState<SortField>("listedDate");
  const [sortDir, setSortDir] = useState<SortDirection>("desc");
- const [page, setPage] = useState(0);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
 
  const allRows = useMemo(() => listings.map(rowToTableRow), [listings]);
 
@@ -113,8 +116,8 @@ export default function InteractiveInventoryTable({
  });
  }, [filtered, sortField, sortDir]);
 
- const pageRows = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
- const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
+ const pageRows = sorted.slice(page * pageSize, (page + 1) * pageSize);
+ const totalPages = Math.ceil(sorted.length / pageSize);
 
  function handleSort(field: SortField) {
  if (field === sortField) {
@@ -149,7 +152,7 @@ export default function InteractiveInventoryTable({
 
  if (allRows.length === 0) {
  return (
- <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4 md:p-6">
+ <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-none p-4 md:p-6">
  <h3 className="text-base font-semibold text-[var(--color-text-primary)]">Inventory Table</h3>
  <p className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">No inventory data available.</p>
  </div>
@@ -157,7 +160,7 @@ export default function InteractiveInventoryTable({
  }
 
  return (
- <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4 md:p-6">
+ <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-none p-4 md:p-6">
  <div className="mb-5">
  <h3 className="text-base font-semibold text-[var(--color-text-primary)]">Inventory Table</h3>
  <p className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">
@@ -172,7 +175,7 @@ export default function InteractiveInventoryTable({
  <button
  key={s}
  onClick={() => { setStatusFilter(s); setPage(0); }}
-          className={`rounded-[var(--radius-sm)] border px-3 py-1 text-xs font-medium transition-colors ${
+          className={`rounded-none border px-3 py-1 text-xs font-medium transition-colors ${
             statusFilter === s
             ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-text-primary)]"
             : "border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-text-primary)]"
@@ -186,7 +189,7 @@ export default function InteractiveInventoryTable({
  <select
  value={categoryFilter}
  onChange={(e) => { setCategoryFilter(e.target.value); setPage(0); }}
-       className="rounded-[var(--radius-md)] border border-[var(--color-border)] bg-transparent px-3 py-1 text-xs text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none"
+       className="rounded-none border border-[var(--color-border)] bg-transparent px-3 py-1 text-xs text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none"
  >
  {categories.map((c) => (
  <option key={c} value={c}>
@@ -311,16 +314,16 @@ export default function InteractiveInventoryTable({
  </div>
 
  {totalPages > 1 && (
- <div className="mt-4 flex items-center justify-between">
+ <div className="mt-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
  <p className="text-xs text-[var(--color-text-tertiary)]">
- Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, sorted.length)} of{" "}
+ Showing {page * pageSize + 1}–{Math.min((page + 1) * pageSize, sorted.length)} of{" "}
  {sorted.length.toLocaleString()}
  </p>
- <div className="flex gap-1">
+  <div className="flex gap-1 overflow-x-auto">
  <button
  disabled={page === 0}
  onClick={() => setPage((p) => p - 1)}
- className="rounded-[var(--radius-md)] border border-[var(--color-border)] px-3 py-1 text-xs text-[var(--color-text-primary)] disabled:opacity-30 hover:border-[var(--color-accent)]/50 transition-colors"
+ className="rounded-none border border-[var(--color-border)] px-3 py-1.5 md:py-1 text-xs text-[var(--color-text-primary)] disabled:opacity-30 hover:border-[var(--color-accent)]/50 transition-colors min-h-[36px] md:min-h-0"
  >
  ← Prev
  </button>
@@ -330,7 +333,7 @@ export default function InteractiveInventoryTable({
  <button
  key={p}
  onClick={() => setPage(p)}
-          className={`rounded-[var(--radius-sm)] border px-3 py-1 text-xs transition-colors ${
+          className={`rounded-none border px-3 py-1.5 md:py-1 text-xs transition-colors min-h-[36px] md:min-h-0 ${
             page === p
             ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-text-primary)]"
             : "border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-[var(--color-accent)]/50"
@@ -343,11 +346,16 @@ export default function InteractiveInventoryTable({
  <button
         disabled={page >= totalPages - 1}
         onClick={() => setPage((p) => p + 1)}
-        className="rounded-[var(--radius-md)] border border-[var(--color-border)] px-3 py-1 text-xs text-[var(--color-text-primary)] disabled:opacity-30 hover:border-[var(--color-accent)]/50 transition-colors"
+         className="rounded-none border border-[var(--color-border)] px-3 py-1.5 md:py-1 text-xs text-[var(--color-text-primary)] disabled:opacity-30 hover:border-[var(--color-accent)]/50 transition-colors min-h-[36px] md:min-h-0"
  >
  Next →
  </button>
  </div>
+ <PageSizeSelector
+   value={pageSize}
+   options={PAGE_SIZE_OPTIONS}
+   onChange={(size) => { setPageSize(size); setPage(0); }}
+ />
  </div>
  )}
  </div>

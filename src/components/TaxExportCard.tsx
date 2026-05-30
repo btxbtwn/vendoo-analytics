@@ -88,7 +88,7 @@ export default function TaxExportCard({ listings }: TaxExportCardProps) {
  <div className="surface-card glass-card p-5">
  <div className="mb-5 flex items-center justify-between">
  <div className="flex items-center gap-2">
- <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10">
+ <div className="flex h-8 w-8 items-center justify-center rounded-none bg-accent/10">
  <FileText size={16} className="text-accent" />
  </div>
  <div>

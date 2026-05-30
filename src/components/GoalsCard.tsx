@@ -113,7 +113,7 @@ export default function GoalsCard({
     <div className="surface-card glass-card rounded-none p-5">
  <div className="mb-5 flex items-center justify-between">
  <div className="flex items-center gap-2">
- <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10">
+ <div className="flex h-8 w-8 items-center justify-center rounded-none bg-accent/10">
  <Target size={16} className="text-accent" />
  </div>
  <div>

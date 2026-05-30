@@ -40,7 +40,7 @@ export interface ChartDataPoint {
   [key: string]: string | number;
 }
 
-export type DashboardTabKey = "overview" | "revenue" | "platforms" | "inventory" | "brands";
+export type DashboardTabKey = "overview" | "revenue" | "platforms" | "inventory" | "brands" | "labels";
 
 export type ComparisonDimension = "labels" | "tags";
 

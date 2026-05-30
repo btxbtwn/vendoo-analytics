@@ -1,31 +1,24 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { startTransition, useDeferredValue, useEffect, useState } from "react";
-import { calculateKPIs } from "../lib/analytics";
+import { startTransition, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { calculateKPIs, filterListingsByDate } from "../lib/analytics";
 import { DashboardTabKey, TabDateFilter, VendooListing } from "../lib/types";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "@/lib/use-theme";
 
 import Sidebar from "./layout/Sidebar";
-import Header from "./layout/Header";
-import TabNav, { Tab } from "./layout/TabNav";
 
 const OverviewPanel = dynamic(() => import("./dashboard-tabs/OverviewPanel"));
 const RevenuePanel = dynamic(() => import("./dashboard-tabs/RevenuePanel"));
 const PlatformsPanel = dynamic(() => import("./dashboard-tabs/PlatformsPanel"));
 const InventoryPanel = dynamic(() => import("./dashboard-tabs/InventoryPanel"));
 const BrandsPanel = dynamic(() => import("./dashboard-tabs/BrandsPanel"));
+const LabelsPanel = dynamic(() => import("./dashboard-tabs/LabelsPanel"));
 
 interface DashboardProps {
   initialListings: VendooListing[];
 }
-
-const TABS: Tab[] = [
-  { id: "overview", label: "Overview" },
-  { id: "revenue", label: "Revenue" },
-  { id: "platforms", label: "Platforms" },
-  { id: "inventory", label: "Inventory" },
-  { id: "brands", label: "Brands" },
-];
 
 const TAB_COPY: Record<DashboardTabKey, { title: string; description: string }> = {
   overview: {
@@ -48,6 +41,10 @@ const TAB_COPY: Record<DashboardTabKey, { title: string; description: string }> 
     title: "Brand Analytics",
     description: "Top brands by revenue, sales, and profit in the selected window.",
   },
+  labels: {
+    title: "Labels & Tags",
+    description: "Compare performance across labels and tags.",
+  },
 };
 
 function createDefaultFilter(): TabDateFilter {
@@ -62,12 +59,14 @@ export default function Dashboard({ initialListings }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<DashboardTabKey>("overview");
   const [isMobile, setIsMobile] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const { toggleTheme } = useTheme();
   const [tabFilters, setTabFilters] = useState<Record<DashboardTabKey, TabDateFilter>>({
     overview: createDefaultFilter(),
     revenue: createDefaultFilter(),
     platforms: createDefaultFilter(),
     inventory: createDefaultFilter(),
     brands: createDefaultFilter(),
+    labels: createDefaultFilter(),
   });
   const visibleTab = useDeferredValue(activeTab);
 
@@ -82,7 +81,25 @@ export default function Dashboard({ initialListings }: DashboardProps) {
   }, []);
 
   const listings = initialListings;
-  const kpis = calculateKPIs(listings);
+
+  // KPI header metrics — computed from the active tab's filter, not the full dataset
+  const headerKPIs = useMemo(() => {
+    const activeFilter = tabFilters[visibleTab];
+    const allSold = listings.filter((l) => l.status === "Sold");
+    const soldInWindow = filterListingsByDate(allSold, "soldDate", activeFilter);
+    const totalInWindow = filterListingsByDate(listings, "listedDate", activeFilter);
+    const kpis = calculateKPIs(soldInWindow);
+    // Override STR: sold / (sold + active) — guarantees ≤ 100%
+    const activeCount = listings.filter((l) => l.status === "Active").length;
+    const denominator = soldInWindow.length + activeCount;
+    const str =
+      denominator > 0
+        ? Math.round((soldInWindow.length / denominator) * 1000) / 10 + "%"
+        : "0%";
+    return { ...kpis, sellThroughRate: str };
+  }, [listings, tabFilters, visibleTab]);
+
+  const kpis = headerKPIs;
   const tabCopy = TAB_COPY[visibleTab];
   const headerMetrics = [
     { label: "Revenue", value: kpis.totalRevenue, tone: "text-primary" },
@@ -121,30 +138,36 @@ export default function Dashboard({ initialListings }: DashboardProps) {
       />
 
       <main
-        className="min-w-0 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5.5rem)] md:pb-8 w-full md:pl-[--sidebar-collapsed]"
+        className="min-w-0 overflow-y-auto overflow-x-hidden pb-[calc(env(safe-area-inset-bottom)+4rem)] md:pb-8 w-full"
         style={{
           display: "flex",
           flexDirection: "column",
           paddingTop: "env(safe-area-inset-top)",
-          paddingLeft: "0",
+          paddingLeft: isMobile ? "0" : isSidebarCollapsed ? "var(--sidebar-collapsed)" : "var(--sidebar-width)",
           transition: "padding-left 200ms var(--ease-out)",
         }}
       >
-        <Header title={tabCopy.title} />
-
         <div
-          className="flex flex-col gap-4 py-4 sm:py-4 lg:gap-6 lg:py-6 px-1 md:px-[--content-padding]"
+          className="flex flex-col gap-4 py-2 lg:gap-6 lg:py-6 px-3 md:px-[--content-padding]"
           style={{
             width: "100%",
           }}
         >
-          {/* Tab navigation */}
-          <TabNav
-            tabs={TABS}
-            activeTab={activeTab}
-            onChange={handleTabChange}
-          />
-
+          {isMobile && (
+            <div className="flex justify-end -mb-2">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="rounded-none border border-[var(--color-border)] p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                aria-label="Toggle theme"
+              >
+                <span className="relative block h-4 w-4">
+                  <Moon size={16} className="absolute inset-0" style={{ opacity: "var(--moon-opacity, 1)" }} />
+                  <Sun size={16} className="absolute inset-0" style={{ opacity: "var(--sun-opacity, 0)" }} />
+                </span>
+              </button>
+            </div>
+          )}
           {/* Tab panels */}
           {visibleTab === "overview" && (
             <OverviewPanel
@@ -188,6 +211,15 @@ export default function Dashboard({ initialListings }: DashboardProps) {
               compact={isMobile}
               filter={tabFilters.brands}
               onFilterChange={(nextFilter) => handleFilterChange("brands", nextFilter)}
+            />
+          )}
+
+          {visibleTab === "labels" && (
+            <LabelsPanel
+              listings={listings}
+              compact={isMobile}
+              filter={tabFilters.labels}
+              onFilterChange={(nextFilter) => handleFilterChange("labels", nextFilter)}
             />
           )}
         </div>

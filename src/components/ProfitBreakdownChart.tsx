@@ -28,11 +28,11 @@ export default function ProfitBreakdownChart({
   const { ref, ready } = useChartReady();
 
   return (
-    <div ref={ref} className="bg-transparent border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 md:p-6 w-full max-w-full overflow-hidden">
+    <div ref={ref} className="bg-transparent border border-[var(--color-border)] rounded-none p-4 md:p-6 w-full max-w-full overflow-hidden">
       {ready && data.length > 0 ? (
         <ResponsiveContainer width="100%" height={compact ? 200 : 280}>
           <BarChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-            <CartesianGrid stroke="rgba(255,255,255,0.04)" vertical={false} />
+            <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="name"
               tick={{ fill: "var(--color-text-tertiary)", fontSize: 11 }}

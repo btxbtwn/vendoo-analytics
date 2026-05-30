@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { VendooListing } from "../lib/types";
+import PageSizeSelector from "./ui/PageSizeSelector";
 
-const ITEMS_PER_PAGE = 5;
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 
 interface RecentSalesTableProps {
   sales: VendooListing[];
@@ -32,10 +33,12 @@ function Pagination({
   currentPage,
   totalPages,
   onPageChange,
+  children,
 }: {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  children?: React.ReactNode;
 }) {
   if (totalPages <= 1) return null;
 
@@ -46,73 +49,70 @@ function Pagination({
       <p className="text-xs text-[var(--color-text-tertiary)]">
         Page {currentPage} of {totalPages}
       </p>
-      <div className="flex items-center gap-1">
-        <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="inline-flex items-center justify-center w-7 h-7 rounded-[var(--radius-sm)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
-          aria-label="Previous page"
-        >
-          <ChevronLeft className="w-3.5 h-3.5" />
-        </button>
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="inline-flex items-center justify-center w-7 h-7 rounded-none border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
+            aria-label="Previous page"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+          </button>
 
-        {pages.map((item, i) =>
-          item === "ellipsis" ? (
-            <span
-              key={`ellipsis-${i}`}
-              className="inline-flex items-center justify-center w-7 h-7 text-xs text-[var(--color-text-tertiary)] select-none"
-            >
-              …
-            </span>
-          ) : (
-            <button
-              key={item}
-              onClick={() => onPageChange(item)}
-              className={`inline-flex items-center justify-center min-w-[1.75rem] h-7 px-1 rounded-[var(--radius-sm)] text-xs font-medium transition-colors ${
-                item === currentPage
-                  ? "bg-[var(--color-accent)] text-white"
-                  : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)]"
-              }`}
-            >
-              {item}
-            </button>
-          ),
-        )}
+          {pages.map((item, i) =>
+            item === "ellipsis" ? (
+              <span
+                key={`ellipsis-${i}`}
+                className="inline-flex items-center justify-center w-7 h-7 text-xs text-[var(--color-text-tertiary)] select-none"
+              >
+                …
+              </span>
+            ) : (
+              <button
+                key={item}
+                onClick={() => onPageChange(item)}
+                className={`inline-flex items-center justify-center min-w-[1.75rem] h-7 px-1 rounded-none text-xs font-medium transition-colors ${
+                  item === currentPage
+                    ? "bg-[var(--color-accent)] text-white"
+                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)]"
+                }`}
+              >
+                {item}
+              </button>
+            ),
+          )}
 
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="inline-flex items-center justify-center w-7 h-7 rounded-[var(--radius-sm)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
-          aria-label="Next page"
-        >
-          <ChevronRight className="w-3.5 h-3.5" />
-        </button>
+          <button
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="inline-flex items-center justify-center w-7 h-7 rounded-none border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
+            aria-label="Next page"
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+        {children}
       </div>
     </div>
   );
 }
 
-const PLATFORM_BADGE: Record<string, string> = {
- eBay: "border-[var(--chart-1)]/30 bg-[var(--chart-1)]/10 text-[var(--chart-1)]",
- Poshmark: "border-[var(--chart-3)]/30 bg-[var(--chart-3)]/10 text-[var(--chart-3)]",
- Mercari: "border-[var(--chart-4)]/30 bg-[var(--chart-4)]/10 text-[var(--chart-4)]",
- Depop: "border-[var(--chart-2)]/30 bg-[var(--chart-2)]/10 text-[var(--chart-2)]",
- Etsy: "border-[var(--chart-7)]/30 bg-[var(--chart-7)]/10 text-[var(--chart-7)]",
- "In-Person": "border-[var(--chart-5)]/30 bg-[var(--chart-5)]/10 text-[var(--chart-5)]",
-};
+import { PLATFORM_BADGE } from "../lib/platform-colors";
 
 export default function RecentSalesTable({
   sales,
   compact = false,
 }: RecentSalesTableProps) {
   const [page, setPage] = useState(1);
-  const totalPages = Math.max(1, Math.ceil(sales.length / ITEMS_PER_PAGE));
-  const start = (page - 1) * ITEMS_PER_PAGE;
-  const paginatedSales = sales.slice(start, start + ITEMS_PER_PAGE);
+  const [pageSize, setPageSize] = useState(5);
+  const totalPages = Math.max(1, Math.ceil(sales.length / pageSize));
+  const start = (page - 1) * pageSize;
+  const paginatedSales = sales.slice(start, start + pageSize);
 
   if (compact) {
     return (
-      <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4">
+      <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-none p-4">
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Recent Sales</h3>
           <p className="mt-1 text-sm text-[var(--color-text-tertiary)]">
@@ -143,7 +143,7 @@ export default function RecentSalesTable({
  </p>
  </div>
  <span
-    className={`inline-flex shrink-0 items-center rounded-[var(--radius-sm)] border px-2.5 py-1 text-[11px] font-medium ${
+    className={`inline-flex shrink-0 items-center rounded-none border px-2.5 py-1 text-[11px] font-medium ${
       PLATFORM_BADGE[sale.soldPlatform] ||
       "bg-muted text-muted-foreground border-border"
     }`}
@@ -193,13 +193,19 @@ export default function RecentSalesTable({
             currentPage={page}
             totalPages={totalPages}
             onPageChange={setPage}
-          />
+          >
+            <PageSizeSelector
+              value={pageSize}
+              options={PAGE_SIZE_OPTIONS}
+              onChange={(size) => { setPageSize(size); setPage(1); }}
+            />
+          </Pagination>
         </div>
       );
     }
 
     return (
-      <div className="bg-[var(--color-bg-surface)] border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 md:p-6 w-full max-w-full overflow-hidden">
+      <div className="bg-[var(--color-bg-surface)] border border-[var(--color-border)] rounded-none p-4 md:p-6 w-full max-w-full overflow-hidden">
  <div className="mb-6">
  <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Recent Sales</h3>
  <p className="text-sm text-[var(--color-text-tertiary)] mt-1">
@@ -253,7 +259,7 @@ export default function RecentSalesTable({
  </td>
  <td className="px-3 py-2">
   <span
-    className={`inline-flex items-center px-2.5 py-1 rounded-[var(--radius-sm)] text-xs font-medium border ${
+    className={`inline-flex items-center px-2.5 py-1 rounded-none text-xs font-medium border ${
       PLATFORM_BADGE[sale.soldPlatform] ||
       "bg-muted text-muted-foreground border-border"
     }`}
@@ -291,7 +297,13 @@ export default function RecentSalesTable({
             currentPage={page}
             totalPages={totalPages}
             onPageChange={setPage}
-          />
+          >
+            <PageSizeSelector
+              value={pageSize}
+              options={PAGE_SIZE_OPTIONS}
+              onChange={(size) => { setPageSize(size); setPage(1); }}
+            />
+          </Pagination>
         </div>
       );
     }
