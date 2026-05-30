@@ -45,21 +45,25 @@ export default function RevenuePanel({
         dateFieldLabel="Sold date"
         resultSummary={`${soldListings.length.toLocaleString("en-US")} sold items`}
         compact={compact}
+        filter={filter}
+        onFilterChange={onFilterChange}
       />
       {/* KPI Cards */}
       <div>
         <h2 className="text-[11px] uppercase tracking-[0.06em] text-[var(--color-text-tertiary)] mb-3">
           Key Metrics
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {[
             { label: "Total Revenue", value: kpis.totalRevenue, color: "text-primary" },
             { label: "Net Profit", value: kpis.totalProfit, color: "text-primary" },
-            { label: "Total COGS", value: kpis.totalCOGS, color: "text-danger" },
+            { label: "Total COGS", value: kpis.totalCOGS, color: "text-primary" },
+            { label: "Total Fees", value: kpis.totalFees, color: "text-primary" },
+            { label: "Total Shipping", value: kpis.totalShipping, color: "text-primary" },
           ].map((card) => (
             <div
               key={card.label}
-              className="border border-[var(--color-border)] rounded-[var(--radius-lg)] bg-[var(--color-bg-surface)] p-4 md:p-5"
+              className="border border-[var(--color-border)] rounded-none bg-[var(--color-bg-surface)] p-4 md:p-5"
             >
               <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-text-tertiary)] md:text-xs">
                 {card.label}

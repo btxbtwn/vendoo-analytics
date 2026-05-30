@@ -8,11 +8,11 @@ import {
   Package,
   BarChart3,
   Store,
+  Tag,
   Moon,
   Sun,
-  MoreHorizontal, Settings, X,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTheme } from "@/lib/use-theme";
 
 const navItems = [
@@ -21,6 +21,7 @@ const navItems = [
   { id: "platforms", label: "Platforms", icon: Store },
   { id: "inventory", label: "Inventory", icon: Package },
   { id: "brands", label: "Brands", icon: BarChart3 },
+  { id: "labels", label: "Labels", icon: Tag },
 ];
 
 interface SidebarProps {
@@ -38,17 +39,6 @@ export default function Sidebar({
 }: SidebarProps) {
   const { toggleTheme } = useTheme();
 
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
-
-  useEffect(() => {
-    if (!settingsOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSettingsOpen(false);
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [settingsOpen]);
 
   return (
     <>
@@ -63,53 +53,12 @@ export default function Sidebar({
       >
         {/* Header */}
         <div
-          className="flex border-b shrink-0"
+          className="flex border-b shrink-0 justify-end"
           style={{
             borderColor: "var(--color-border)",
-            padding: collapsed ? "16px 12px" : "16px",
-            flexDirection: collapsed ? "column" : "row",
-            alignItems: collapsed ? "center" : "flex-start",
-            gap: collapsed ? "12px" : "8px",
+            padding: collapsed ? "8px 12px" : "8px 16px",
           }}
         >
-          <div
-            className="flex items-center"
-            style={{
-              gap: collapsed ? 0 : "10px",
-              minWidth: 0,
-            }}
-          >
-            <div
-              className="flex items-center justify-center shrink-0"
-              style={{
-                width: 40,
-                height: 40,
-                backgroundColor: "var(--color-accent)",
-                borderRadius: "var(--radius-md)",
-              }}
-            >
-              <span
-                className="text-sm font-bold"
-                style={{ color: "var(--color-text-primary)" }}
-              >
-                V
-              </span>
-            </div>
-
-            {!collapsed && (
-              <span
-                className="truncate font-semibold"
-                style={{
-                  fontSize: "var(--text-sm)",
-                  color: "var(--color-text-primary)",
-                  letterSpacing: "var(--tracking-tight)",
-                }}
-              >
-                Vendoo
-              </span>
-            )}
-          </div>
-
           <button
             type="button"
             onClick={onToggleCollapse}
@@ -143,6 +92,7 @@ export default function Sidebar({
 
         {/* Nav */}
           <div
+            className="flex-1"
             style={{
               paddingLeft: collapsed ? "8px" : "10px",
               paddingRight: collapsed ? "8px" : "10px",
@@ -219,39 +169,6 @@ export default function Sidebar({
             padding: "12px 10px",
           }}
         >
-          {/* Settings */}
-          <button
-            type="button"
-            onClick={() => setSettingsOpen(true)}
-            className="flex w-full items-center"
-            style={{
-              height: "32px",
-              padding: "0 10px",
-              marginBottom: "2px",
-              justifyContent: collapsed ? "center" : "flex-start",
-              gap: "10px",
-              borderRadius: 0,
-              backgroundColor: "transparent",
-              color: "var(--color-text-secondary)",
-              fontSize: "var(--text-sm)",
-              fontWeight: 500,
-              transition: "color 150ms var(--ease-out)",
-              cursor: "pointer",
-              border: "none",
-              borderLeft: "2px solid transparent",
-            }}
-            title={collapsed ? "Settings" : undefined}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "var(--color-text-primary)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "var(--color-text-secondary)";
-            }}
-          >
-            <Settings size={18} className="shrink-0" />
-            {!collapsed && <span>Settings</span>}
-          </button>
-
           {/* Theme toggle */}
           <button
             type="button"
@@ -309,7 +226,7 @@ export default function Sidebar({
           paddingRight: "8px",
         }}
       >
-        <div className="grid grid-cols-6 gap-1">
+        <div className="flex flex-nowrap">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -324,9 +241,11 @@ export default function Sidebar({
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "4px",
-                  padding: "8px 4px",
-                  minHeight: "56px",
+                  gap: "2px",
+                  padding: "6px 2px",
+                  flex: "1 1 0",
+                  minWidth: 0,
+                  minHeight: "48px",
                   borderRadius: "var(--radius-sm)",
                   backgroundColor: isActive
                     ? "var(--color-accent-muted)"
@@ -341,161 +260,16 @@ export default function Sidebar({
                   border: "none",
                 }}
               >
-                <Icon size={18} className="shrink-0" />
-                <span>{item.label}</span>
+                <Icon size={16} className="shrink-0" />
+                <span className="truncate text-center leading-tight text-[10px]">{item.label}</span>
               </button>
             );
           })}
-          {/* More */}
-          <button
-            type="button"
-            onClick={() => setMobileMoreOpen(!mobileMoreOpen)}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "4px",
-              padding: "8px 4px",
-              minHeight: "56px",
-              borderRadius: "var(--radius-sm)",
-              backgroundColor: "transparent",
-              color: "var(--color-text-secondary)",
-              fontSize: "11px",
-              fontWeight: 500,
-              transition: "all var(--duration-normal) var(--ease-out)",
-              cursor: "pointer",
-              border: "none",
-            }}
-          >
-            <MoreHorizontal size={18} className="shrink-0" />
-            <span>More</span>
-          </button>
+
         </div>
       </nav>
 
-      {/* Settings overlay */}
-      {settingsOpen && (
-        <>
-          <div
-            style={{
-              position: "fixed",
-              inset: 0,
-              zIndex: 100,
-              backgroundColor: "rgba(0,0,0,0.4)",
-            }}
-            onClick={() => setSettingsOpen(false)}
-          />
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: "min(400px, 100vw)",
-              zIndex: 101,
-              backgroundColor: "var(--color-bg-surface)",
-              borderLeft: "1px solid var(--color-border)",
-              display: "flex",
-              flexDirection: "column",
-              padding: "24px",
-              gap: "16px",
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h2 style={{ fontSize: "var(--text-lg)", fontWeight: 600, color: "var(--color-text-primary)" }}>
-                Settings
-              </h2>
-              <button
-                type="button"
-                onClick={() => setSettingsOpen(false)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "var(--color-text-secondary)",
-                  padding: "4px",
-                }}
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <p style={{ color: "var(--color-text-tertiary)", fontSize: "var(--text-sm)" }}>
-              Coming soon
-            </p>
-          </div>
-        </>
-      )}
 
-      {/* Mobile more popup */}
-      {mobileMoreOpen && (
-        <>
-          <div
-            style={{
-              position: "fixed",
-              inset: 0,
-              zIndex: 60,
-            }}
-            onClick={() => setMobileMoreOpen(false)}
-          />
-          <div
-            style={{
-              position: "fixed",
-              bottom: "calc(72px + env(safe-area-inset-bottom))",
-              right: "8px",
-              zIndex: 61,
-              backgroundColor: "var(--color-bg-surface)",
-              border: "1px solid var(--color-border)",
-              borderRadius: "var(--radius-md)",
-              padding: "8px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "4px",
-              minWidth: "160px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => { setSettingsOpen(true); setMobileMoreOpen(false); }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "8px 12px",
-                background: "none",
-                border: "none",
-                borderRadius: "var(--radius-sm)",
-                color: "var(--color-text-secondary)",
-                fontSize: "var(--text-sm)",
-                cursor: "pointer",
-              }}
-            >
-              <Settings size={16} />
-              <span>Settings</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => { toggleTheme(); setMobileMoreOpen(false); }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "8px 12px",
-                background: "none",
-                border: "none",
-                borderRadius: "var(--radius-sm)",
-                color: "var(--color-text-secondary)",
-                fontSize: "var(--text-sm)",
-                cursor: "pointer",
-              }}
-            >
-              <Sun size={16} />
-              <span>Theme</span>
-            </button>
-          </div>
-        </>
-      )}
     </>
   );
 }

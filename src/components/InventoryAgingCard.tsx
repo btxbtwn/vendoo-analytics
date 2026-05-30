@@ -64,7 +64,7 @@ export default function InventoryAgingCard({ listings, compact }: InventoryAging
  <span className="text-sm font-semibold text-foreground">Inventory Aging</span>
  </div>
  {staleCount > 0 && (
- <div className="flex items-center gap-1 rounded-full bg-danger/10 px-2 py-0.5 text-[10px] font-medium text-danger">
+ <div className="flex items-center gap-1 rounded-none bg-danger/10 px-2 py-0.5 text-[10px] font-medium text-danger">
  <AlertTriangle size={10} />
  {staleCount} stale
  </div>
@@ -74,7 +74,7 @@ export default function InventoryAgingCard({ listings, compact }: InventoryAging
  {data.map((b) => (
  <div key={b.label} className="text-center">
  <div
- className="mx-auto h-1.5 w-full rounded-full"
+ className="mx-auto h-1.5 w-full rounded-none"
  style={{ background: b.color }}
  />
  <p className="mt-1 text-xs font-bold text-foreground">{b.count}</p>
@@ -97,14 +97,14 @@ export default function InventoryAgingCard({ listings, compact }: InventoryAging
  </div>
  </div>
  {staleCount > 0 && (
- <div className="flex items-center gap-1.5 rounded-full bg-danger/10 px-3 py-1 text-xs font-medium text-danger">
+ <div className="flex items-center gap-1.5 rounded-none bg-danger/10 px-3 py-1 text-xs font-medium text-danger">
  <AlertTriangle size={12} />
  {staleCount} items older than 90d
  </div>
  )}
  </div>
 
- <div className="mt-4 flex h-3 overflow-hidden rounded-full" style={{ background: 'var(--color-muted)' }}>
+ <div className="mt-4 flex h-3 overflow-hidden rounded-none" style={{ background: 'var(--color-muted)' }}>
  {data.map((b) =>
  b.count > 0 ? (
  <div

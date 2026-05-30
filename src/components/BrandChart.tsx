@@ -27,7 +27,7 @@ export default function BrandChart({
   const chartData = compact ? data.slice(0, 6).reverse() : data;
 
   return (
-    <div className="bg-transparent border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 md:p-6 w-full max-w-full overflow-hidden">
+    <div className="bg-transparent border border-[var(--color-border)] rounded-none p-4 md:p-6 w-full max-w-full overflow-hidden">
       <div ref={ref} className={compact ? "h-[18rem]" : "h-80 md:h-96"}>
         {ready ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>

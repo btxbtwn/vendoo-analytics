@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -23,15 +23,17 @@ import {
 } from "../lib/types";
 import { ChartTooltip, formatCurrency } from "./ChartTooltip";
 import { useChartReady } from "../lib/use-chart-ready";
+import PageSizeSelector from "./ui/PageSizeSelector";
+
+const PAGE_SIZE_OPTIONS = [5, 10, 25, 50];
+
+// Brand-aligned palette (using CSS vars so opacity modifiers work: /30, /10)
+import { PLATFORM_COLORS as BRAND_COLORS } from "../lib/platform-colors";
 
 const PLATFORM_COLORS: Record<string, string> = {
-  eBay: "var(--chart-1)",
-  Poshmark: "var(--chart-5)",
-  Mercari: "var(--chart-4)",
-  Depop: "var(--chart-2)",
-  Etsy: "var(--chart-7)",
-  "In-Person": "var(--chart-8)",
-  Unknown: "var(--color-text-tertiary)",
+  ...BRAND_COLORS,
+  "In-Person": "#9B59B6",
+  Unknown: "#95A5A6",
 };
 
 const COMPARISON_COLORS = [
@@ -167,7 +169,7 @@ function ComparisonTooltip({
 
   return (
     <div
-      className="min-w-[11rem] border rounded-[var(--radius-md)] px-4 py-3"
+      className="min-w-[11rem] border rounded-none px-4 py-3"
       style={{
         background: "var(--color-bg-elevated)",
         borderColor: "var(--color-border)",
@@ -180,7 +182,7 @@ function ComparisonTooltip({
           <div key={String(item.name)} className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span
-                className="h-2.5 w-2.5 rounded-full"
+                className="h-2.5 w-2.5 rounded-none"
                 style={{ backgroundColor: item.color ?? "var(--chart-1)" }}
               />
               <span>{String(item.name ?? "Value")}</span>
@@ -208,6 +210,8 @@ export default function LabelTagComparisonPanel({
     tags: [],
     labels: [],
   });
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
 
   const comparisonRows = useMemo(
     () => compareSegmentsByPlatform(listings, dimension),
@@ -288,11 +292,20 @@ export default function LabelTagComparisonPanel({
     () =>
       currentSelections.length > 0
         ? displayRows
-        : rankedRows.slice(0, normalizedQuery ? 18 : compact ? 6 : 10),
-    [compact, currentSelections.length, displayRows, normalizedQuery, rankedRows],
+        : rankedRows,
+    [currentSelections.length, displayRows, rankedRows],
   );
 
+  const totalTableRows = tableRows.length;
+  const totalTablePages = Math.ceil(totalTableRows / pageSize);
+  const paginatedTableRows = compact
+    ? tableRows
+    : tableRows.slice(page * pageSize, (page + 1) * pageSize);
+
   const topPerformer = rankedRows[0];
+
+  // Reset page when filters change
+  useEffect(() => { setPage(0); }, [dimension, metric, normalizedQuery, currentSelections.length]);
 
   function togglePlatform(platform: string) {
     setSelectedPlatforms((current) => toggleValue(current, platform));
@@ -313,7 +326,7 @@ export default function LabelTagComparisonPanel({
   }
 
   return (
-    <div className="w-full max-w-full overflow-hidden border border-[var(--color-border)] rounded-[var(--radius-lg)] bg-transparent p-4 md:p-6">
+    <div className="w-full max-w-full overflow-hidden border border-[var(--color-border)] rounded-none bg-transparent p-4 md:p-6">
       <div className="mb-5">
         <h3 className="text-lg font-semibold text-foreground">Label &amp; Tag Comparison</h3>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -328,7 +341,7 @@ export default function LabelTagComparisonPanel({
               key={option}
               type="button"
               onClick={() => setDimension(option)}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`rounded-none border px-3 py-1.5 text-xs font-medium transition-colors ${
                 dimension === option
                   ? "border-accent bg-accent text-white"
                   : "border-border bg-muted/20 text-muted-foreground hover:bg-muted/50 hover:text-foreground"
@@ -345,7 +358,7 @@ export default function LabelTagComparisonPanel({
               key={option}
               type="button"
               onClick={() => setMetric(option)}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`rounded-none border px-3 py-1.5 text-xs font-medium transition-colors ${
                 metric === option
                   ? "border-accent bg-accent/15 text-accent"
                   : "border-border bg-muted/20 text-muted-foreground hover:bg-muted/50 hover:text-foreground"
@@ -381,7 +394,7 @@ export default function LabelTagComparisonPanel({
             <button
               type="button"
               onClick={() => setSelectedPlatforms([])}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`rounded-none border px-3 py-1.5 text-xs font-medium transition-colors ${
                 selectedPlatforms.length === 0
                   ? "border-accent bg-accent text-white"
                   : "border-border bg-background/70 text-muted-foreground hover:bg-muted/50 hover:text-foreground"
@@ -398,14 +411,14 @@ export default function LabelTagComparisonPanel({
                   key={platform}
                   type="button"
                   onClick={() => togglePlatform(platform)}
-                  className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                  className={`inline-flex items-center gap-2 rounded-none border px-3 py-1.5 text-xs font-medium transition-colors ${
                     active
                       ? "border-transparent bg-white/10 text-foreground"
                       : "border-border bg-background/70 text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                   }`}
                   style={active ? { boxShadow: `inset 0 0 0 1px ${color}` } : undefined}
                 >
-                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
+                  <span className="h-2 w-2 rounded-none" style={{ backgroundColor: color }} />
                   {platform}
                 </button>
               );
@@ -439,7 +452,7 @@ export default function LabelTagComparisonPanel({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={SOURCE_PLACEHOLDERS[dimension]}
-              className="w-full rounded-full border border-border bg-background/80 px-4 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-accent/60"
+              className="w-full rounded-none border border-border bg-background/80 px-4 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-accent/60"
             />
           </label>
 
@@ -450,7 +463,7 @@ export default function LabelTagComparisonPanel({
                   key={value}
                   type="button"
                   onClick={() => toggleSegmentValue(value)}
-                  className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium text-accent"
+                  className="rounded-none border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium text-accent"
                 >
                   {value}
                 </button>
@@ -502,17 +515,17 @@ export default function LabelTagComparisonPanel({
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
-        <span className="rounded-full border border-border/70 bg-muted/20 px-3 py-1.5">
+        <span className="rounded-none border border-border/70 bg-muted/20 px-3 py-1.5">
           {comparisonRows.length.toLocaleString("en-US")} available {dimension}
         </span>
-        <span className="rounded-full border border-border/70 bg-muted/20 px-3 py-1.5">
+        <span className="rounded-none border border-border/70 bg-muted/20 px-3 py-1.5">
           {activePlatforms.length.toLocaleString("en-US")} platform{activePlatforms.length === 1 ? "" : "s"} in view
         </span>
-        <span className="rounded-full border border-border/70 bg-muted/20 px-3 py-1.5">
+        <span className="rounded-none border border-border/70 bg-muted/20 px-3 py-1.5">
           {currentSelections.length > 0 ? `${currentSelections.length} selected` : `Showing top ${displayRows.length}`}
         </span>
         {topPerformer && (
-          <span className="rounded-full border border-border/70 bg-muted/20 px-3 py-1.5">
+          <span className="rounded-none border border-border/70 bg-muted/20 px-3 py-1.5">
             Top {METRIC_LABELS[metric].toLowerCase()}: {topPerformer.name}
           </span>
         )}
@@ -593,9 +606,9 @@ export default function LabelTagComparisonPanel({
                     {activePlatforms.map((platform, index) => (
                       <span
                         key={platform}
-                        className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/60 px-3 py-1.5"
+                        className="inline-flex items-center gap-2 rounded-none border border-border/70 bg-background/60 px-3 py-1.5"
                       >
-                        <span className="h-2 w-2 rounded-full" style={{ backgroundColor: getPlatformColor(platform, index) }} />
+                        <span className="h-2 w-2 rounded-none" style={{ backgroundColor: getPlatformColor(platform, index) }} />
                         {platform}
                       </span>
                     ))}
@@ -655,10 +668,10 @@ export default function LabelTagComparisonPanel({
                     {shareSlices.map((slice) => (
                       <div
                         key={slice.name}
-                        className="flex items-center justify-between gap-3 rounded-xl bg-background/60 px-3 py-2"
+                        className="flex items-center justify-between gap-3 rounded-none bg-background/60 px-3 py-2"
                       >
                         <div className="flex min-w-0 items-center gap-2">
-                          <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: slice.fill }} />
+                          <div className="h-2.5 w-2.5 rounded-none" style={{ backgroundColor: slice.fill }} />
                           <span className="truncate text-sm text-foreground">{slice.name}</span>
                         </div>
                         <div className="text-right">
@@ -701,17 +714,17 @@ export default function LabelTagComparisonPanel({
                         <p className="truncate text-sm font-semibold text-foreground">{row.name}</p>
                         <p className="mt-1 text-xs text-muted-foreground">{row.sales.toLocaleString("en-US")} sold</p>
                       </div>
-                      <span className="rounded-full border border-border/70 bg-muted/20 px-2 py-1 text-[11px] text-muted-foreground">
+                      <span className="rounded-none border border-border/70 bg-muted/20 px-2 py-1 text-[11px] text-muted-foreground">
                         #{index + 1}
                       </span>
                     </div>
 
                     <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
-                      <div className="rounded-xl bg-muted/30 px-3 py-2">
+                      <div className="rounded-none bg-muted/30 px-3 py-2">
                         <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Revenue</p>
                         <p className="mt-1 tabular-nums font-medium text-foreground">{formatMetricValue("revenue", row.revenue)}</p>
                       </div>
-                      <div className="rounded-xl bg-muted/30 px-3 py-2">
+                      <div className="rounded-none bg-muted/30 px-3 py-2">
                         <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Profit</p>
                         <p className={`mt-1 tabular-nums font-medium ${row.profit < 0 ? "text-danger" : "text-foreground"}`}>
                           {formatMetricValue("profit", row.profit)}
@@ -728,7 +741,7 @@ export default function LabelTagComparisonPanel({
                             <div key={platform} className="flex items-center justify-between gap-3 text-sm">
                               <div className="flex items-center gap-2 text-muted-foreground">
                                 <span
-                                  className="h-2.5 w-2.5 rounded-full"
+                                  className="h-2.5 w-2.5 rounded-none"
                                   style={{ backgroundColor: getPlatformColor(platform, platformIndex) }}
                                 />
                                 <span>{platform}</span>
@@ -745,6 +758,7 @@ export default function LabelTagComparisonPanel({
                 ))}
               </div>
             ) : (
+              <div>
               <div className="overflow-x-auto">
                 <table className="min-w-full text-sm">
                   <thead>
@@ -766,7 +780,7 @@ export default function LabelTagComparisonPanel({
                     </tr>
                   </thead>
                   <tbody>
-                    {tableRows.map((row) => (
+                    {paginatedTableRows.map((row) => (
                       <tr key={row.name} className="border-b border-border/50 last:border-b-0">
                         <td className="py-3 pr-4 font-medium text-foreground">{row.name}</td>
                         <td className="px-2 py-3 text-right tabular-nums text-muted-foreground">{row.sales.toLocaleString("en-US")}</td>
@@ -790,6 +804,53 @@ export default function LabelTagComparisonPanel({
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              {!compact && totalTablePages > 1 && (
+               <div className="mt-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                  <p className="text-xs text-[var(--color-text-tertiary)]">
+                    Showing {page * pageSize + 1}–{Math.min((page + 1) * pageSize, totalTableRows)} of{" "}
+                    {totalTableRows.toLocaleString()}
+                  </p>
+                  <div className="flex gap-1 overflow-x-auto">
+                    <button
+                      disabled={page === 0}
+                      onClick={() => setPage((p) => p - 1)}
+                      className="rounded-none border border-[var(--color-border)] px-3 py-1.5 md:py-1 text-xs text-[var(--color-text-primary)] disabled:opacity-30 hover:border-[var(--color-accent)]/50 transition-colors min-h-[36px] md:min-h-0"
+                    >
+                      ← Prev
+                    </button>
+                    {Array.from({ length: Math.min(totalTablePages, 7) }, (_, i) => {
+                      const p = totalTablePages <= 7 ? i : page < 3 ? i : page > totalTablePages - 4 ? totalTablePages - 7 + i : page - 3 + i;
+                      return (
+                        <button
+                          key={p}
+                          onClick={() => setPage(p)}
+                          className={`rounded-none border px-3 py-1.5 md:py-1 text-xs transition-colors min-h-[36px] md:min-h-0 ${
+                            page === p
+                              ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-text-primary)]"
+                              : "border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-[var(--color-accent)]/50"
+                          }`}
+                        >
+                          {p + 1}
+                        </button>
+                      );
+                    })}
+                    <button
+                      disabled={page >= totalTablePages - 1}
+                      onClick={() => setPage((p) => p + 1)}
+                      className="rounded-none border border-[var(--color-border)] px-3 py-1.5 md:py-1 text-xs text-[var(--color-text-primary)] disabled:opacity-30 hover:border-[var(--color-accent)]/50 transition-colors min-h-[36px] md:min-h-0"
+                    >
+                      Next →
+                    </button>
+                  </div>
+                  <PageSizeSelector
+                    value={pageSize}
+                    options={PAGE_SIZE_OPTIONS}
+                    onChange={(size) => { setPageSize(size); setPage(0); }}
+                  />
+                </div>
+              )}
               </div>
             )}
           </div>

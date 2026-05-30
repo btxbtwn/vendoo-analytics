@@ -25,7 +25,7 @@ export default function ListingsChart({
 }: ListingsChartProps) {
   const { ref, ready } = useChartReady();
   return (
-    <div className="bg-transparent border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 md:p-6 w-full max-w-full overflow-hidden">
+    <div className="bg-transparent border border-[var(--color-border)] rounded-none p-4 md:p-6 w-full max-w-full overflow-hidden">
       <div ref={ref} className={compact ? "h-56" : "h-60 md:h-72 xl:h-80"}>
         {ready ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
@@ -33,7 +33,13 @@ export default function ListingsChart({
               data={data}
               margin={compact ? { top: 5, right: 8, left: -20, bottom: 0 } : { top: 5, right: 20, left: 0, bottom: 5 }}
             >
-              <CartesianGrid stroke="rgba(255,255,255,0.04)" />
+              <defs>
+                <linearGradient id="listingsGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--chart-5)" stopOpacity={1} />
+                  <stop offset="100%" stopColor="var(--chart-5)" stopOpacity={0.8} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" />
               <XAxis
                 dataKey="name"
                 tick={{ fill: "var(--color-text-tertiary)", fontSize: 11 }}
@@ -59,8 +65,8 @@ export default function ListingsChart({
               />
               <Bar
                 dataKey="listings"
-                fill="var(--chart-5)"
-                radius={[4, 4, 0, 0]}
+                fill="url(#listingsGrad)"
+                radius={[6, 6, 0, 0]}
                 name="Listings"
               />
             </BarChart>

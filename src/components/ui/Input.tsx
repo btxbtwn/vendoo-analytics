@@ -11,7 +11,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       <input
         ref={ref}
         className={`
-          w-full h-8 px-3 rounded-[var(--radius-md)]
+          w-full h-8 px-3 rounded-none
           bg-transparent border
           text-[var(--text-base)] text-[var(--color-text-primary)]
           placeholder:text-[var(--color-text-tertiary)]

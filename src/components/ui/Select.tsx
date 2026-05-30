@@ -11,7 +11,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       <select
         ref={ref}
         className={`
-          w-full h-8 px-3 rounded-[var(--radius-md)]
+          w-full h-8 px-3 rounded-none
           bg-[var(--color-bg-elevated)] border
           text-[var(--text-base)] text-[var(--color-text-primary)]
           transition-colors duration-[var(--duration-normal)]
