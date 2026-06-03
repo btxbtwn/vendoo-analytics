@@ -1,6 +1,48 @@
 # AGENTS.md — Vendoo Analytics
 
-Use this guide when installing or updating `vendoo-analytics` from a release asset, source bundle, or Git checkout.
+## Code Review Guidelines
+
+### TypeScript Safety
+
+- No `any` types without explicit justification in a comment
+- Type assertions (`as`, `!`) are suspicious — verify the assumption
+- Form event handlers must type their parameters
+- API response types should be explicit, not inferred from `fetch`
+
+### React / Next.js
+
+- No missing `key` props on mapped elements
+- `useEffect` must have proper dependency arrays (no stale closures)
+- New state/hooks should confirm they don't cause unnecessary re-renders
+- Dynamic imports for heavy components (charts, date pickers)
+
+### Dashboard / Analytics
+
+- Charts must handle empty data gracefully (no runtime errors, show empty state)
+- Number formatting must be consistent (currency, percentages, decimals)
+- Date filtering must handle edge cases (single-day ranges, future dates, missing data)
+- CSV/data ingestion should validate rows before rendering
+
+### Mobile Responsiveness
+
+- No hardcoded pixel widths that break below 375px viewport
+- Tables must have horizontal scroll or collapse on mobile
+- Touch targets minimum 36px
+- Test layout at 375px, 768px, 1280px
+
+### Security
+
+- No hardcoded API keys, tokens, or secrets
+- No vendoo credentials in source code
+- Environment variables used via `process.env` must be validated at build time
+- Public routes must not expose internal data
+
+### Code Review Priorities
+
+- P0: Credential/secrets exposure, data loss, broken builds in CI
+- P1: Type errors, runtime exceptions, mobile breakage, incorrect chart math
+- P2: Missing error/loading states, unused imports, style inconsistencies
+- P3: Naming, comments, minor formatting
 
 ---
 
