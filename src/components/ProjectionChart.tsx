@@ -74,7 +74,7 @@ function ProjectionTooltip({ active, label, payload }: ProjectionTooltipProps) {
           <div key={String(item.dataKey ?? item.name)} className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span
-                className="h-2.5 w-2.5 rounded-full"
+                className="h-2.5 w-2.5 rounded-none"
                 style={{ backgroundColor: item.color ?? "var(--chart-1)", opacity: item.strokeDasharray ? 0.6 : 1 }}
               />
               <span>{String(item.name ?? item.dataKey ?? "Value")}</span>
@@ -99,7 +99,7 @@ export default function ProjectionChart({
   const { ref, ready } = useChartReady();
 
   return (
-    <div className="w-full max-w-full overflow-hidden border border-[var(--color-border)] rounded-[var(--radius-lg)] bg-transparent p-4 md:p-6">
+    <div className="w-full max-w-full overflow-hidden border border-[var(--color-border)] rounded-none bg-transparent p-4 md:p-6">
       <div className={`flex gap-3 ${compact ? "flex-col" : "flex-col 2xl:flex-row 2xl:items-start 2xl:justify-between"}`}>
         <div>
           <p className="mt-1 text-sm text-muted-foreground">

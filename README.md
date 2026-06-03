@@ -9,6 +9,8 @@ A Next.js 16 dashboard for analyzing Vendoo marketplace exports. Displays revenu
 ## Quick Start
 
 ```bash
+git clone https://github.com/btxnbtwn/vendoo-analytics.git
+cd vendoo-analytics
 npm install
 npm run build
 npm run start
@@ -16,6 +18,8 @@ npm run start
 ```
 
 Hot-reload development: `npm run dev`
+
+The app ships with a sample CSV (`public/data/vendoo.sample.csv`) so it works out of the box. Drop your real Vendoo export at `public/data/vendoo.csv` to see your own data.
 
 ---
 
@@ -57,6 +61,23 @@ These are the actual CSV header names from a Vendoo export:
 
 ---
 
+## Dashboard Tabs
+
+| Tab | What it shows |
+|---|---|
+| **Overview** | KPI cards, revenue chart, platform breakdown, recent sales |
+| **Revenue** | Revenue/profit over time, period comparison, fees & shipping KPIs |
+| **Platforms** | Platform performance comparison, cross-posting stats, fee breakdown |
+| **Inventory** | Inventory table, aging analysis, condition & color donut charts, cost summary |
+| **Brands** | Brand ROI, category breakdown |
+| **Labels/Tags** | Label and tag performance comparison |
+
+### Charts
+
+All charts use Recharts with bold, dark color palettes (no pastels). Gradient fills on area/bar charts. Platform colors: eBay #0064D3, Depop #FF2300, Poshmark #7F0353, Mercari #5E6DF2, Etsy #F56400.
+
+---
+
 ## Architecture
 
 ```
@@ -67,35 +88,41 @@ src/
 ├── components/
 │   ├── Dashboard.tsx             # Client shell — tab routing, layout
 │   ├── layout/
-│   │   ├── AppShell.tsx         # Sidebar + header wrapper
-│   │   ├── Sidebar.tsx          # Desktop sidebar + mobile bottom nav
-│   │   ├── Header.tsx           # Top bar with title, date picker, theme toggle
-│   │   └── TabNav.tsx           # Pill tab switcher
+│   │   └── Sidebar.tsx          # Desktop sidebar + mobile bottom nav
 │   ├── dashboard-tabs/
 │   │   ├── OverviewPanel.tsx    # KPIs, charts, recent sales
 │   │   ├── RevenuePanel.tsx     # Revenue/profit charts, period comparison
-│   │   ├── PlatformsPanel.tsx   # Platform breakdown
-│   │   ├── InventoryPanel.tsx  # Inventory table, aging, cost summary
-│   │   └── BrandsPanel.tsx      # Brand ROI, category breakdown
+│   │   ├── PlatformsPanel.tsx   # Platform breakdown, cross-posting, fees
+│   │   ├── InventoryPanel.tsx   # Inventory table, aging, condition/color charts
+│   │   ├── BrandsPanel.tsx      # Brand ROI, category breakdown
+│   │   └── LabelsPanel.tsx      # Label/tag performance
+│   ├── Charts/                  # Reusable chart components
+│   │   ├── RevenueChart.tsx     # Area chart with gradient fills
+│   │   ├── PlatformChart.tsx    # Platform comparison bars
+│   │   ├── ListingsChart.tsx    # Listings over time
+│   │   ├── ConditionChart.tsx   # Condition donut chart
+│   │   ├── ColorDonutChart.tsx  # Color distribution donut
+│   │   ├── CrossPostingChart.tsx # Cross-posting analytics
+│   │   └── FeeBreakdownChart.tsx # Fee breakdown by platform
 │   └── ui/                      # Shared primitives (Badge, Button, Select, etc.)
 └── lib/
     ├── analytics.ts              # All data transformations and computations
     ├── types.ts                  # TypeScript interfaces
+    ├── platform-colors.ts        # Centralized brand colors
     ├── server-listings.ts        # CSV loading (server-side)
-    ├── csv-loader.ts             # CSV file loading utilities
-    ├── morning-rundown.ts        # Morning briefing text generator
-    └── *.ts                      # AppContext, hooks, motion, design tokens
+    ├── design-tokens.css         # CSS variables for chart colors, spacing
+    └── *.ts                      # AppContext, hooks, motion
 ```
 
 ### Data Flow
 
 ```
-public/data/vendoo.csv
+public/data/vendoo.csv (or vendoo.sample.csv)
   → loadServerListings() [server-listings.ts]
   → page.tsx (server component)
   → <Dashboard initialListings={listings} />
   → AppContext (client state)
-  → Tab panels (Overview, Revenue, Platforms, Inventory, Brands)
+  → Tab panels (Overview, Revenue, Platforms, Inventory, Brands, Labels)
   → Charts (Recharts)
   → <KPICards /> (summary metrics)
 ```
@@ -108,21 +135,31 @@ public/data/vendoo.csv
 
 ---
 
+## Mobile
+
+The app is fully responsive with:
+- Bottom navigation bar (single row, no wrapping)
+- Theme toggle in top-right corner
+- Touch-friendly button sizes (min 36px)
+- Stacked layouts for date filters and pagination on small screens
+
+Access from mobile on the same network: `http://<your-ip>:3000`
+
+```bash
+# Start with LAN access
+HOST=0.0.0.0 PORT=3000 npm run start
+```
+
+---
+
 ## Automation
 
 Two skills ship with this repo:
 
 | Skill | Purpose | Location |
 |---|---|---|
-| `vendoo-export-dashboard` | Chrome DevTools MCP — exports fresh CSV from Vendoo | `~/.hermes/skills/` or OpenClaw skills |
-| `vendoo-daily-dashboard-rundown` | Morning briefing generator + delivery | `~/.hermes/skills/` or OpenClaw skills |
-
-### Cron Jobs
-
-| Job | Schedule | What it does |
-|---|---|---|
-| `Daily Vendoo CSV export` | `0 23 * * *` | Runs export skill, refreshes `public/data/vendoo.csv` |
-| `Morning Vendoo Dashboard Rundown` | `0 8 * * *` | Fetches morning rundown, delivers to Telegram |
+| `vendoo-export-dashboard` | Chrome DevTools MCP — exports fresh CSV from Vendoo | `skills/vendoo-export-dashboard/` |
+| `vendoo-daily-dashboard-rundown` | Morning briefing generator + delivery | `skills/vendoo-daily-dashboard-rundown/` |
 
 ### Morning Rundown Endpoint
 
@@ -132,83 +169,68 @@ http://127.0.0.1:3000/api/morning-rundown?format=text
 
 Returns plain text: yesterday snapshot, 7-day pace, platform winners, label/tag movers, inventory watch, 30-day projector, and alerts.
 
-### Key Scripts
-
-```bash
-restart_vendoo_analytics.sh     # Start or restart the app
-start_vendoo_debug_chrome.sh     # Open Chrome for Vendoo sign-in
-check_chrome_devtools_mcp.sh    # Verify Chrome DevTools MCP is connected
-get_morning_dashboard_rundown.sh # Fetch morning rundown manually
-```
-
-Paths: `~/.hermes/skills/vendoo-export-dashboard/scripts/` and `~/.hermes/skills/vendoo-daily-dashboard-rundown/scripts/`
-
-### Mobile Access
-
-The app binds to `0.0.0.0` when started with `HOST=0.0.0.0`. Access from mobile at `http://192.168.0.186:3000`.
-
 ---
 
 ## For Hermes Agents
 
-**Repo:** `~/Developer/vendoo-analytics`
-**Skills:** `~/.hermes/skills/`
-**CSV:** `~/Developer/vendoo-analytics/public/data/vendoo.csv`
-
-### Install / Update
+**Install from GitHub:**
 
 ```bash
-cd ~/Developer/vendoo-analytics && git pull origin main
+git clone https://github.com/btxnbtwn/vendoo-analytics.git ~/Developer/vendoo-analytics
+cd ~/Developer/vendoo-analytics
+npm install
+npm run build
 ```
 
-### Start the App
+**Start the app:**
 
 ```bash
-# Local access (127.0.0.1)
-~/.hermes/skills/vendoo-export-dashboard/scripts/restart_vendoo_analytics.sh
+# Local access
+npm run start
 
 # LAN / mobile access
-HOST=0.0.0.0 PORT=3000 nohup npx next start --hostname 0.0.0.0 --port 3000 \
-  > ~/Developer/vendoo-analytics/next-start.log 2>&1 &
+HOST=0.0.0.0 PORT=3000 npm run start
 ```
 
-### Verify
+**Install Hermes skills:**
+
+```bash
+rsync -a skills/vendoo-export-dashboard/ ~/.hermes/skills/vendoo-export-dashboard/
+rsync -a skills/vendoo-daily-dashboard-rundown/ ~/.hermes/skills/vendoo-daily-dashboard-rundown/
+```
+
+**Verify:**
 
 ```bash
 curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000    # → 200
 curl -s "http://127.0.0.1:3000/api/morning-rundown?format=text"   # → plain text
 ```
 
-### Cron Job Payloads
-
-| Job | Payload |
-|---|---|
-| `Daily Vendoo CSV export` | `~/.hermes/skills/vendoo-export-dashboard/references/hermes-cron.example.json` |
-| `Morning Vendoo Dashboard Rundown` | `~/.hermes/skills/vendoo-daily-dashboard-rundown/references/hermes-cron.example.json` |
-
-Deliver morning cron to `telegram:8588506573`.
+**CSV:** Drop your Vendoo export at `~/Developer/vendoo-analytics/public/data/vendoo.csv`. The app falls back to the sample CSV if the real one isn't present.
 
 ---
 
 ## For OpenClaw Agents
 
-**Repo:** `~/.openclaw/workspace/vendoo-analytics`
-**Skills:** `~/.openclaw/workspace/skills/`
-**CSV:** `~/.openclaw/workspace/vendoo-analytics/public/data/vendoo.csv`
-
-### Install / Update
+**One-command install:**
 
 ```bash
+git clone https://github.com/btxnbtwn/vendoo-analytics.git /tmp/vendoo-analytics
+cd /tmp/vendoo-analytics
 bash scripts/install_openclaw_workspace.sh
 ```
 
-This syncs the repo, installs dependencies, builds, starts the app, and syncs the skills.
+This clones the repo, installs deps, builds, starts the app, and syncs skills to `~/.openclaw/workspace/skills/`.
 
 **Options:** `--skip-start` `--skip-build` `--skip-npm` `--skip-skill-sync` `--launch-debug-chrome`
 
-**Env vars:** `OPENCLAW_WORKSPACE_DIR`, `VENDOO_ANALYTICS_REPO_DIR`, `VENDOO_ANALYTICS_HOST`, `VENDOO_ANALYTICS_PORT`
+**Env vars:**
+- `OPENCLAW_WORKSPACE_DIR` — workspace root (default: `~/.openclaw/workspace`)
+- `VENDOO_ANALYTICS_REPO_DIR` — repo target (default: `$WORKSPACE_DIR/vendoo-analytics`)
+- `VENDOO_ANALYTICS_HOST` — bind host (default: `127.0.0.1`)
+- `VENDOO_ANALYTICS_PORT` — bind port (default: `3000`)
 
-### Post-Install Chrome Setup
+**Post-install Chrome setup:**
 
 1. `start_vendoo_debug_chrome.sh` — opens a Chrome window for Vendoo sign-in
 2. Tell the user to sign into Vendoo in that window
@@ -218,8 +240,8 @@ This syncs the repo, installs dependencies, builds, starts the app, and syncs th
 
 | Job | Payload |
 |---|---|
-| `Daily Vendoo CSV export` | `~/.openclaw/workspace/skills/vendoo-export-dashboard/references/openclaw-cron.example.json` |
-| `Morning Vendoo Dashboard Rundown` | `~/.openclaw/workspace/skills/vendoo-daily-dashboard-rundown/references/openclaw-cron.example.json` |
+| `Daily Vendoo CSV export` | `skills/vendoo-export-dashboard/references/openclaw-cron.example.json` |
+| `Morning Vendoo Dashboard Rundown` | `skills/vendoo-daily-dashboard-rundown/references/openclaw-cron.example.json` |
 
 ---
 

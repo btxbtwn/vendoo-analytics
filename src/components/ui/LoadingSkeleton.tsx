@@ -10,9 +10,9 @@ interface SkeletonProps {
 }
 
 const variantClasses = {
-  text: "rounded-[var(--radius-sm)]",
-  rect: "rounded-[var(--radius-md)]",
-  circle: "rounded-full",
+  text: "rounded-none",
+  rect: "rounded-none",
+  circle: "rounded-none",
 };
 
 function Skeleton({ width, height, variant = "rect", className = "" }: SkeletonProps) {
@@ -40,9 +40,9 @@ const SkeletonRow = memo(function SkeletonRow() {
 
 const SkeletonCard = memo(function SkeletonCard() {
   return (
-    <div className="p-5 border border-[var(--color-border)] rounded-[var(--radius-lg)] bg-[var(--color-bg-elevated)]">
+    <div className="p-5 border border-[var(--color-border)] rounded-none bg-[var(--color-bg-elevated)]">
       <div className="flex items-center gap-3 mb-4">
-        <Skeleton width={32} height={32} variant="rect" className="rounded-lg" />
+        <Skeleton width={32} height={32} variant="rect" className="rounded-none" />
         <Skeleton width={80} height={12} />
       </div>
       <Skeleton width={120} height={28} className="mb-2" />
@@ -53,13 +53,13 @@ const SkeletonCard = memo(function SkeletonCard() {
 
 const SkeletonChart = memo(function SkeletonChart() {
   return (
-    <div className="border border-[var(--color-border)] rounded-[var(--radius-lg)] bg-[var(--color-bg-surface)] p-6">
+    <div className="border border-[var(--color-border)] rounded-none bg-[var(--color-bg-surface)] p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <Skeleton width={160} height={16} className="mb-2" />
           <Skeleton width={100} height={12} />
         </div>
-        <Skeleton width={80} height={24} className="rounded-full" />
+        <Skeleton width={80} height={24} className="rounded-none" />
       </div>
       <Skeleton height={240} className="w-full" />
     </div>
@@ -68,7 +68,7 @@ const SkeletonChart = memo(function SkeletonChart() {
 
 const SkeletonTable = memo(function SkeletonTable({ rows = 5 }: { rows?: number }) {
   return (
-    <div className="border border-[var(--color-border)] rounded-[var(--radius-lg)] bg-[var(--color-bg-surface)] overflow-hidden">
+    <div className="border border-[var(--color-border)] rounded-none bg-[var(--color-bg-surface)] overflow-hidden">
       <div className="flex items-center gap-4 py-3 px-4 border-b border-[var(--color-border)]">
         <Skeleton width={40} height={10} />
         <Skeleton width={80} height={10} />

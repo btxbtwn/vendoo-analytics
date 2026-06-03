@@ -12,21 +12,34 @@ import {
 } from "recharts";
 import { ChartDataPoint } from "../lib/types";
 
-const STATUS_COLORS: Record<string, string> = {
-  Active: "var(--chart-1)",
-  Sold: "var(--chart-2)",
-  Draft: "var(--color-text-tertiary)",
+const CONDITION_COLORS: Record<string, string> = {
+  "Pre-Owned - Good": "var(--chart-1)",
+  "Pre-Owned - Excellent": "var(--chart-2)",
+  "Pre-Owned - Fair": "var(--chart-3)",
+  "New With Tags/Box": "var(--chart-4)",
+  "New Without Tags/Box": "var(--chart-5)",
 };
 
-interface StatusChartProps {
+const PALETTE = [
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
+  "var(--chart-6)",
+  "var(--chart-7)",
+  "var(--chart-8)",
+];
+
+interface ConditionChartProps {
   data: ChartDataPoint[];
   compact?: boolean;
 }
 
-export default function StatusChart({
+export default function ConditionChart({
   data,
   compact = false,
-}: StatusChartProps) {
+}: ConditionChartProps) {
   const { ref, ready } = useChartReady();
   const total = data.reduce((s, d) => s + d.value, 0);
 
@@ -47,10 +60,10 @@ export default function StatusChart({
                 nameKey="name"
                 strokeWidth={0}
               >
-                {data.map((entry) => (
+                {data.map((entry, index) => (
                   <Cell
                     key={entry.name}
-                    fill={STATUS_COLORS[entry.name] || "var(--chart-1)"}
+                    fill={CONDITION_COLORS[entry.name] || PALETTE[index % PALETTE.length]}
                   />
                 ))}
               </Pie>
@@ -70,17 +83,17 @@ export default function StatusChart({
           <div className="h-full bg-muted/20" />
         )}
       </div>
-      <div className={`mt-2 grid ${compact ? "grid-cols-3 gap-2" : "grid-cols-3 gap-4 md:px-6"}`}>
-        {data.map((item) => (
-          <div key={item.name} className="rounded-none bg-muted/20 px-2 py-3 text-center">
-            <div className="mb-1 flex items-center justify-center gap-2">
+      <div className={`mt-2 grid ${compact ? "grid-cols-2 gap-2" : "grid-cols-3 gap-3 md:px-4"}`}>
+        {data.slice(0, compact ? 4 : 6).map((item, index) => (
+          <div key={item.name} className="rounded-none bg-muted/20 px-2 py-2 text-center">
+            <div className="mb-1 flex items-center justify-center gap-1.5">
               <div
-                className="w-2.5 h-2.5 rounded-none"
-                style={{ backgroundColor: STATUS_COLORS[item.name] || "var(--chart-1)" }}
+                className="w-2 h-2 rounded-none shrink-0"
+                style={{ backgroundColor: CONDITION_COLORS[item.name] || PALETTE[index % PALETTE.length] }}
               />
-              <span className="text-xs text-muted-foreground">{item.name}</span>
+              <span className="text-[10px] text-muted-foreground truncate">{item.name}</span>
             </div>
-            <p className="text-lg font-bold text-foreground">{item.value}</p>
+            <p className="text-sm font-bold text-foreground">{item.value}</p>
             <p className="text-[10px] text-muted-foreground">
               {((item.value / total) * 100).toFixed(1)}%
             </p>

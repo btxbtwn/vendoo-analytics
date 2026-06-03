@@ -12,21 +12,40 @@ import {
 } from "recharts";
 import { ChartDataPoint } from "../lib/types";
 
-const STATUS_COLORS: Record<string, string> = {
-  Active: "var(--chart-1)",
-  Sold: "var(--chart-2)",
-  Draft: "var(--color-text-tertiary)",
+const COLOR_HEX: Record<string, string> = {
+  Black: "#1a1a1a",
+  White: "#e0e0e0",
+  Blue: "#3b82f6",
+  Red: "#ef4444",
+  Green: "#22c55e",
+  Pink: "#ec4899",
+  Purple: "#a855f7",
+  Yellow: "#eab308",
+  Orange: "#f97316",
+  Brown: "#92400e",
+  Gray: "#6b7280",
+  Beige: "#d4a574",
+  Cream: "#fef3c7",
+  Gold: "#d4a017",
+  Silver: "#94a3b8",
+  Navy: "#1e3a5f",
+  Multicolor: "#8b5cf6",
 };
 
-interface StatusChartProps {
+const PALETTE = [
+  "#3b82f6", "#ef4444", "#22c55e", "#eab308", "#f97316",
+  "#ec4899", "#a855f7", "#06b6d4", "#84cc16", "#f43f5e",
+];
+
+interface ColorChartProps {
   data: ChartDataPoint[];
   compact?: boolean;
 }
 
-export default function StatusChart({
+export default function ColorChart({
   data,
   compact = false,
-}: StatusChartProps) {
+}: ColorChartProps) {
   const { ref, ready } = useChartReady();
   const total = data.reduce((s, d) => s + d.value, 0);
 
@@ -42,15 +61,15 @@ export default function StatusChart({
                 cy="50%"
                 innerRadius={compact ? 40 : 50}
                 outerRadius={compact ? 68 : 80}
-                paddingAngle={3}
+                paddingAngle={2}
                 dataKey="value"
                 nameKey="name"
                 strokeWidth={0}
               >
-                {data.map((entry) => (
+                {data.map((entry, index) => (
                   <Cell
                     key={entry.name}
-                    fill={STATUS_COLORS[entry.name] || "var(--chart-1)"}
+                    fill={COLOR_HEX[entry.name] || PALETTE[index % PALETTE.length]}
                   />
                 ))}
               </Pie>
@@ -70,17 +89,17 @@ export default function StatusChart({
           <div className="h-full bg-muted/20" />
         )}
       </div>
-      <div className={`mt-2 grid ${compact ? "grid-cols-3 gap-2" : "grid-cols-3 gap-4 md:px-6"}`}>
-        {data.map((item) => (
-          <div key={item.name} className="rounded-none bg-muted/20 px-2 py-3 text-center">
-            <div className="mb-1 flex items-center justify-center gap-2">
+      <div className={`mt-2 grid ${compact ? "grid-cols-3 gap-2" : "grid-cols-4 gap-2 md:px-4"}`}>
+        {data.slice(0, compact ? 6 : 8).map((item, index) => (
+          <div key={item.name} className="rounded-none bg-muted/20 px-2 py-2 text-center">
+            <div className="mb-1 flex items-center justify-center gap-1.5">
               <div
-                className="w-2.5 h-2.5 rounded-none"
-                style={{ backgroundColor: STATUS_COLORS[item.name] || "var(--chart-1)" }}
+                className="w-2 h-2 rounded-none shrink-0"
+                style={{ backgroundColor: COLOR_HEX[item.name] || PALETTE[index % PALETTE.length] }}
               />
-              <span className="text-xs text-muted-foreground">{item.name}</span>
+              <span className="text-[10px] text-muted-foreground truncate">{item.name}</span>
             </div>
-            <p className="text-lg font-bold text-foreground">{item.value}</p>
+            <p className="text-sm font-bold text-foreground">{item.value}</p>
             <p className="text-[10px] text-muted-foreground">
               {((item.value / total) * 100).toFixed(1)}%
             </p>

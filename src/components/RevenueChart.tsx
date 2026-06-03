@@ -27,17 +27,17 @@ export default function RevenueChart({
 
   return (
     <div
-      className="bg-transparent border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 md:p-6 w-full max-w-full overflow-hidden"
+      className="bg-transparent border border-[var(--color-border)] rounded-none p-4 md:p-6 w-full max-w-full overflow-hidden"
       style={{
         animation: 'chartEntrance 400ms ease-out forwards',
       }}
     >
       <div className="mb-4 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-accent" /> Revenue
+          <span className="h-2 w-2 rounded-none bg-accent" /> Revenue
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-success" /> Profit
+          <span className="h-2 w-2 rounded-none bg-success" /> Profit
         </span>
       </div>
       <div ref={ref} className={compact ? "h-56 sm:h-64" : "h-64 md:h-80 xl:h-[26rem]"}>
@@ -47,7 +47,17 @@ export default function RevenueChart({
               data={data}
               margin={compact ? { top: 8, right: 8, left: -24, bottom: 0 } : { top: 5, right: 20, left: 0, bottom: 5 }}
             >
-              <CartesianGrid stroke="rgba(255,255,255,0.04)" />
+              <defs>
+                <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="profitGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--chart-2)" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="var(--chart-2)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" />
               <XAxis
                 dataKey="name"
                 tick={{ fill: "var(--color-text-tertiary)", fontSize: 11 }}
@@ -76,18 +86,16 @@ export default function RevenueChart({
                 type="monotone"
                 dataKey="revenue"
                 stroke="var(--chart-1)"
-                strokeWidth={2}
-                fill="var(--chart-1)"
-                fillOpacity={0.1}
+                strokeWidth={2.5}
+                fill="url(#revenueGrad)"
                 name="Revenue"
               />
               <Area
                 type="monotone"
                 dataKey="profit"
                 stroke="var(--chart-2)"
-                strokeWidth={2}
-                fill="var(--chart-2)"
-                fillOpacity={0.1}
+                strokeWidth={2.5}
+                fill="url(#profitGrad)"
                 name="Profit"
               />
             </AreaChart>

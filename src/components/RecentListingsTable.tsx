@@ -15,7 +15,7 @@ export default function RecentListingsTable({
 }: RecentListingsTableProps) {
  if (listings.length === 0) {
  return (
- <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4 md:p-6">
+ <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-none p-4 md:p-6">
  <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Recent Listings</h3>
  <p className="mt-1 text-sm text-[var(--color-text-tertiary)]">No listings matched the selected range.</p>
  </div>
@@ -24,7 +24,7 @@ export default function RecentListingsTable({
 
  if (compact) {
  return (
- <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4">
+ <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-none p-4">
  <div className="mb-4">
  <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Recent Listings</h3>
  <p className="mt-1 text-sm text-[var(--color-text-tertiary)]">Newest inventory added in the selected range</p>
@@ -82,7 +82,7 @@ export default function RecentListingsTable({
  }
 
  return (
- <div className="w-full max-w-full overflow-hidden border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4 md:p-6">
+ <div className="w-full max-w-full overflow-hidden border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-none p-4 md:p-6">
  <div className="mb-6">
  <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Recent Listings</h3>
  <p className="mt-1 text-sm text-[var(--color-text-tertiary)]">Newest inventory added in the selected range</p>

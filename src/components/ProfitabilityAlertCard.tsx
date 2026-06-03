@@ -67,7 +67,7 @@ export default function ProfitabilityAlertCard({ listings }: ProfitabilityAlertC
     <div className="surface-card glass-card rounded-none p-5">
  <div className="mb-5 flex items-center justify-between">
  <div className="flex items-center gap-2">
- <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-danger/10">
+ <div className="flex h-8 w-8 items-center justify-center rounded-none bg-danger/10">
  <AlertTriangle size={16} className="text-danger" />
  </div>
  <div>
@@ -76,7 +76,7 @@ export default function ProfitabilityAlertCard({ listings }: ProfitabilityAlertC
  </div>
  </div>
  {!hasAlerts ? (
- <span className="rounded-full bg-success/10 px-2.5 py-1 text-[11px] font-medium text-success">Healthy</span>
+ <span className="rounded-none bg-success/10 px-2.5 py-1 text-[11px] font-medium text-success">Healthy</span>
  ) : null}
  </div>
 

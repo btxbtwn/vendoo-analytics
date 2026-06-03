@@ -20,6 +20,7 @@ export interface KPIItem {
   trend?: number;       // e.g. +12 or -5
   goal?: number;        // 0–100 percentage
   sparklineData?: { value: number }[];
+  sub?: string;         // e.g. "28 of 59" shown below the value
 }
 
 interface KPICardsProps {
@@ -32,9 +33,9 @@ function GoalBar({ pct }: { pct: number }) {
   const clamped = Math.min(Math.max(pct, 0), 100);
   return (
     <div className="mt-2 flex items-center gap-2">
-      <div className="h-1.5 flex-1 overflow-hidden rounded-full" style={{ background: "var(--color-border)" }}>
+      <div className="h-1.5 flex-1 overflow-hidden rounded-none" style={{ background: "var(--color-border)" }}>
         <div
-          className="h-full rounded-full transition-all duration-500 ease-out"
+          className="h-full rounded-none transition-all duration-500 ease-out"
           style={{ width: `${clamped}%`, background: "var(--color-accent)" }}
         />
       </div>
@@ -82,7 +83,7 @@ const Sparkline = memo(function Sparkline({
         <AreaChart data={data}>
           <defs>
             <linearGradient id={`spark-fill-${color.replace(/[^a-zA-Z0-9]/g, "")}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity={0.25} />
+              <stop offset="0%" stopColor={color} stopOpacity={0.5} />
               <stop offset="100%" stopColor={color} stopOpacity={0} />
             </linearGradient>
           </defs>
@@ -130,14 +131,13 @@ function DesktopCard({ card }: { card: KPIItem }) {
     chartColor = "var(--chart-2)";
   }
 
-  // Determine value color style vs class
-  const isHexColor = card.color.startsWith("#");
-  const valueColorClass = isHexColor ? "" : card.color;
-  const valueColorStyle = isHexColor ? { color: card.color } : {};
+  // All KPI values use the same text color for visual consistency
+  const valueColorClass = "";
+  const valueColorStyle = { color: "var(--color-text-primary)" };
 
   return (
     <div
-      className="rounded-lg p-5 transition-all duration-[var(--duration-normal)]"
+      className="rounded-none p-5 transition-all duration-[var(--duration-normal)]"
       style={{
         background: "transparent",
         border: "1px solid var(--color-border)",
@@ -147,7 +147,7 @@ function DesktopCard({ card }: { card: KPIItem }) {
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2">
           <div
-            className="flex h-8 w-8 items-center justify-center rounded-lg"
+            className="flex h-8 w-8 items-center justify-center rounded-none"
             style={{ background: card.bgColor || "var(--color-accent-muted)" }}
           >
             <Icon size={16} style={{ color: "var(--color-text-tertiary)" }} />
@@ -179,6 +179,13 @@ function DesktopCard({ card }: { card: KPIItem }) {
         ) : null}
       </div>
 
+      {/* subtitle */}
+      {card.sub ? (
+        <p className="mt-1 text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+          {card.sub}
+        </p>
+      ) : null}
+
       {/* goal bar */}
       {hasGoal ? <GoalBar pct={card.goal!} /> : null}
     </div>
@@ -190,14 +197,13 @@ function CompactCard({ card }: { card: KPIItem }) {
   const Icon = card.icon;
   const hasTrend = card.trend !== undefined;
 
-  // Determine value color style vs class
-  const isHexColor = card.color.startsWith("#");
-  const valueColorClass = isHexColor ? "" : card.color;
-  const valueColorStyle = isHexColor ? { color: card.color } : {};
+  // All KPI values use the same text color for visual consistency
+  const valueColorClass = "";
+  const valueColorStyle = { color: "var(--color-text-primary)" };
 
   return (
     <div
-      className="rounded-lg p-4 transition-all duration-[var(--duration-normal)]"
+      className="rounded-none p-4 transition-all duration-[var(--duration-normal)]"
       style={{
         background: "transparent",
         border: "1px solid var(--color-border)",
@@ -206,13 +212,13 @@ function CompactCard({ card }: { card: KPIItem }) {
       <div className="flex items-start justify-between gap-2">
         <span className="text-[11px] uppercase tracking-[0.06em]" style={{ color: "var(--color-text-tertiary)" }}>{card.label}</span>
         <div
-          className="flex h-7 w-7 items-center justify-center rounded-md shrink-0"
+          className="flex h-7 w-7 items-center justify-center rounded-none shrink-0"
           style={{ background: card.bgColor || "var(--color-accent-muted)" }}
         >
           <Icon size={14} style={{ color: "var(--color-text-tertiary)" }} />
         </div>
       </div>
-      <div className="mt-3 flex items-end justify-between gap-3">
+      <div className="mt-3 flex flex-col items-start gap-1">
         <p
           className={`text-xl font-semibold tracking-tight tabular-nums ${valueColorClass}`}
           style={valueColorStyle}
@@ -221,12 +227,17 @@ function CompactCard({ card }: { card: KPIItem }) {
         </p>
         {hasTrend ? (
           <span
-            className="text-xs font-medium tabular-nums shrink-0"
+            className="text-xs font-medium tabular-nums"
             style={{
               color: card.trend! > 0 ? "var(--color-success)" : "var(--color-danger)",
             }}
           >
             {card.trend! > 0 ? "↑" : card.trend! < 0 ? "↓" : "→"} {Math.abs(card.trend!)}%
+          </span>
+        ) : null}
+        {card.sub ? (
+          <span className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+            {" "}{card.sub}
           </span>
         ) : null}
       </div>

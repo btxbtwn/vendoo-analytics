@@ -73,16 +73,16 @@ export default function PeriodComparisonChart({
 
       <div className="mb-4 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-accent" /> Revenue (curr)
+          <span className="h-2 w-2 rounded-none bg-accent" /> Revenue (curr)
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-success" /> Profit (curr)
+          <span className="h-2 w-2 rounded-none bg-success" /> Profit (curr)
         </span>
         <span className="inline-flex items-center gap-1.5 opacity-60">
-          <span className="h-2 w-2 rounded-full bg-accent" /> Revenue (prev)
+          <span className="h-2 w-2 rounded-none bg-accent" /> Revenue (prev)
         </span>
         <span className="inline-flex items-center gap-1.5 opacity-60">
-          <span className="h-2 w-2 rounded-full bg-success" /> Profit (prev)
+          <span className="h-2 w-2 rounded-none bg-success" /> Profit (prev)
         </span>
       </div>
       <div ref={ref} className={compact ? "h-56 sm:h-64" : "h-64 md:h-80 xl:h-[26rem]"}>
@@ -102,8 +102,8 @@ export default function PeriodComparisonChart({
                   />
                 )}
               />
-              <Area type="monotone" dataKey="revenue" stroke="var(--chart-1)" strokeWidth={2} fill="var(--chart-1)" fillOpacity={0.1} name="Revenue (curr)" />
-              <Area type="monotone" dataKey="profit" stroke="var(--chart-2)" strokeWidth={2} fill="var(--chart-2)" fillOpacity={0.1} name="Profit (curr)" />
+              <Area type="monotone" dataKey="revenue" stroke="var(--chart-1)" strokeWidth={2} fill="var(--chart-1)" fillOpacity={0.3} name="Revenue (curr)" />
+              <Area type="monotone" dataKey="profit" stroke="var(--chart-2)" strokeWidth={2} fill="var(--chart-2)" fillOpacity={0.3} name="Profit (curr)" />
               <Area type="monotone" dataKey="prevRevenue" stroke="var(--chart-1)" strokeWidth={2} strokeDasharray="6 4" fill="none" name="Revenue (prev)" />
               <Area type="monotone" dataKey="prevProfit" stroke="var(--chart-2)" strokeWidth={2} strokeDasharray="6 4" fill="none" name="Profit (prev)" />
             </AreaChart>

@@ -3,8 +3,11 @@
 import { useState, useMemo } from "react";
 import { CategoryBreakdownRow, SortDirection } from "../lib/types";
 import { Badge } from "./ui/Badge";
+import PageSizeSelector from "./ui/PageSizeSelector";
 
 type SortField = "category" | "listed" | "sold" | "sellThroughRate" | "avgCOGS" | "avgSalePrice" | "avgProfit" | "profitMargin" | "totalRevenue";
+
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 
 function fmtCurrency(n: number): string {
  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -34,6 +37,8 @@ interface CategoryBreakdownTableProps {
 export default function CategoryBreakdownTable({ data, compact = false }: CategoryBreakdownTableProps) {
  const [sortField, setSortField] = useState<SortField>("totalRevenue");
  const [sortDir, setSortDir] = useState<SortDirection>("desc");
+ const [page, setPage] = useState(0);
+ const [pageSize, setPageSize] = useState(5);
 
  function handleSort(field: SortField) {
  if (field === sortField) {
@@ -55,6 +60,9 @@ export default function CategoryBreakdownTable({ data, compact = false }: Catego
  });
  }, [data, sortField, sortDir]);
 
+ const pageRows = sorted.slice(page * pageSize, (page + 1) * pageSize);
+ const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
+
  function SortIcon({ field }: { field: SortField }) {
  if (field !== sortField) return <span className="text-[var(--color-text-tertiary)]/30 ml-1">↕</span>;
  return <span className="ml-1 text-[var(--color-accent)]">{sortDir === "asc" ? "↑" : "↓"}</span>;
@@ -65,7 +73,7 @@ export default function CategoryBreakdownTable({ data, compact = false }: Catego
 
  if (sorted.length === 0) {
  return (
- <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4 md:p-6">
+ <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-none p-4 md:p-6">
  <h3 className="text-base font-semibold text-[var(--color-text-primary)]">Category Breakdown</h3>
  <p className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">No listing data available.</p>
  </div>
@@ -74,13 +82,13 @@ export default function CategoryBreakdownTable({ data, compact = false }: Catego
 
  if (compact) {
  return (
- <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4">
+ <div className="w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-none p-4">
  <div className="mb-4">
  <h3 className="text-base font-semibold text-[var(--color-text-primary)]">Category Breakdown</h3>
  <p className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">COGS, ASP, and profit by category</p>
  </div>
  <div className="space-y-3">
- {sorted.map((row) => (
+ {pageRows.map((row) => (
      <div key={row.category} className="border-b-[0.5px] border-[color:rgba(255,255,255,0.07)] p-3 transition-colors hover:bg-[var(--color-bg-hover)]">
  <div className="flex items-center justify-between">
  <span className="font-medium text-[var(--color-text-primary)]">{row.category}</span>
@@ -97,12 +105,22 @@ export default function CategoryBreakdownTable({ data, compact = false }: Catego
  </div>
  ))}
  </div>
+ <div className="flex items-center justify-between mt-4">
+   <p className="text-xs text-[var(--color-text-tertiary)]">
+     Showing {page * pageSize + 1}–{Math.min((page + 1) * pageSize, sorted.length)} of {sorted.length}
+   </p>
+   <PageSizeSelector
+     value={pageSize}
+     options={PAGE_SIZE_OPTIONS}
+     onChange={(size) => { setPageSize(size); setPage(0); }}
+   />
+ </div>
  </div>
  );
  }
 
  return (
- <div className="w-full max-w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-[var(--radius-lg)] p-4 md:p-6">
+ <div className="w-full max-w-full border border-[var(--color-border)] bg-[var(--color-bg-surface)] rounded-none p-4 md:p-6">
  <div className="mb-5">
  <h3 className="text-base font-semibold text-[var(--color-text-primary)]">Category Breakdown</h3>
  <p className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">COGS, ASP, and profit by category</p>
@@ -141,7 +159,7 @@ export default function CategoryBreakdownTable({ data, compact = false }: Catego
  </tr>
  </thead>
  <tbody>
- {sorted.map((row, i) => (
+ {pageRows.map((row, i) => (
  <tr
  key={row.category}
  className="border-b-[0.5px] border-[color:rgba(255,255,255,0.07)] last:border-b-0 transition-colors hover:bg-[rgba(255,255,255,0.03)]"
@@ -167,6 +185,16 @@ export default function CategoryBreakdownTable({ data, compact = false }: Catego
  ))}
  </tbody>
  </table>
+ </div>
+ <div className="flex items-center justify-between mt-4">
+   <p className="text-xs text-[var(--color-text-tertiary)]">
+     Showing {page * pageSize + 1}–{Math.min((page + 1) * pageSize, sorted.length)} of {sorted.length}
+   </p>
+   <PageSizeSelector
+     value={pageSize}
+     options={PAGE_SIZE_OPTIONS}
+     onChange={(size) => { setPageSize(size); setPage(0); }}
+   />
  </div>
  </div>
  );

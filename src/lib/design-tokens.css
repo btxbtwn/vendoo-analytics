@@ -15,17 +15,17 @@
   /* ─── Borders ─── */
   --color-border:        rgba(255, 255, 255, 0.07);
   --color-border-strong: rgba(255, 255, 255, 0.12);
-  --color-border-focus:  #6940A5;
+  --color-border-focus:  #6366f1;
 
   /* ─── Text ─── */
   --color-text-primary:   #ffffff;
   --color-text-secondary: #8A8A8E;
   --color-text-tertiary: #52525B;
 
-  /* ─── Accent (Linear purple) ─── */
-  --color-accent:       #6940A5;
-  --color-accent-hover: #7C52BB;
-  --color-accent-soft:  rgba(105, 64, 165, 0.15);
+  /* ─── Accent ─── */
+  --color-accent:       #6366f1;
+  --color-accent-hover: #818cf8;
+  --color-accent-soft:  rgba(99, 102, 241, 0.15);
 
   /* ─── Highlight (sparingly — critical CTAs only) ─── */
   --color-highlight:       #C8F222;
@@ -39,15 +39,15 @@
   --color-danger:       #ef4444;
   --color-danger-muted: rgba(239, 68, 68, 0.12);
 
-  /* ─── Chart series palette (Linear-style muted) ─── */
-  --chart-1: #818CF8;
-  --chart-2: #34D399;
-  --chart-3: #FCD34D;
-  --chart-4: #F87171;
-  --chart-5: #C084FC;
-  --chart-6: #22D3EE;
-  --chart-7: #FB923C;
-  --chart-8: #4ADE80;
+  /* ─── Chart series palette (bold, dark, high-contrast) ─── */
+  --chart-1: #4F46E5;
+  --chart-2: #059669;
+  --chart-3: #D97706;
+  --chart-4: #DC2626;
+  --chart-5: #7C3AED;
+  --chart-6: #0891B2;
+  --chart-7: #EA580C;
+  --chart-8: #16A34A;
 
   /* ─── Typography ─── */
   --font-sans: 'Geist', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -90,14 +90,14 @@
   --space-16: 64px;
 
   /* ─── Border radius ─── */
-  --radius-small: 4px;
-  --radius-sm:   4px;
-  --radius-md:   6px;
-  --radius-lg:   8px;
-  --radius-card:  8px;
-  --radius-button: 6px;
-  --radius-xl:   12px;
-  --radius-full: 9999px;
+  --radius-small: 0px;
+  --radius-sm:   0px;
+  --radius-md:   0px;
+  --radius-lg:   0px;
+  --radius-card:  0px;
+  --radius-button: 0px;
+  --radius-xl:   0px;
+  --radius-full: 0px;
 
   /* ─── Motion (Linear: everything 150ms) ─── */
   --transition-speed: 150ms;
@@ -110,7 +110,7 @@
   --duration-slow:   250ms;
 
   /* ─── Layout ─── */
-  --sidebar-width:     220px;
+  --sidebar-width:     180px;
   --sidebar-collapsed: 44px;
   --header-height:     0px;
   --nav-item-height:   32px;
@@ -138,15 +138,15 @@
 
   --color-border:        rgba(0, 0, 0, 0.07);
   --color-border-strong: rgba(0, 0, 0, 0.12);
-  --color-border-focus:  #6940A5;
+  --color-border-focus:  #6366f1;
 
   --color-text-primary:   #0f172a;
   --color-text-secondary: #64748b;
   --color-text-tertiary:  #94a3b8;
 
-  --color-accent:       #6940A5;
-  --color-accent-hover: #7C52BB;
-  --color-accent-soft:  rgba(105, 64, 165, 0.10);
+  --color-accent:       #4f46e5;
+  --color-accent-hover: #6366f1;
+  --color-accent-soft:  rgba(79, 70, 229, 0.12);
 
   --color-highlight:       #C8F222;
   --color-highlight-muted: rgba(200, 242, 34, 0.15);
@@ -159,13 +159,13 @@
   --color-danger-muted:  rgba(220, 38, 38, 0.10);
 
   --chart-1: #6366F1;
-  --chart-2: #10B981;
-  --chart-3: #F59E0B;
-  --chart-4: #EF4444;
-  --chart-5: #A855F7;
-  --chart-6: #06B6D4;
-  --chart-7: #F97316;
-  --chart-8: #22C55E;
+  --chart-2: #047857;
+  --chart-3: #B45309;
+  --chart-4: #B91C1C;
+  --chart-5: #6D28D9;
+  --chart-6: #0E7490;
+  --chart-7: #C2410C;
+  --chart-8: #15803D;
 
   --scrollbar-color:        rgba(0, 0, 0, 0.08);
   --scrollbar-color-hover:  rgba(0, 0, 0, 0.15);

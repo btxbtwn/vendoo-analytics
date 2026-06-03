@@ -14,7 +14,15 @@ function parseNumber(value: string): number {
 }
 
 function getCsvPath(): string {
-  return path.join(process.cwd(), "public", "data", "vendoo.csv");
+  const primary = path.join(process.cwd(), "public", "data", "vendoo.csv");
+  const sample = path.join(process.cwd(), "public", "data", "vendoo.sample.csv");
+  // If real CSV exists, use it; otherwise fall back to sample
+  try {
+    require("node:fs").accessSync(primary);
+    return primary;
+  } catch {
+    return sample;
+  }
 }
 
 export async function getServerListingsCsvMetadata() {
