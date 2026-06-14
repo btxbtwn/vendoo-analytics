@@ -4,8 +4,6 @@ import dynamic from "next/dynamic";
 import { startTransition, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { calculateKPIs, filterListingsByDate } from "../lib/analytics";
 import { DashboardTabKey, TabDateFilter, VendooListing } from "../lib/types";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "@/lib/use-theme";
 
 import Sidebar from "./layout/Sidebar";
 import LoadingSkeleton from "./LoadingSkeleton";
@@ -63,7 +61,6 @@ export default function Dashboard({ initialListings }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<DashboardTabKey>("overview");
   const [isMobile, setIsMobile] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
-  const { toggleTheme } = useTheme();
   const [tabFilters, setTabFilters] = useState<Record<DashboardTabKey, TabDateFilter>>({
     overview: createDefaultFilter(),
     revenue: createDefaultFilter(),
@@ -83,6 +80,9 @@ export default function Dashboard({ initialListings }: DashboardProps) {
 
     return () => mediaQuery.removeEventListener("change", syncViewport);
   }, []);
+
+  // Force sidebar collapsed on tablet — only expandable on large screens
+  const effectiveCollapsed = isMobile ? true : isSidebarCollapsed;
 
   const headerKPIs = useMemo(() => {
     const activeFilter = tabFilters[visibleTab];
@@ -128,7 +128,7 @@ export default function Dashboard({ initialListings }: DashboardProps) {
       <Sidebar
         activeTab={activeTab}
         onTabChange={handleTabChange}
-        collapsed={isSidebarCollapsed}
+        collapsed={effectiveCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed((current) => !current)}
       />
 
@@ -138,7 +138,7 @@ export default function Dashboard({ initialListings }: DashboardProps) {
           display: "flex",
           flexDirection: "column",
           paddingTop: "env(safe-area-inset-top)",
-          paddingLeft: isMobile ? "0" : isSidebarCollapsed ? "var(--sidebar-collapsed)" : "var(--sidebar-width)",
+          paddingLeft: isMobile ? "0" : effectiveCollapsed ? "var(--sidebar-collapsed)" : "var(--sidebar-width)",
           transition: "padding-left 200ms var(--ease-out)",
         }}
       >
@@ -149,21 +149,6 @@ export default function Dashboard({ initialListings }: DashboardProps) {
           }}
         >
           <CsvWarningsBanner />
-          {isMobile && (
-            <div className="flex justify-end -mb-2">
-              <button
-                type="button"
-                onClick={toggleTheme}
-                className="rounded-none border border-[var(--color-border)] p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
-                aria-label="Toggle theme"
-              >
-                <span className="relative block h-4 w-4">
-                  <Moon size={16} className="absolute inset-0" style={{ opacity: "var(--moon-opacity, 1)" }} />
-                  <Sun size={16} className="absolute inset-0" style={{ opacity: "var(--sun-opacity, 0)" }} />
-                </span>
-              </button>
-            </div>
-          )}
           {/* Tab panels */}
           {visibleTab === "overview" && (
             <OverviewPanel

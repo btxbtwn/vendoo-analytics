@@ -51,9 +51,9 @@ export default function Sidebar({
           borderRight: "1px solid var(--color-border)",
         }}
       >
-        {/* Header */}
+        {/* Header — toggle only visible on large screens */}
         <div
-          className="flex border-b shrink-0 justify-end"
+          className="hidden lg:flex border-b shrink-0 justify-end"
           style={{
             borderColor: "var(--color-border)",
             padding: collapsed ? "8px 12px" : "8px 16px",
