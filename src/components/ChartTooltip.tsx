@@ -64,7 +64,7 @@ export function ChartTooltip({
       </p>
       <div className="mt-2 flex items-center gap-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>
         <span
-          className="h-2.5 w-2.5 rounded-full shrink-0"
+          className="h-2.5 w-2.5 rounded-none shrink-0"
           style={{ backgroundColor: primaryItem.color ?? "var(--chart-1)" }}
         />
         <span>{valueLabel}</span>

@@ -1,11 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { filterListingsByDate, topBrands } from "../../lib/analytics";
 import { TabDateFilter, VendooListing } from "../../lib/types";
 import BrandChart from "../BrandChart";
 import TabDateFilterBar from "../TabDateFilterBar";
+import PageSizeSelector from "../ui/PageSizeSelector";
+
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 
 interface BrandsPanelProps {
   listings: VendooListing[];
@@ -29,15 +32,20 @@ export default function BrandsPanel({
     [compact, soldListings],
   );
   const allBrandRows = useMemo(
-    () => topBrands(soldListings, compact ? 18 : 50),
-    [compact, soldListings],
+    () => topBrands(soldListings, 200),
+    [soldListings],
   );
+
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const totalPages = Math.max(1, Math.ceil(allBrandRows.length / pageSize));
+  const paginatedRows = allBrandRows.slice((page - 1) * pageSize, page * pageSize);
 
   function renderBrandRows() {
     if (compact) {
       return (
         <div className="space-y-3">
-          {allBrandRows.map((brand) => (
+          {paginatedRows.map((brand) => (
             <div
               key={brand.name}
               className="rounded-none border border-border/70 bg-muted/20 p-4"
@@ -87,7 +95,7 @@ export default function BrandsPanel({
             </tr>
           </thead>
           <tbody>
-            {allBrandRows.map((brand) => (
+            {paginatedRows.map((brand) => (
               <tr
                 key={brand.name}
                 className="border-b border-border/50 hover:bg-muted/30 transition-colors"
@@ -122,6 +130,8 @@ export default function BrandsPanel({
         dateFieldLabel="Sold date"
         resultSummary={`${soldListings.length.toLocaleString("en-US")} sold items`}
         compact={compact}
+        filter={filter}
+        onFilterChange={onFilterChange}
       />
       {/* Top Brands Chart */}
       <div>
@@ -136,6 +146,52 @@ export default function BrandsPanel({
           Brand Performance in Range
         </h2>
         {renderBrandRows()}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-4">
+            <p className="text-xs text-[var(--color-text-tertiary)]">
+              Page {page} of {totalPages}
+            </p>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1">
+                <button
+                  disabled={page === 1}
+                  onClick={() => setPage((p) => p - 1)}
+                  className="rounded-none border border-[var(--color-border)] px-3 py-1 text-xs text-[var(--color-text-primary)] disabled:opacity-30 hover:border-[var(--color-accent)]/50 transition-colors"
+                >
+                  ← Prev
+                </button>
+                {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                  const p = totalPages <= 7 ? i + 1 : page < 4 ? i + 1 : page > totalPages - 3 ? totalPages - 6 + i : page - 3 + i;
+                  return (
+                    <button
+                      key={p}
+                      onClick={() => setPage(p)}
+                      className={`rounded-none border px-3 py-1 text-xs transition-colors ${
+                        page === p
+                          ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-text-primary)]"
+                          : "border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-[var(--color-accent)]/50"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button
+                  disabled={page >= totalPages}
+                  onClick={() => setPage((p) => p + 1)}
+                  className="rounded-none border border-[var(--color-border)] px-3 py-1 text-xs text-[var(--color-text-primary)] disabled:opacity-30 hover:border-[var(--color-accent)]/50 transition-colors"
+                >
+                  Next →
+                </button>
+              </div>
+              <PageSizeSelector
+                value={pageSize}
+                options={PAGE_SIZE_OPTIONS}
+                onChange={(size) => { setPageSize(size); setPage(1); }}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

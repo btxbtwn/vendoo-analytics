@@ -67,7 +67,7 @@ function Tooltip({ content, children, side = "top" }: TooltipProps) {
           }}
         >
           <div
-            className="px-2.5 py-1.5 rounded-[var(--radius-md)] text-xs font-medium"
+            className="px-2.5 py-1.5 rounded-none text-xs font-medium"
             style={{
               background: "var(--color-bg-elevated)",
               border: "1px solid var(--color-border)",

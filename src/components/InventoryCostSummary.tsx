@@ -16,14 +16,13 @@ interface InventoryCostSummaryProps {
 }
 
 export default function InventoryCostSummary({ data, compact = false }: InventoryCostSummaryProps) {
- const cards = [
- { label: "Total Investment", value: fmtCurrency(data.totalInvestment), sub: `${data.totalCount} items` },
- { label: "Active Inventory Cost", value: fmtCurrency(data.activeInventoryCost), sub: `${data.activeCount} active` },
- { label: "Realized Revenue", value: fmtCurrency(data.realizedRevenue), sub: `${data.soldCount} sold` },
- { label: "Realized Profit", value: fmtCurrency(data.realizedProfit), sub: fmtPct(data.inventoryROI) + " ROI" },
- { label: "Inventory ROI", value: fmtPct(data.inventoryROI), sub: "profit / investment" },
- { label: "STR", value: fmtPct(data.totalCount > 0 ? (data.soldCount / data.totalCount) * 100 : 0), sub: `${data.soldCount} of ${data.totalCount}` },
- ];
+  const cards = [
+    { label: "Total Investment", value: fmtCurrency(data.totalInvestment), sub: `${data.totalCount} items` },
+    { label: "Active Inventory Cost", value: fmtCurrency(data.activeInventoryCost), sub: `${data.activeCount} active` },
+    { label: "Realized Revenue", value: fmtCurrency(data.realizedRevenue), sub: `${data.soldCount} sold` },
+    { label: "Realized Profit", value: fmtCurrency(data.realizedProfit), sub: fmtPct(data.inventoryROI) + " ROI" },
+    { label: "Inventory ROI", value: fmtPct(data.inventoryROI), sub: "profit / investment" },
+  ];
 
  if (compact) {
  return (
@@ -41,8 +40,8 @@ export default function InventoryCostSummary({ data, compact = false }: Inventor
  );
  }
 
- return (
- <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
  {cards.map((card) => (
  <div
  key={card.label}

@@ -31,7 +31,7 @@ export default function StatusChart({
   const total = data.reduce((s, d) => s + d.value, 0);
 
   return (
-    <div className="bg-transparent border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 md:p-6 w-full max-w-full overflow-hidden">
+    <div className="bg-transparent border border-[var(--color-border)] rounded-none p-4 md:p-6 w-full max-w-full overflow-hidden">
       <div ref={ref} className={compact ? "h-48" : "h-56 md:h-64"}>
         {ready ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
@@ -72,10 +72,10 @@ export default function StatusChart({
       </div>
       <div className={`mt-2 grid ${compact ? "grid-cols-3 gap-2" : "grid-cols-3 gap-4 md:px-6"}`}>
         {data.map((item) => (
-          <div key={item.name} className="rounded-xl bg-muted/20 px-2 py-3 text-center">
+          <div key={item.name} className="rounded-none bg-muted/20 px-2 py-3 text-center">
             <div className="mb-1 flex items-center justify-center gap-2">
               <div
-                className="w-2.5 h-2.5 rounded-full"
+                className="w-2.5 h-2.5 rounded-none"
                 style={{ backgroundColor: STATUS_COLORS[item.name] || "var(--chart-1)" }}
               />
               <span className="text-xs text-muted-foreground">{item.name}</span>

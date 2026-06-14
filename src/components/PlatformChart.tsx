@@ -15,13 +15,12 @@ import {
 } from "recharts";
 import { ChartDataPoint } from "../lib/types";
 
+import { PLATFORM_COLORS as BRAND_COLORS } from "../lib/platform-colors";
+
+// Brand colors per platform's official identity
 const PLATFORM_COLORS: Record<string, string> = {
-  eBay: "var(--chart-1)",
-  Poshmark: "var(--chart-5)",
-  Mercari: "var(--chart-4)",
-  Depop: "var(--chart-2)",
-  Etsy: "var(--chart-7)",
-  "In-Person": "var(--chart-8)",
+  ...BRAND_COLORS,
+  Unknown: "#95A5A6",
 };
 
 interface PlatformChartProps {
@@ -38,7 +37,7 @@ export default function PlatformChart({
 
   if (compact) {
     return (
-      <div className="bg-transparent border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 w-full max-w-full overflow-hidden">
+      <div className="bg-transparent border border-[var(--color-border)] rounded-none p-4 w-full max-w-full overflow-hidden">
         <div className="space-y-3">
           {data.map((platform) => {
             const revenue = Number(platform.revenue || 0);
@@ -64,9 +63,9 @@ export default function PlatformChart({
                     ${revenue.toFixed(2)}
                   </span>
                 </div>
-                <div className="mb-2 h-2 overflow-hidden rounded-full bg-muted">
+                <div className="mb-2 h-2 overflow-hidden rounded-none bg-muted">
                   <div
-                    className="h-full rounded-full"
+                    className="h-full rounded-none"
                     style={{ width: `${(revenue / maxRevenue) * 100}%`, backgroundColor: color }}
                   />
                 </div>
@@ -80,12 +79,23 @@ export default function PlatformChart({
   }
 
   return (
-    <div className="bg-transparent border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 md:p-6 w-full max-w-full overflow-hidden">
+    <div className="bg-transparent border border-[var(--color-border)] rounded-none p-4 md:p-6 w-full max-w-full overflow-hidden">
       <div ref={ref} className="h-60 md:h-72 xl:h-80">
         {ready ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
             <BarChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-              <CartesianGrid stroke="rgba(255,255,255,0.04)" />
+              <defs>
+                {data.map((entry) => {
+                  const c = PLATFORM_COLORS[entry.name] || "var(--chart-1)";
+                  return (
+                    <linearGradient key={`grad-${entry.name}`} id={`barGrad-${entry.name.replace(/[^a-zA-Z0-9]/g, "")}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={c} stopOpacity={1} />
+                      <stop offset="100%" stopColor={c} stopOpacity={0.6} />
+                    </linearGradient>
+                  );
+                })}
+              </defs>
+              <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" />
               <XAxis
                 dataKey="name"
                 tick={{ fill: "var(--color-text-tertiary)", fontSize: 11 }}
@@ -109,11 +119,11 @@ export default function PlatformChart({
                   />
                 )}
               />
-              <Bar dataKey="revenue" radius={[4, 4, 0, 0]} name="Revenue">
+              <Bar dataKey="revenue" radius={[6, 6, 0, 0]} name="Revenue">
                 {data.map((entry) => (
                   <Cell
                     key={entry.name}
-                    fill={PLATFORM_COLORS[entry.name] || "var(--chart-1)"}
+                    fill={`url(#barGrad-${entry.name.replace(/[^a-zA-Z0-9]/g, "")})`}
                   />
                 ))}
               </Bar>

@@ -22,7 +22,7 @@ function Badge({ variant = "neutral", children, className = "" }: BadgeProps) {
     <span
       className={`
         inline-flex items-center gap-1 px-2 py-0.5
-        rounded-[var(--radius-full)]
+        rounded-none
         text-xs font-medium
         ${variantClasses[variant]}
         ${className}

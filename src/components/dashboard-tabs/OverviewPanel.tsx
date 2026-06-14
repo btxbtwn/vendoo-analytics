@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Banknote,
   Clock,
   DollarSign,
   Percent,
@@ -62,6 +63,22 @@ export default function OverviewPanel({
   );
   const kpis = useMemo(() => calculateKPIs(soldListings), [soldListings]);
 
+  /* STR: sold / (sold + active) — guaranteed ≤ 100% */
+  const strValue = useMemo(() => {
+    const activeCount = listings.filter((l) => l.status === "Active").length;
+    const denominator = soldListings.length + activeCount;
+    if (denominator === 0) return "0%";
+    const pct = (soldListings.length / denominator) * 100;
+    return Math.round(pct * 10) / 10 + "%";
+  }, [soldListings, listings]);
+
+  /* avg sale price */
+  const avgSalePrice = useMemo(() => {
+    if (soldListings.length === 0) return "$0.00";
+    const total = soldListings.reduce((sum, l) => sum + (l.priceSold || 0), 0);
+    return "$" + (total / soldListings.length).toFixed(2);
+  }, [soldListings]);
+
   /* previous period (for trends) */
   const prevFilter = useMemo(() => previousPeriodFilter(filter), [filter]);
   const prevSold = useMemo(
@@ -115,6 +132,7 @@ export default function OverviewPanel({
         color: "text-primary",
         bgColor: "bg-[var(--color-bg-hover)]",
         trend: calcTrend(kpis.profitMargin, prevKpis.profitMargin),
+        sparklineData: profitSpark,
         goal: 55, // placeholder
       },
       {
@@ -123,6 +141,15 @@ export default function OverviewPanel({
         icon: Tag,
         color: "text-primary",
         bgColor: "bg-[var(--color-bg-hover)]",
+        sparklineData: profitSpark,
+      },
+      {
+        label: "Avg Sale Price",
+        value: avgSalePrice,
+        icon: Banknote,
+        color: "text-primary",
+        bgColor: "bg-[var(--color-bg-hover)]",
+        sparklineData: revenueSpark,
       },
       {
         label: "Avg Days to Sell",
@@ -130,9 +157,19 @@ export default function OverviewPanel({
         icon: Clock,
         color: "text-primary",
         bgColor: "bg-[var(--color-bg-hover)]",
+        sparklineData: countSpark,
+      },
+      {
+        label: "STR",
+        value: strValue,
+        icon: TrendingUp,
+        color: "text-primary",
+        bgColor: "bg-[var(--color-bg-hover)]",
+        sparklineData: countSpark,
+        sub: `${soldListings.length} of ${soldListings.length + listings.filter((l) => l.status === "Active").length}`,
       },
     ],
-    [kpis, prevKpis, revenueSpark, profitSpark, countSpark],
+    [kpis, prevKpis, revenueSpark, profitSpark, countSpark, soldListings, listings, strValue, avgSalePrice],
   );
 
   const grouping = getTimeGrouping(filter);
@@ -144,6 +181,8 @@ export default function OverviewPanel({
         dateFieldLabel="Sold date"
         resultSummary={`${soldListings.length.toLocaleString("en-US")} sold items`}
         compact={compact}
+        filter={filter}
+        onFilterChange={onFilterChange}
       />
       {/* Top row: KPI cards */}
       <KPICards cards={cards} compact={compact} />
@@ -156,22 +195,23 @@ export default function OverviewPanel({
         <RevenueChart data={revenueByMonth(soldListings, grouping)} compact={compact} />
       </div>
 
-      {/* Recent Sales + Platform Breakdown */}
+      {/* Platform Breakdown */}
       <div>
         <h2 className="text-[11px] uppercase tracking-[0.06em] text-[var(--color-text-tertiary)] mb-3">
-          Recent Sales &amp; Platform Breakdown
+          Platform Breakdown
         </h2>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
-            <RecentSalesTable
-              sales={recentSales(soldListings, compact ? 10 : 20)}
-              compact={compact}
-            />
-          </div>
-          <div>
-            <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
-          </div>
-        </div>
+        <PlatformChart data={salesByPlatform(soldListings)} compact={compact} />
+      </div>
+
+      {/* Recent Sales */}
+      <div>
+        <h2 className="text-[11px] uppercase tracking-[0.06em] text-[var(--color-text-tertiary)] mb-3">
+          Recent Sales
+        </h2>
+        <RecentSalesTable
+          sales={recentSales(soldListings, 9999)}
+          compact={compact}
+        />
       </div>
     </div>
   );
