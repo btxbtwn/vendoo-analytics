@@ -8,13 +8,17 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/lib/use-theme";
 
 import Sidebar from "./layout/Sidebar";
+import LoadingSkeleton from "./LoadingSkeleton";
+import CsvWarningsBanner from "./CsvWarningsBanner";
 
-const OverviewPanel = dynamic(() => import("./dashboard-tabs/OverviewPanel"));
-const RevenuePanel = dynamic(() => import("./dashboard-tabs/RevenuePanel"));
-const PlatformsPanel = dynamic(() => import("./dashboard-tabs/PlatformsPanel"));
-const InventoryPanel = dynamic(() => import("./dashboard-tabs/InventoryPanel"));
-const BrandsPanel = dynamic(() => import("./dashboard-tabs/BrandsPanel"));
-const LabelsPanel = dynamic(() => import("./dashboard-tabs/LabelsPanel"));
+const loader = () => <LoadingSkeleton />;
+
+const OverviewPanel = dynamic(() => import("./dashboard-tabs/OverviewPanel"), { loading: loader });
+const RevenuePanel = dynamic(() => import("./dashboard-tabs/RevenuePanel"), { loading: loader });
+const PlatformsPanel = dynamic(() => import("./dashboard-tabs/PlatformsPanel"), { loading: loader });
+const InventoryPanel = dynamic(() => import("./dashboard-tabs/InventoryPanel"), { loading: loader });
+const BrandsPanel = dynamic(() => import("./dashboard-tabs/BrandsPanel"), { loading: loader });
+const LabelsPanel = dynamic(() => import("./dashboard-tabs/LabelsPanel"), { loading: loader });
 
 interface DashboardProps {
   initialListings: VendooListing[];
@@ -80,32 +84,23 @@ export default function Dashboard({ initialListings }: DashboardProps) {
     return () => mediaQuery.removeEventListener("change", syncViewport);
   }, []);
 
-  const listings = initialListings;
-
-  // KPI header metrics — computed from the active tab's filter, not the full dataset
   const headerKPIs = useMemo(() => {
     const activeFilter = tabFilters[visibleTab];
-    const allSold = listings.filter((l) => l.status === "Sold");
+    const allSold = initialListings.filter((l) => l.status === "Sold");
     const soldInWindow = filterListingsByDate(allSold, "soldDate", activeFilter);
-    const totalInWindow = filterListingsByDate(listings, "listedDate", activeFilter);
     const kpis = calculateKPIs(soldInWindow);
-    // Override STR: sold / (sold + active) — guarantees ≤ 100%
-    const activeCount = listings.filter((l) => l.status === "Active").length;
-    const denominator = soldInWindow.length + activeCount;
+    // Cohort STR: sold among listings listed in period / total listed in period
+    const listedInWindow = filterListingsByDate(initialListings, "listedDate", activeFilter);
+    const eligiblePool = listedInWindow.filter(
+      (l) => l.status === "Sold" || l.status === "Active"
+    );
+    const soldFromCohort = listedInWindow.filter((l) => l.status === "Sold");
     const str =
-      denominator > 0
-        ? Math.round((soldInWindow.length / denominator) * 1000) / 10 + "%"
+      eligiblePool.length > 0
+        ? Math.round((soldFromCohort.length / eligiblePool.length) * 1000) / 10 + "%"
         : "0%";
     return { ...kpis, sellThroughRate: str };
-  }, [listings, tabFilters, visibleTab]);
-
-  const kpis = headerKPIs;
-  const tabCopy = TAB_COPY[visibleTab];
-  const headerMetrics = [
-    { label: "Revenue", value: kpis.totalRevenue, tone: "text-primary" },
-    { label: "Profit", value: kpis.totalProfit, tone: "text-primary" },
-    { label: "STR", value: kpis.sellThroughRate, tone: "text-primary" },
-  ];
+  }, [initialListings, tabFilters, visibleTab]);
 
   function handleTabChange(tab: string) {
     if (!isDashboardTabKey(tab)) {
@@ -153,6 +148,7 @@ export default function Dashboard({ initialListings }: DashboardProps) {
             width: "100%",
           }}
         >
+          <CsvWarningsBanner />
           {isMobile && (
             <div className="flex justify-end -mb-2">
               <button
@@ -171,7 +167,7 @@ export default function Dashboard({ initialListings }: DashboardProps) {
           {/* Tab panels */}
           {visibleTab === "overview" && (
             <OverviewPanel
-              listings={listings}
+              listings={initialListings}
               compact={isMobile}
               filter={tabFilters.overview}
               onFilterChange={(nextFilter) => handleFilterChange("overview", nextFilter)}
@@ -180,7 +176,7 @@ export default function Dashboard({ initialListings }: DashboardProps) {
 
           {visibleTab === "revenue" && (
             <RevenuePanel
-              listings={listings}
+              listings={initialListings}
               compact={isMobile}
               filter={tabFilters.revenue}
               onFilterChange={(nextFilter) => handleFilterChange("revenue", nextFilter)}
@@ -189,7 +185,7 @@ export default function Dashboard({ initialListings }: DashboardProps) {
 
           {visibleTab === "platforms" && (
             <PlatformsPanel
-              listings={listings}
+              listings={initialListings}
               compact={isMobile}
               filter={tabFilters.platforms}
               onFilterChange={(nextFilter) => handleFilterChange("platforms", nextFilter)}
@@ -198,7 +194,7 @@ export default function Dashboard({ initialListings }: DashboardProps) {
 
           {visibleTab === "inventory" && (
             <InventoryPanel
-              listings={listings}
+              listings={initialListings}
               compact={isMobile}
               filter={tabFilters.inventory}
               onFilterChange={(nextFilter) => handleFilterChange("inventory", nextFilter)}
@@ -207,7 +203,7 @@ export default function Dashboard({ initialListings }: DashboardProps) {
 
           {visibleTab === "brands" && (
             <BrandsPanel
-              listings={listings}
+              listings={initialListings}
               compact={isMobile}
               filter={tabFilters.brands}
               onFilterChange={(nextFilter) => handleFilterChange("brands", nextFilter)}
@@ -216,7 +212,7 @@ export default function Dashboard({ initialListings }: DashboardProps) {
 
           {visibleTab === "labels" && (
             <LabelsPanel
-              listings={listings}
+              listings={initialListings}
               compact={isMobile}
               filter={tabFilters.labels}
               onFilterChange={(nextFilter) => handleFilterChange("labels", nextFilter)}

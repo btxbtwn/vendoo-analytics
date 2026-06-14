@@ -1,15 +1,7 @@
 "use client";
 
-import { memo, useEffect, useRef, useState } from "react";
 import { LucideIcon } from "lucide-react";
-import {
-  Area,
-  AreaChart,
-  ResponsiveContainer,
-  Tooltip,
-  YAxis,
-} from "recharts";
-
+import { Sparkline } from "./charts";
 
 export interface KPIItem {
   label: string;
@@ -21,6 +13,8 @@ export interface KPIItem {
   goal?: number;        // 0–100 percentage
   sparklineData?: { value: number }[];
   sub?: string;         // e.g. "28 of 59" shown below the value
+  variant?: "default" | "trend" | "goal" | "plain"; // controls what decorations appear
+  span?: 1 | 2;         // column span for emphasis (default: 1)
 }
 
 interface KPICardsProps {
@@ -44,84 +38,13 @@ function GoalBar({ pct }: { pct: number }) {
   );
 }
 
-/* ─── sparkline (memo for perf) ─── */
-function useSparkReady() {
-  const [ready, setReady] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) { setReady(true); return; }
-    if (el.offsetWidth > 0 && el.offsetHeight > 0) { setReady(true); return; }
-    const obs = new ResizeObserver(([entry]) => {
-      if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
-        setReady(true);
-        obs.disconnect();
-      }
-    });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  return { ref, ready };
-}
-
-const Sparkline = memo(function Sparkline({
-  data,
-  color,
-}: {
-  data: { value: number }[];
-  color: string;
-}) {
-  const { ref, ready } = useSparkReady();
-  if (!data || data.length < 2) return null;
-
-  return (
-    <div ref={ref} className="h-8 w-20 max-h-[32px]">
-      {ready ? (
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-        <AreaChart data={data}>
-          <defs>
-            <linearGradient id={`spark-fill-${color.replace(/[^a-zA-Z0-9]/g, "")}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity={0.5} />
-              <stop offset="100%" stopColor={color} stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <YAxis domain={["dataMin", "dataMax"]} hide />
-          <Tooltip
-            contentStyle={{
-              background: "var(--color-bg-elevated)",
-              border: "1px solid var(--color-border)",
-              borderRadius: "var(--radius-md)",
-              fontSize: "var(--text-xs)",
-              color: "var(--color-text-primary)",
-            }}
-            itemStyle={{ color: "var(--color-text-primary)" }}
-            formatter={(value: any) => [Number(value).toLocaleString(), ""]}
-            labelStyle={{ display: "none" }}
-          />
-          <Area
-            type="monotone"
-            dataKey="value"
-            stroke={color}
-            strokeWidth={1.5}
-            fill={`url(#spark-fill-${color.replace(/[^a-zA-Z0-9]/g, "")})`}
-            isAnimationActive={false}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-      ) : (
-        <div className="h-8 w-20 bg-muted/20" />
-      )}
-    </div>
-  );
-});
-
 /* ─── desktop card ─── */
 function DesktopCard({ card }: { card: KPIItem }) {
   const Icon = card.icon;
-  const hasTrend = card.trend !== undefined;
-  const hasGoal = card.goal !== undefined;
+  const variant = card.variant ?? "default";
+  const hasTrend = card.trend !== undefined && (variant === "default" || variant === "trend");
+  const hasGoal = card.goal !== undefined && (variant === "default" || variant === "goal");
+  const hasSparkline = card.sparklineData && (variant === "default");
 
   // Determine chart color from card.color
   let chartColor = "var(--chart-5)"; // fallback
@@ -131,8 +54,6 @@ function DesktopCard({ card }: { card: KPIItem }) {
     chartColor = "var(--chart-2)";
   }
 
-  // All KPI values use the same text color for visual consistency
-  const valueColorClass = "";
   const valueColorStyle = { color: "var(--color-text-primary)" };
 
   return (
@@ -152,17 +73,17 @@ function DesktopCard({ card }: { card: KPIItem }) {
           >
             <Icon size={16} style={{ color: "var(--color-text-tertiary)" }} />
           </div>
-          <span className="text-[11px] uppercase tracking-[0.06em]" style={{ color: "var(--color-text-tertiary)" }}>{card.label}</span>
+          <span className="text-[13px] font-medium" style={{ color: "var(--color-text-secondary)" }}>{card.label}</span>
         </div>
-        {card.sparklineData ? (
-          <Sparkline data={card.sparklineData} color={chartColor} />
+        {hasSparkline ? (
+          <Sparkline data={card.sparklineData!} color={chartColor} />
         ) : null}
       </div>
 
       {/* big number + trend */}
       <div className="mt-3 flex items-end justify-between gap-3">
         <p
-          className={`text-[28px] font-semibold tracking-tight tabular-nums ${valueColorClass}`}
+          className="text-[28px] font-semibold tracking-tight tabular-nums"
           style={valueColorStyle}
         >
           {card.value}
@@ -197,8 +118,6 @@ function CompactCard({ card }: { card: KPIItem }) {
   const Icon = card.icon;
   const hasTrend = card.trend !== undefined;
 
-  // All KPI values use the same text color for visual consistency
-  const valueColorClass = "";
   const valueColorStyle = { color: "var(--color-text-primary)" };
 
   return (
@@ -210,7 +129,7 @@ function CompactCard({ card }: { card: KPIItem }) {
       }}
     >
       <div className="flex items-start justify-between gap-2">
-        <span className="text-[11px] uppercase tracking-[0.06em]" style={{ color: "var(--color-text-tertiary)" }}>{card.label}</span>
+        <span className="text-[13px] font-medium" style={{ color: "var(--color-text-secondary)" }}>{card.label}</span>
         <div
           className="flex h-7 w-7 items-center justify-center rounded-none shrink-0"
           style={{ background: card.bgColor || "var(--color-accent-muted)" }}
@@ -220,7 +139,7 @@ function CompactCard({ card }: { card: KPIItem }) {
       </div>
       <div className="mt-3 flex flex-col items-start gap-1">
         <p
-          className={`text-xl font-semibold tracking-tight tabular-nums ${valueColorClass}`}
+          className="text-xl font-semibold tracking-tight tabular-nums"
           style={valueColorStyle}
         >
           {card.value}
@@ -260,7 +179,9 @@ export default function KPICards({ cards, compact = false }: KPICardsProps) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       {cards.map((card) => (
-        <DesktopCard key={card.label} card={card} />
+        <div key={card.label} className={card.span === 2 ? "sm:col-span-2" : ""}>
+          <DesktopCard card={card} />
+        </div>
       ))}
     </div>
   );

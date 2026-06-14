@@ -27,9 +27,17 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "My Vendoo — Reseller Dashboard",
   description: "Personal analytics dashboard for my Vendoo resale business",
+  applicationName: "My Vendoo",
+  robots: { index: false, follow: false },
   icons: {
     icon: "/icon.svg",
     apple: "/icon.svg",
+  },
+  openGraph: {
+    title: "My Vendoo — Reseller Dashboard",
+    description: "Personal analytics dashboard for my Vendoo resale business",
+    type: "website",
+    siteName: "My Vendoo",
   },
   appleWebApp: {
     capable: true,

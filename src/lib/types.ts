@@ -202,3 +202,19 @@ export type InventorySortField =
   | "soldDate";
 
 export type StatusFilter = "all" | "Active" | "Sold" | "Draft";
+
+/** Raw KPI numbers — use this for calculations, exports, and comparisons. */
+export interface KPIMetrics {
+  totalListings: number;
+  activeListings: number;
+  soldItems: number;
+  totalRevenue: number;
+  totalProfit: number;
+  totalCOGS: number;
+  totalFees: number;
+  totalShipping: number;
+  avgProfitPerItem: number;
+  profitMargin: number;
+  avgDaysToSell: number;
+  sellThroughRate: number;
+}

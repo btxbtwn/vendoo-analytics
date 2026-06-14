@@ -4,17 +4,17 @@
 
 :root {
   /* ─── Backgrounds ─── */
-  --color-bg-body:     #08090a;
-  --color-bg-base:     #09090B;
-  --color-bg-surface:  #111112;
-  --color-bg-elevated: #18181B;
+  --color-bg-body:     #0b0d10;
+  --color-bg-base:     #0d0f13;
+  --color-bg-surface:  #13161b;
+  --color-bg-elevated: #191d24;
   --color-bg-sidebar:  var(--color-bg-elevated);
   --color-bg-hover:    rgba(255, 255, 255, 0.04);
   --color-bg-active:   rgba(255, 255, 255, 0.06);
 
   /* ─── Borders ─── */
-  --color-border:        rgba(255, 255, 255, 0.07);
-  --color-border-strong: rgba(255, 255, 255, 0.12);
+  --color-border:        rgba(255, 255, 255, 0.10);
+  --color-border-strong: rgba(255, 255, 255, 0.18);
   --color-border-focus:  #6366f1;
 
   /* ─── Text ─── */
@@ -118,6 +118,24 @@
   --content-padding:   24px;
   --content-max-width: 1280px;
 
+  /* ─── Z-index scale ─── */
+  --z-sidebar:    40;
+  --z-header:     45;
+  --z-mobile-nav: 50;
+  --z-dropdown:   60;
+  --z-tooltip:    70;
+  --z-modal:      80;
+
+  /* ─── Typography roles ─── */
+  --type-title:       700 var(--text-3xl)/1.15 var(--font-sans);
+  --type-heading:     600 var(--text-2xl)/1.25 var(--font-sans);
+  --type-label:       500 var(--text-sm)/1.4 var(--font-sans);
+  --type-number:      600 var(--text-base)/1 var(--font-mono);
+  --tracking-title:   -0.035em;
+  --tracking-heading: -0.02em;
+  --tracking-label:   0.04em;
+  --tracking-number:  -0.015em;
+
   /* ─── Semantic aliases (used in components) ─── */
   --color-bg-primary: var(--color-bg-base);
 
@@ -136,8 +154,8 @@
   --color-bg-hover:    rgba(0, 0, 0, 0.04);
   --color-bg-active:   rgba(0, 0, 0, 0.06);
 
-  --color-border:        rgba(0, 0, 0, 0.07);
-  --color-border-strong: rgba(0, 0, 0, 0.12);
+  --color-border:        rgba(0, 0, 0, 0.10);
+  --color-border-strong: rgba(0, 0, 0, 0.18);
   --color-border-focus:  #6366f1;
 
   --color-text-primary:   #0f172a;

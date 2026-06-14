@@ -18,6 +18,7 @@ import {
   InventoryCostSummary,
   CategoryBreakdownRow,
   InventoryTableRow,
+  KPIMetrics,
 } from "./types";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -91,12 +92,24 @@ export function parseListingDate(rawValue: string): Date | null {
 
   if (localDateMatch) {
     const [, year, month, day] = localDateMatch;
-    const parsedDate = new Date(Number(year), Number(month) - 1, Number(day));
-    return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+    const y = Number(year);
+    const m = Number(month) - 1;
+    const d = Number(day);
+    const parsedDate = new Date(y, m, d);
+    // Reject impossible dates that JS auto-corrects (e.g., 2024-13-45 → Jan 14 2025)
+    if (
+      Number.isNaN(parsedDate.getTime()) ||
+      parsedDate.getFullYear() !== y ||
+      parsedDate.getMonth() !== m ||
+      parsedDate.getDate() !== d
+    ) {
+      return null;
+    }
+    return parsedDate;
   }
 
-  const parsedDate = new Date(trimmedValue);
-  return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+  // Reject non-YYYY-MM-DD formats — "today" is never a valid fallback
+  return null;
 }
 
 export function formatDayKey(date: Date): string {
@@ -270,7 +283,55 @@ export function getTimeGrouping(filter: TabDateFilter): TimeGrouping {
   return spanInDays <= 90 ? "day" : "month";
 }
 
+/**
+ * # Metric Definitions
+ *
+ * **Revenue:** Sum of `priceSold` for all Sold listings. Does not include shipping.
+ * **Profit:** `priceSold - costOfGoods - marketplaceFees - shippingExpenses`
+ * **COGS (Cost of Goods Sold):** Sum of `costOfGoods` for sold items only.
+ * **Fees:** Sum of `marketplaceFees` (platform + payment processing).
+ * **Shipping:** Sum of `shippingExpenses` paid by seller (not buyer-paid).
+ * **Profit Margin:** `(profit / revenue) × 100`. Only computed when revenue > 0.
+ * **Average Profit Per Item:** `totalProfit / soldCount`
+ * **Average Days to Sell:** Mean days between `listedDate` and `soldDate` for sold items.
+ *   Excludes items where dates are missing or soldDate < listedDate.
+ * **Sell-Through Rate (STR):** Cohort-based: `sold from items listed in period / eligible items listed in period`.
+ *   Eligible = Active + Sold. Draft items are excluded from the denominator.
+ *   Computed in Dashboard.tsx per-tab-filter, not in `calculateKPIs()`.
+ * **Active Listings:** Items with `status === "Active"`.
+ * **Total Listings:** All items in the dataset regardless of status.
+ *
+ * # Date Filter Behavior
+ *
+ * All date filters operate on either `soldDate` or `listedDate` depending on context.
+ * - Revenue/metrics tabs: filter by `soldDate` (what sold in this period?)
+ * - Inventory/listings tabs: filter by `listedDate` (what was listed in this period?)
+ * - STR: uses `listedDate` for cohort eligibility, `status` for sold detection
+ * - Presets: 7d/14d/30d/60d/90d/ytd/custom/all
+ * - All-time (`all`): no date filtering applied
+ * - Custom: user-provided `from` and `to` date strings (YYYY-MM-DD)
+ * - Invalid dates are excluded from all date-filtered calculations
+ */
 export function calculateKPIs(listings: VendooListing[]) {
+  const metrics = calculateKPIMetrics(listings);
+  return {
+    totalListings: fmtInt(metrics.totalListings),
+    activeListing: fmtInt(metrics.activeListings),
+    soldItems: fmtInt(metrics.soldItems),
+    totalRevenue: fmtCurrency(metrics.totalRevenue),
+    totalProfit: fmtCurrency(metrics.totalProfit),
+    totalCOGS: fmtCurrency(metrics.totalCOGS),
+    totalFees: fmtCurrency(metrics.totalFees),
+    totalShipping: fmtCurrency(metrics.totalShipping),
+    avgProfitPerItem: fmtCurrency(metrics.avgProfitPerItem),
+    profitMargin: round(metrics.profitMargin, 1) + "%",
+    avgDaysToSell: metrics.avgDaysToSell > 0 ? round(metrics.avgDaysToSell, 0) + " days" : "N/A",
+    sellThroughRate: round(metrics.sellThroughRate, 1) + "%",
+  };
+}
+
+/** Calculate KPIs returning raw numbers — use for calculations, exports, comparisons. */
+export function calculateKPIMetrics(listings: VendooListing[]): KPIMetrics {
   const soldListings = listings.filter((listing) => listing.status === "Sold");
   const activeListings = listings.filter((listing) => listing.status === "Active");
 
@@ -284,18 +345,18 @@ export function calculateKPIs(listings: VendooListing[]) {
   const avgDaysToSell = calculateAvgDaysToSell(soldListings);
 
   return {
-    totalListings: fmtInt(listings.length),
-    activeListing: fmtInt(activeListings.length),
-    soldItems: fmtInt(soldListings.length),
-    totalRevenue: fmtCurrency(totalRevenue),
-    totalProfit: fmtCurrency(totalProfit),
-    totalCOGS: fmtCurrency(totalCOGS),
-    totalFees: fmtCurrency(totalFees),
-    totalShipping: fmtCurrency(totalShipping),
-    avgProfitPerItem: fmtCurrency(avgProfitPerItem),
-    profitMargin: round(profitMargin, 1) + "%",
-    avgDaysToSell: avgDaysToSell > 0 ? round(avgDaysToSell, 0) + " days" : "N/A",
-    sellThroughRate: round((soldListings.length / Math.max(listings.length, 1)) * 100, 1) + "%",
+    totalListings: listings.length,
+    activeListings: activeListings.length,
+    soldItems: soldListings.length,
+    totalRevenue: round(totalRevenue),
+    totalProfit: round(totalProfit),
+    totalCOGS: round(totalCOGS),
+    totalFees: round(totalFees),
+    totalShipping: round(totalShipping),
+    avgProfitPerItem: round(avgProfitPerItem),
+    profitMargin: round(profitMargin, 1),
+    avgDaysToSell: round(avgDaysToSell, 0),
+    sellThroughRate: round((soldListings.length / Math.max(listings.length, 1)) * 100, 1),
   };
 }
 
@@ -1187,11 +1248,12 @@ export function computeHealthScore(
   listings: VendooListing[],
   kpis: { totalRevenue: string; totalProfit: string; profitMargin: string; sellThroughRate: string; avgDaysToSell: string; activeListing: string; totalListings: string },
 ): number {
-  const margin = parseFloat(kpis.profitMargin) || 0;
-  const sellThrough = parseFloat(kpis.sellThroughRate) || 0;
-  const daysToSell = parseFloat(kpis.avgDaysToSell) || 0;
-  const activeRatio = kpis.activeListing && kpis.totalListings
-    ? parseFloat(kpis.activeListing.replace(/[^0-9]/g, "")) / Math.max(parseFloat(kpis.totalListings.replace(/[^0-9]/g, "")), 1) * 100
+  const rawKpis = calculateKPIMetrics(listings);
+  const margin = rawKpis.profitMargin;
+  const sellThrough = rawKpis.sellThroughRate;
+  const daysToSell = rawKpis.avgDaysToSell;
+  const activeRatio = rawKpis.totalListings > 0
+    ? (rawKpis.activeListings / rawKpis.totalListings) * 100
     : 0;
 
   let score = 0;

@@ -12,7 +12,6 @@ import {
   Moon,
   Sun,
 } from "lucide-react";
-import { useState } from "react";
 import { useTheme } from "@/lib/use-theme";
 
 const navItems = [
@@ -39,13 +38,14 @@ export default function Sidebar({
 }: SidebarProps) {
   const { toggleTheme } = useTheme();
 
+  const sidebarWidth = collapsed ? "var(--sidebar-collapsed)" : "var(--sidebar-width)";
 
   return (
     <>
       <aside
-        className="hidden md:fixed md:top-0 md:left-0 md:flex md:h-screen md:flex-col transition-[width] duration-200 ease-out z-50"
+        className="hidden md:fixed md:top-0 md:left-0 md:flex md:h-screen md:flex-col z-50"
         style={{
-          width: collapsed ? "var(--sidebar-collapsed)" : "var(--sidebar-width)",
+          width: sidebarWidth,
           transition: "width 200ms var(--ease-out)",
           backgroundColor: "var(--color-bg-sidebar)",
           borderRight: "1px solid var(--color-border)",
@@ -64,23 +64,7 @@ export default function Sidebar({
             onClick={onToggleCollapse}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-expanded={!collapsed}
-            className="shrink-0 rounded"
-            style={{
-              padding: "6px",
-              backgroundColor: "transparent",
-              border: "1px solid var(--color-border-subtle)",
-              color: "var(--color-text-secondary)",
-              transition: "all var(--duration-normal) var(--ease-out)",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--color-bg-hover)";
-              e.currentTarget.style.color = "var(--color-text-primary)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.color = "var(--color-text-secondary)";
-            }}
+            className="shrink-0 rounded-none p-1.5 bg-transparent border border-border text-secondary hover:bg-hover hover:text-primary focus-visible:bg-hover focus-visible:text-primary transition-colors duration-[var(--duration-normal)] ease-[var(--ease-out)] cursor-pointer"
           >
             {collapsed ? (
               <ChevronRight size={16} />
@@ -91,89 +75,72 @@ export default function Sidebar({
         </div>
 
         {/* Nav */}
-          <div
-            className="flex-1"
-            style={{
-              paddingLeft: collapsed ? "8px" : "10px",
-              paddingRight: collapsed ? "8px" : "10px",
-            }}
-          >
-            {!collapsed && (
-              <div
-                style={{
-                  fontSize: "11px",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                  color: "var(--color-text-tertiary)",
-                  padding: "16px 10px 8px",
-                  fontWeight: 500,
-                }}
-              >
-                Main
-              </div>
-            )}
-            <nav className="flex-1 py-1">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeTab === item.id;
-
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => onTabChange(item.id)}
-                    title={collapsed ? item.label : undefined}
-                    className="flex w-full items-center"
-                    style={{
-                      height: "32px",
-                      padding: collapsed ? "0" : "0 10px",
-                      marginBottom: "2px",
-                      justifyContent: collapsed ? "center" : "flex-start",
-                      gap: "10px",
-                      borderRadius: 0,
-                      borderLeft: isActive
-                        ? "2px solid var(--color-accent)"
-                        : "2px solid transparent",
-                      backgroundColor: "transparent",
-                      color: isActive
-                        ? "var(--color-text-primary)"
-                        : "var(--color-text-secondary)",
-                      fontSize: "var(--text-sm)",
-                      fontWeight: 500,
-                      transition: "color 150ms var(--ease-out), border-color 150ms var(--ease-out)",
-                      cursor: "pointer",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.color = "var(--color-text-primary)";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.color = "var(--color-text-secondary)";
-                      }
-                    }}
-                  >
-                    <Icon size={18} className="shrink-0" />
-                    {!collapsed && <span>{item.label}</span>}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-        {/* Bottom section */}
         <div
+          className="flex-1"
           style={{
-            paddingTop: "24px",
-            padding: "12px 10px",
+            paddingLeft: collapsed ? "8px" : "10px",
+            paddingRight: collapsed ? "8px" : "10px",
           }}
         >
+          {!collapsed && (
+            <div
+              className="text-tertiary font-medium"
+              style={{
+                fontSize: "12px",
+                padding: "16px 10px 8px",
+              }}
+            >
+              Main
+            </div>
+          )}
+          <nav className="flex-1 py-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => onTabChange(item.id)}
+                  title={collapsed ? item.label : undefined}
+                  className="flex w-full items-center hover:text-primary focus-visible:text-primary cursor-pointer"
+                  style={{
+                    height: "32px",
+                    padding: collapsed ? "0" : "0 10px",
+                    marginBottom: "2px",
+                    justifyContent: collapsed ? "center" : "flex-start",
+                    gap: "10px",
+                    borderRadius: 0,
+                    borderLeft: isActive
+                      ? "2px solid var(--color-accent)"
+                      : "2px solid transparent",
+                    backgroundColor: isActive
+                      ? "var(--color-bg-active)"
+                      : "transparent",
+                    color: isActive
+                      ? "var(--color-text-primary)"
+                      : "var(--color-text-secondary)",
+                    fontSize: "var(--text-sm)",
+                    fontWeight: isActive ? 600 : 500,
+                    transition: "color 150ms var(--ease-out), border-color 150ms var(--ease-out), background-color 150ms var(--ease-out)",
+                  }}
+                >
+                  <Icon size={18} className="shrink-0" />
+                  {!collapsed && <span>{item.label}</span>}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Bottom section */}
+        <div className="pt-6 px-[10px] pb-3">
           {/* Theme toggle */}
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex w-full items-center"
+            className="flex w-full items-center hover:text-primary focus-visible:text-primary cursor-pointer border-none"
             style={{
               height: "32px",
               padding: "0 10px",
@@ -185,17 +152,9 @@ export default function Sidebar({
               fontSize: "var(--text-sm)",
               fontWeight: 500,
               transition: "color 150ms var(--ease-out)",
-              cursor: "pointer",
-              border: "none",
               borderLeft: "2px solid transparent",
             }}
             title={collapsed ? "Toggle theme" : undefined}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "var(--color-text-primary)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "var(--color-text-secondary)";
-            }}
           >
             <span className="relative block h-4 w-4 shrink-0">
               <Moon
@@ -236,11 +195,8 @@ export default function Sidebar({
                 key={item.id}
                 type="button"
                 onClick={() => onTabChange(item.id)}
+                className="flex flex-col items-center justify-center border-none cursor-pointer"
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
                   gap: "2px",
                   padding: "6px 2px",
                   flex: "1 1 0",
@@ -248,7 +204,7 @@ export default function Sidebar({
                   minHeight: "48px",
                   borderRadius: "var(--radius-sm)",
                   backgroundColor: isActive
-                    ? "var(--color-accent-muted)"
+                    ? "var(--color-accent-soft)"
                     : "transparent",
                   color: isActive
                     ? "var(--color-accent)"
@@ -256,8 +212,6 @@ export default function Sidebar({
                   fontSize: "11px",
                   fontWeight: 500,
                   transition: "all var(--duration-normal) var(--ease-out)",
-                  cursor: "pointer",
-                  border: "none",
                 }}
               >
                 <Icon size={16} className="shrink-0" />
@@ -265,11 +219,8 @@ export default function Sidebar({
               </button>
             );
           })}
-
         </div>
       </nav>
-
-
     </>
   );
 }
